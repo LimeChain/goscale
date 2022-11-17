@@ -47,3 +47,13 @@ Not all SCALE primitive types have a corresponding Go type, thus a few custom de
 | `Compact<u32>`  | `uint`     |
 | `Compact<u64>`  | `uint`     |
 | `Compact<u128>` | `*big.Int` |
+
+
+## Sequence
+
+* [x] [Done](https://github.com/LimeChain/goscale/blob/master/sequence.go)
+
+| SCALE      | Go                        |
+|------------|---------------------------|
+| `bytes`    | `[]byte`                  |
+| `string`   | `string`                  |
