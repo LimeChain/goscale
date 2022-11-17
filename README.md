@@ -57,3 +57,21 @@ Not all SCALE primitive types have a corresponding Go type, thus a few custom de
 |------------|---------------------------|
 | `bytes`    | `[]byte`                  |
 | `string`   | `string`                  |
+
+
+## Tuple
+
+Go structs are encoded as SCALE Tuple, where each struct field is encoded in a sequence containing all the fields.
+To decode SCALE encoded structs, it is required to have prior knowledge of the destination data type, since it is not self-contained in the SCALE encoded data itself.
+
+* [x] [Done](https://github.com/LimeChain/goscale/blob/master/tuple.go)
+
+| SCALE      | Go                        |
+|------------|---------------------------|
+| `struct`   | `struct`                  |
+
+### Struct Tags
+
+Struct tags allow modification of the struct field ordering, that preserve the encoding/decoding order.
+
+* [ ] Done
