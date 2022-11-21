@@ -51,3 +51,7 @@ func (dec Decoder) DecodeByte() byte {
 	dec.Read(buf[:1])
 	return buf[0]
 }
+
+type Encodable interface {
+	Encode(enc *Encoder) // TODO return an error
+}
