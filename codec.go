@@ -52,14 +52,6 @@ func (dec Decoder) DecodeByte() byte {
 	return buf[0]
 }
 
-func (enc Encoder) EncodeBool(value bool) {
-	if value {
-		enc.EncodeByte(0x01)
-	} else {
-		enc.EncodeByte(0x00)
-	}
-}
-
 type Encodable interface {
 	Encode(enc *Encoder) // TODO return an error
 }

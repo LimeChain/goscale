@@ -19,7 +19,7 @@ func (seq Sequence[Encodable]) Encode(enc *Encoder) {
 	}
 }
 
-func DecodeSequence[T Encodable](dec Decoder) Sequence[T] {
+func DecodeSequence[T Encodable](dec *Decoder) Sequence[T] {
 	size := dec.DecodeCompact()
 	value := make([]byte, size)
 	dec.Read(value)
@@ -27,8 +27,7 @@ func DecodeSequence[T Encodable](dec Decoder) Sequence[T] {
 	return seq
 }
 
-func StringToSliceU8(s string) []U8 {
-	result := make([]U8, len(s))
+func ToU8(s string) []U8 {
 
 	for i, v := range []byte(s) {
 		// TODO: check
@@ -37,6 +36,16 @@ func StringToSliceU8(s string) []U8 {
 	}
 
 	return result
+}
+
+func (seq Sequence[U8]) String() string {
+	res := []byte{}
+
+	// for _, v := range seq.Values {
+	// 	res = append(res, byte(v))
+	// }
+
+	return string(res)
 }
 
 // func (enc Encoder) EncodeByteSlice(value []byte) {
