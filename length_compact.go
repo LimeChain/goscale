@@ -1,6 +1,9 @@
 package goscale
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+	"fmt"
+)
 
 /*
 	https://spec.polkadot.network/#sect-sc-length-and-compact-encoding
@@ -72,14 +75,14 @@ func (value Compact) Encode(enc *Encoder) {
 		limit <<= 8
 	}
 	if n > 4 {
-		panic("Assertion error: n>4 needed to compact-encode uint64")
+		panic("assertion error: n>4 needed to compact-encode uint64")
 	}
 	enc.EncodeByte((n << 2) + 3)
 	binary.LittleEndian.PutUint64(intBuf[:8], uint64(value))
 	enc.Write(intBuf[:4+n])
 }
 
-func (dec Decoder) DecodeCompact() Compact {
+func (dec *Decoder) DecodeCompact() Compact {
 	intBuf := make([]byte, 8)
 	b := dec.DecodeByte()
 	mode := b & 3
@@ -101,7 +104,7 @@ func (dec Decoder) DecodeCompact() Compact {
 	case 3:
 		n := b >> 2
 		if n > 4 {
-			panic("Not supported: n>4 encountered when decoding a compact-encoded uint")
+			panic("not supported: n>4 encountered when decoding a compact-encoded uint")
 		}
 		dec.Read(intBuf[:n+4])
 		for i := n + 4; i < 8; i++ {
@@ -109,8 +112,12 @@ func (dec Decoder) DecodeCompact() Compact {
 		}
 		return Compact(binary.LittleEndian.Uint64(intBuf[:8]))
 	default:
-		panic("Code should be unreachable")
+		panic("code should be unreachable")
 	}
+}
+
+func (value Compact) String() string {
+	return fmt.Sprint(uint(value))
 }
 
 // func (enc Encoder) EncodeUintCompact(value uint64) {

@@ -1,6 +1,9 @@
 package goscale
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+	"fmt"
+)
 
 /*
 	https://spec.polkadot.network/#defn-little-endian
@@ -18,10 +21,14 @@ func (value U8) Encode(enc *Encoder) {
 	// binary.Write(enc.Writer, binary.LittleEndian, value)
 }
 
-func (dec Decoder) DecodeU8() U8 {
+func (dec *Decoder) DecodeU8() U8 {
 	buf := make([]byte, 1)
 	dec.Read(buf)
 	return U8(buf[0])
+}
+
+func (value U8) String() string {
+	return fmt.Sprintf("%c", uint8(value))
 }
 
 type I8 int8
@@ -30,8 +37,12 @@ func (value I8) Encode(enc *Encoder) {
 	U8(value).Encode(enc)
 }
 
-func (dec Decoder) DecodeI8() I8 {
+func (dec *Decoder) DecodeI8() I8 {
 	return I8(dec.DecodeByte())
+}
+
+func (value I8) String() string {
+	return fmt.Sprint(int8(value))
 }
 
 type U16 uint16
@@ -43,10 +54,14 @@ func (value U16) Encode(enc *Encoder) {
 	// binary.Write(enc.Writer, binary.LittleEndian, value)
 }
 
-func (dec Decoder) DecodeU16() U16 {
+func (dec *Decoder) DecodeU16() U16 {
 	buf := make([]byte, 2)
 	dec.Read(buf)
 	return U16(binary.LittleEndian.Uint16(buf))
+}
+
+func (value U16) String() string {
+	return fmt.Sprint(uint16(value))
 }
 
 type I16 int16
@@ -55,8 +70,12 @@ func (value I16) Encode(enc *Encoder) {
 	U16(value).Encode(enc)
 }
 
-func (dec Decoder) DecodeI16() I16 {
+func (dec *Decoder) DecodeI16() I16 {
 	return I16(dec.DecodeU16())
+}
+
+func (value I16) String() string {
+	return fmt.Sprint(int16(value))
 }
 
 type U32 uint32
@@ -68,10 +87,14 @@ func (value U32) Encode(enc *Encoder) {
 	// binary.Write(enc.Writer, binary.LittleEndian, value)
 }
 
-func (dec Decoder) DecodeU32() U32 {
+func (dec *Decoder) DecodeU32() U32 {
 	buf := make([]byte, 4)
 	dec.Read(buf)
 	return U32(binary.LittleEndian.Uint32(buf))
+}
+
+func (value U32) String() string {
+	return fmt.Sprint(uint32(value))
 }
 
 type I32 int32
@@ -80,8 +103,12 @@ func (value I32) Encode(enc *Encoder) {
 	U32(value).Encode(enc)
 }
 
-func (dec Decoder) DecodeI32() I32 {
+func (dec *Decoder) DecodeI32() I32 {
 	return I32(dec.DecodeU32())
+}
+
+func (value I32) String() string {
+	return fmt.Sprint(int32(value))
 }
 
 type U64 uint64
@@ -93,10 +120,14 @@ func (value U64) Encode(enc *Encoder) {
 	// binary.Write(enc.Writer, binary.LittleEndian, value)
 }
 
-func (dec Decoder) DecodeU64() U64 {
+func (dec *Decoder) DecodeU64() U64 {
 	buf := make([]byte, 8)
 	dec.Read(buf)
 	return U64(binary.LittleEndian.Uint64(buf))
+}
+
+func (value U64) String() string {
+	return fmt.Sprint(uint64(value))
 }
 
 type I64 int64
@@ -105,8 +136,12 @@ func (value I64) Encode(enc *Encoder) {
 	U64(value).Encode(enc)
 }
 
-func (dec Decoder) DecodeI64() I64 {
+func (dec *Decoder) DecodeI64() I64 {
 	return I64(dec.DecodeU64())
+}
+
+func (value I64) String() string {
+	return fmt.Sprint(int64(value))
 }
 
 // func (enc Encoder) EncodeUint64(value uint64) {

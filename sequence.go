@@ -1,12 +1,14 @@
 package goscale
 
+import "strings"
+
 /*
 	https://spec.polkadot.network/#defn-scale-list
 
 	SCALE Sequence type translates to Go's byte slice, string and array types.
 */
 
-// TODO: handle Array types
+// TODO: handle fixed size sequence (Array type)
 
 type Sequence[T Encodable] struct {
 	Values []T
@@ -19,34 +21,25 @@ func (seq Sequence[Encodable]) Encode(enc *Encoder) {
 	}
 }
 
-func DecodeSequence[T Encodable](dec *Decoder) Sequence[T] {
-	size := dec.DecodeCompact()
-	value := make([]byte, size)
-	dec.Read(value)
-	seq := Sequence[T]{Values: []T{}}
-	return seq
+func (dec *Decoder) DecodeSequenceU8() Sequence[U8] {
+	return Sequence[U8]{Values: ToSliceU8(dec)}
 }
 
-func ToU8(s string) []U8 {
-	result := make([]U8, len(s))
-
-	for i, v := range []byte(s) {
-		// TODO: check
-		// result = append(result, sc.U8(v)) -> panic: cannot convert pointer to integer -> /tinygo/interp/memory.go:541
-		result[i] = U8(v)
+func ToSliceU8(dec *Decoder) []U8 {
+	size := dec.DecodeCompact()
+	values := make([]U8, size)
+	for i := 0; i < len(values); i++ {
+		values[i] = dec.DecodeU8()
 	}
-
-	return result
+	return values
 }
 
 func (seq Sequence[U8]) String() string {
-	res := []byte{}
-
-	// for _, v := range seq.Values {
-	// 	res = append(res, byte(v))
-	// }
-
-	return string(res)
+	var res []string
+	for _, v := range seq.Values {
+		res = append(res, v.String())
+	}
+	return strings.Join(res, "")
 }
 
 // func (enc Encoder) EncodeByteSlice(value []byte) {

@@ -1,5 +1,9 @@
 package goscale
 
+import (
+	"fmt"
+)
+
 /*
 	https://spec.polkadot.network/#defn-scale-boolean
 
@@ -20,8 +24,11 @@ func (value Bool) Encode(enc *Encoder) {
 func (dec *Decoder) DecodeBool() Bool {
 	buf := make([]byte, 1)
 	dec.Read(buf)
-	return Bool(buf[0] > 0)
-	// return dec.DecodeByte() > 0
+	return Bool(buf[0] > 0) // dec.DecodeByte() > 0
+}
+
+func (value Bool) String() string {
+	return fmt.Sprint(bool(value))
 }
 
 // func (enc Encoder) EncodeBool(value bool) {

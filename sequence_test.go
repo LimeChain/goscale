@@ -52,10 +52,10 @@ func Test_DecodeByteSlice(t *testing.T) {
 			enc := &Encoder{Writer: &buffer}
 			testExample.expectation.Encode(enc)
 
-			// dec := Decoder{Reader: &buffer}
-			// result := dec.DecodeSequence()
+			dec := &Decoder{Reader: &buffer}
+			result := dec.DecodeSequenceU8()
 
-			// assertEqual(t, result, testExample.expectation)
+			assertEqual(t, result, testExample.expectation)
 		})
 	}
 }
