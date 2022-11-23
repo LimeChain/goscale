@@ -10,8 +10,6 @@ package goscale
 	SCALE Result Type ...
 */
 
-import "strconv"
-
 // Encodeable is an interface that defines a custom encoding rules for a data type.
 // Should be defined for structs (not pointers to them).
 type Encodeable interface {
@@ -27,71 +25,28 @@ type Decodeable interface {
 
 // Option is a structure that can store a boolean or a missing value.
 // Encoding rules are slightly different from other "Option" fields.
-type Option[T any] struct {
+type Option[T Encodable] struct {
 	hasValue bool
 	value    T
 }
 
-func NewOptionEmpty() Option[bool] {
-	return Option[bool]{false, false}
-}
-
-func NewOptionBool(value bool) Option[bool] {
-	return Option[bool]{true, value}
-}
-
-func (enc Encoder) EncodeOptionBool(o Option[bool]) {
+func (o Option[Encodable]) Encode(encoder *Encoder) {
 	if !o.hasValue {
-		enc.EncodeByte(0x00)
+		encoder.EncodeByte(0)
 	} else {
-		switch o.value {
-		case true:
-			enc.EncodeByte(0x01)
-		case false:
-			enc.EncodeByte(0x02)
-		}
+		encoder.EncodeByte(1)
+		o.value.Encode(encoder)
 	}
 }
 
-func (dec Decoder) DecodeOptionBool() {
-	o := Option[bool]{}
-
-	b := dec.DecodeByte()
-
-	switch b {
-	case 0:
-		o.hasValue = false
-		o.value = false
-	case 1:
-		o.hasValue = true
-		o.value = true
-	case 2:
-		o.hasValue = true
-		o.value = false
-	default:
-		panic("Unknown byte prefix for encoded OptionBool: " + strconv.Itoa(int(b)))
+func DecodeOption[T Encodable](decoder *Decoder) Option[T] {
+	b := decoder.DecodeBool()
+	if b {
+		//TODO: decode generic type
 	}
-}
 
-func (enc Encoder) EncodeOption(hasValue bool, value Encodeable) {
-	if !hasValue {
-		enc.EncodeByte(0)
-	} else {
-		enc.EncodeByte(1)
-		value.Encode(enc)
-	}
-}
-
-// DecodeOption decodes an optionally available value into a boolean presence field and a value.
-func (dec Decoder) DecodeOption(hasValue *bool, valuePointer Decodeable) {
-	b := dec.DecodeByte()
-	switch b {
-	case 0:
-		*hasValue = false
-	case 1:
-		*hasValue = true
-		valuePointer.Decode(dec)
-	default:
-		panic("Unknown byte prefix for encoded Option: " + strconv.Itoa(int(b)))
+	return Option[T]{
+		hasValue: b == true,
+		//value:
 	}
 }

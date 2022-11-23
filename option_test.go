@@ -41,6 +41,13 @@ func Test_EncodeOptionInt8(t *testing.T) {
 	}
 
 	for _, example := range testExamples {
+		t.Run(example.label, func(t *testing.T) {
+			buffer := bytes.Buffer{}
+
+			enc := Encoder{Writer: &buffer}
+			enc.Encode(example.input)
+		})
+		buffer := bytes.Buffer{}
 		pd := verifyEncodingReturnDecoder(t,
 			func(pe Encoder) { value.Encode(pe) },
 			hex,

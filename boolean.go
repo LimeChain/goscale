@@ -21,7 +21,7 @@ func (dec *Decoder) DecodeBool() Bool {
 	buf := make([]byte, 1)
 
 	dec.Read(buf)
-	return Bool(buf[0] > 0)
+	return buf[0] > 0
 	// return dec.DecodeByte() > 0
 }
 
