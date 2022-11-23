@@ -1,9 +1,9 @@
 /*
-	Simple Concatenated Aggregate Little-Endian” (SCALE) codec
+Simple Concatenated Aggregate Little-Endian” (SCALE) codec
 
-	Polkadot Spec - https://spec.polkadot.network/#sect-scale-codec
+Polkadot Spec - https://spec.polkadot.network/#sect-scale-codec
 
-	Substrate Ref - https://docs.substrate.io/reference/scale-codec/
+Substrate Ref - https://docs.substrate.io/reference/scale-codec/
 */
 package goscale
 
@@ -50,6 +50,14 @@ func (dec Decoder) DecodeByte() byte {
 	buf := make([]byte, 1)
 	dec.Read(buf[:1])
 	return buf[0]
+}
+
+func (enc Encoder) EncodeBool(value bool) {
+	if value {
+		enc.EncodeByte(0x01)
+	} else {
+		enc.EncodeByte(0x00)
+	}
 }
 
 type Encodable interface {

@@ -22,20 +22,5 @@ func (dec Decoder) DecodeBool() Bool {
 
 	dec.Read(buf)
 
-	return Bool(buf[0] > 0) // return dec.DecodeByte() > 0
+	return buf[0] > 0
 }
-
-// func (enc Encoder) EncodeBool(value bool) {
-// 	if value {
-// 		enc.EncodeByte(0x01)
-// 	} else {
-// 		enc.EncodeByte(0x00)
-// 	}
-// }
-
-// func (dec Decoder) DecodeBool() bool {
-// 	buf := make([]byte, 1)
-// 	dec.Read(buf)
-// 	return buf[0] > 0
-// 	// return dec.DecodeByte() > 0
-// }

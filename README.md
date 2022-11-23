@@ -75,3 +75,28 @@ To decode SCALE encoded structs, it is required to have prior knowledge of the d
 Struct tags allow modification of the struct field ordering, that preserve the encoding/decoding order.
 
 * [ ] Done
+
+
+## Option & Result
+
+For all `Option<T>` a pointer to the underlying type is used.
+
+* [x] [Done](https://github.com/LimeChain/goscale/blob/master/option.go)
+
+| SCALE              | Go                       |
+| ------------------ | ------------------------ |
+| `Option<i8>`       | `*int8`                  |
+| `Option<u8>`       | `*uint8`                 |
+| `Option<i16>`      | `*int16`                 |
+| `Option<u16>`      | `*uint16`                |
+| `Option<i32>`      | `*int32`                 |
+| `Option<u32>`      | `*uint32`                |
+| `Option<i64>`      | `*int64`                 |
+| `Option<u64>`      | `*uint64`                |
+| `Option<i128>`     | `**big.Int`              |
+| `Option<u128>`     | `**scale.Uint128`        |
+| `Option<bytes>`    | `*[]byte`                |
+| `Option<string>`   | `*string`                |
+| `Option<enum>`     | `*scale.VaryingDataType` |
+| `Option<struct>`   | `*struct`                |
+| `None`             | `nil`                    |
