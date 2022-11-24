@@ -26,7 +26,7 @@ func (enc Encoder) Write(bytes []byte) {
 		panic(err.Error())
 	}
 	if n < len(bytes) {
-		panic("Can not write the provided " + strconv.Itoa(len(bytes)) + " bytes to writer")
+		panic("can not write the provided " + strconv.Itoa(len(bytes)) + " bytes to writer")
 	}
 }
 
@@ -36,7 +36,7 @@ func (dec Decoder) Read(bytes []byte) {
 		panic(err.Error())
 	}
 	if n < len(bytes) {
-		panic("Can not read the required number of bytes " + strconv.Itoa(len(bytes)) + ", only " + strconv.Itoa(n) + " available")
+		panic("can not read the required number of bytes " + strconv.Itoa(len(bytes)) + ", only " + strconv.Itoa(n) + " available")
 	}
 }
 
@@ -50,8 +50,4 @@ func (dec Decoder) DecodeByte() byte {
 	buf := make([]byte, 1)
 	dec.Read(buf[:1])
 	return buf[0]
-}
-
-type Encodable interface {
-	Encode(enc *Encoder) // TODO return an error
 }

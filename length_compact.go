@@ -1,6 +1,10 @@
 package goscale
 
-import "encoding/binary"
+import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
+)
 
 /*
 	https://spec.polkadot.network/#sect-sc-length-and-compact-encoding
@@ -27,7 +31,9 @@ type CompactU64 uint
 
 type Compact uint
 
-func (value Compact) Encode(enc *Encoder) {
+func (value Compact) Encode(buffer *bytes.Buffer) {
+	encoder := Encoder{Writer: buffer}
+
 	intBuf := make([]byte, 8)
 	if value < 1<<30 {
 		if value < 1<<6 {
@@ -35,26 +41,26 @@ func (value Compact) Encode(enc *Encoder) {
 			// upper six bits are the LE encoding of the value (valid only for values of 0-63).
 			// (1<<6 - 1 => 63) => (00111111) =>
 			// 111111|00
-			// binary.Write(enc.Writer, binary.LittleEndian, uint8(n)<<2)
-			enc.EncodeByte(byte(value) << 2)
+			// binary.Write(encoder.Writer, binary.LittleEndian, uint8(n)<<2)
+			encoder.EncodeByte(byte(value) << 2)
 		} else if value < 1<<14 {
 			// 0b01: two-byte mode:
 			// upper six bits and the following byte is the LE encoding of the value (valid only for values 64-(2**14-1)).
 			// (1<<14 - 1 => 16383) => (11111111 00111111) << 2 + 1 =>
 			// 111111|01 11111111
-			// binary.Write(enc.Writer, binary.LittleEndian, uint16(n<<2)+1)
+			// binary.Write(encoder.Writer, binary.LittleEndian, uint16(n<<2)+1)
 			buf := intBuf[:2]
 			binary.LittleEndian.PutUint16(buf, uint16(value<<2)+1)
-			enc.Write(buf)
+			encoder.Write(buf)
 		} else {
 			// 0b10: four-byte mode:
 			// upper six bits and the following three bytes are the LE encoding of the value (valid only for values (2**14)-(2**30-1)).
 			// (1<<30 - 1 => 1073741823) => (11111111 11111111 11111111 00111111) << 2 + 2 =>
 			// (111111|10 11111111 11111111 11111111)
-			// binary.Write(enc.Writer, binary.LittleEndian, uint32(n<<2)+2)
+			// binary.Write(encoder.Writer, binary.LittleEndian, uint32(n<<2)+2)
 			buf := intBuf[:4]
 			binary.LittleEndian.PutUint32(buf, uint32(value<<2)+2)
-			enc.Write(buf)
+			encoder.Write(buf)
 		}
 		return
 	}
@@ -72,45 +78,50 @@ func (value Compact) Encode(enc *Encoder) {
 		limit <<= 8
 	}
 	if n > 4 {
-		panic("Assertion error: n>4 needed to compact-encode uint64")
+		panic("assertion error: n>4 needed to compact-encode uint64")
 	}
-	enc.EncodeByte((n << 2) + 3)
+	encoder.EncodeByte((n << 2) + 3)
 	binary.LittleEndian.PutUint64(intBuf[:8], uint64(value))
-	enc.Write(intBuf[:4+n])
+	encoder.Write(intBuf[:4+n])
 }
 
-func (dec Decoder) DecodeCompact() Compact {
+func DecodeCompact(buffer *bytes.Buffer) Compact {
+	decoder := Decoder{Reader: buffer}
 	intBuf := make([]byte, 8)
-	b := dec.DecodeByte()
+	b := decoder.DecodeByte()
 	mode := b & 3
 	switch mode {
 	case 0:
 		return Compact(b >> 2)
 	case 1:
-		r := uint64(dec.DecodeByte())
+		r := uint64(decoder.DecodeByte())
 		r <<= 6
 		r += uint64(b >> 2)
 		return Compact(r)
 	case 2:
 		buf := intBuf[:4]
 		buf[0] = b
-		dec.Read(intBuf[1:4])
+		decoder.Read(intBuf[1:4])
 		r := binary.LittleEndian.Uint32(buf)
 		r >>= 2
 		return Compact(r)
 	case 3:
 		n := b >> 2
 		if n > 4 {
-			panic("Not supported: n>4 encountered when decoding a compact-encoded uint")
+			panic("not supported: n>4 encountered when decoding a compact-encoded uint")
 		}
-		dec.Read(intBuf[:n+4])
+		decoder.Read(intBuf[:n+4])
 		for i := n + 4; i < 8; i++ {
 			intBuf[i] = 0
 		}
 		return Compact(binary.LittleEndian.Uint64(intBuf[:8]))
 	default:
-		panic("Code should be unreachable")
+		panic("code should be unreachable")
 	}
+}
+
+func (value Compact) String() string {
+	return fmt.Sprint(uint(value))
 }
 
 // func (enc Encoder) EncodeUintCompact(value uint64) {

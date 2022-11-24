@@ -20,14 +20,11 @@ func Test_EncodeByteSlice(t *testing.T) {
 
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
-			buffer := bytes.Buffer{}
+			buffer := &bytes.Buffer{}
 
-			enc := &Encoder{Writer: &buffer}
-			testExample.input.Encode(enc)
+			testExample.input.Encode(buffer)
 
-			result := buffer.Bytes()
-
-			assertEqual(t, result, testExample.expectation)
+			assertEqual(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -47,15 +44,13 @@ func Test_DecodeByteSlice(t *testing.T) {
 
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
-			buffer := bytes.Buffer{}
+			buffer := &bytes.Buffer{}
 
-			enc := &Encoder{Writer: &buffer}
-			testExample.expectation.Encode(enc)
+			testExample.expectation.Encode(buffer)
 
-			// dec := Decoder{Reader: &buffer}
-			// result := dec.DecodeSequence()
+			result := DecodeSequenceU8(buffer)
 
-			// assertEqual(t, result, testExample.expectation)
+			assertEqual(t, result, testExample.expectation)
 		})
 	}
 }
