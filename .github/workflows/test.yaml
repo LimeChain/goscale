@@ -1,0 +1,16 @@
+name: Go Test
+
+on: push
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup GO env
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.18'
+          cache: true
+      - name: Run Unit Tests
+        run: go test -v

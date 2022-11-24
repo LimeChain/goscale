@@ -9,7 +9,7 @@ import (
 type testEncodable struct {
 }
 
-func (testEncodable) Encode(buffer *bytes.Buffer) {
+func (testEncodable) Encode(*bytes.Buffer) {
 }
 func (testEncodable) String() string {
 	return ""
