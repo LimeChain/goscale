@@ -1,5 +1,7 @@
 package goscale
 
+import "bytes"
+
 /*
 	https://spec.polkadot.network/#defn-option-type)
 
@@ -10,43 +12,36 @@ package goscale
 	SCALE Result Type ...
 */
 
-// Encodeable is an interface that defines a custom encoding rules for a data type.
-// Should be defined for structs (not pointers to them).
-type Encodeable interface {
-	Encode(enc Encoder)
-}
-
-// Decodeable is an interface that defines a custom encoding rules for a data type.
-// Should be defined for pointers to structs.
-// Decode populates this structure from a stream (overwriting the current contents), return false on failure
-type Decodeable interface {
-	Decode(dec Decoder)
-}
-
 // Option is a structure that can store a boolean or a missing value.
 // Encoding rules are slightly different from other "Option" fields.
 type Option[T Encodable] struct {
 	hasValue bool
-	value    T
+	Value    Encodable
 }
 
-func (o Option[Encodable]) Encode(encoder *Encoder) {
+func (o Option[T]) Encode(buffer *bytes.Buffer) {
+	encoder := Encoder{Writer: buffer}
 	if !o.hasValue {
 		encoder.EncodeByte(0)
 	} else {
 		encoder.EncodeByte(1)
-		o.value.Encode(encoder)
+		o.Value.Encode(buffer)
 	}
 }
 
-func DecodeOption[T Encodable](decoder *Decoder) Option[T] {
-	b := decoder.DecodeBool()
-	if b {
-		//TODO: decode generic type
+func DecodeOption[T Encodable](dec interface{}, buffer *bytes.Buffer) Option[T] {
+	b := DecodeBool(buffer)
+
+	option := Option[T]{
+		hasValue: b == true,
 	}
 
-	return Option[T]{
-		hasValue: b == true,
-		//value:
+	if b {
+		switch dec.(type) {
+		case Bool:
+			option.Value = DecodeBool(buffer)
+		}
 	}
+
+	return option
 }
