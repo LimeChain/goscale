@@ -1,7 +1,9 @@
 package goscale
 
+import "bytes"
+
 type Encodable interface {
-	Encode(enc *Encoder) // TODO return an error
+	Encode(buffer *bytes.Buffer) // TODO return an error
 	String() string
 }
 

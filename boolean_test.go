@@ -17,13 +17,11 @@ func Test_EncodeBool(t *testing.T) {
 
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
-			buffer := bytes.Buffer{}
-			enc := &Encoder{Writer: &buffer}
+			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(enc)
+			testExample.input.Encode(buffer)
 
-			result := buffer.Bytes()
-			assertEqual(t, result, testExample.expectation)
+			assertEqual(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -40,13 +38,11 @@ func Test_DecodeBool(t *testing.T) {
 
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
-			buffer := bytes.Buffer{}
+			buffer := &bytes.Buffer{}
 
-			enc := Encoder{Writer: &buffer}
-			enc.Write(testExample.input)
+			testExample.expectation.Encode(buffer)
 
-			dec := Decoder{Reader: &buffer}
-			result := dec.DecodeBool()
+			result := DecodeBool(buffer)
 
 			assertEqual(t, result, testExample.expectation)
 		})

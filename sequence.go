@@ -1,6 +1,9 @@
 package goscale
 
-import "strings"
+import (
+	"bytes"
+	"strings"
+)
 
 /*
 	https://spec.polkadot.network/#defn-scale-list
@@ -14,22 +17,22 @@ type Sequence[T Encodable] struct {
 	Values []T
 }
 
-func (seq Sequence[Encodable]) Encode(enc *Encoder) {
-	Compact(len(seq.Values)).Encode(enc)
+func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
+	Compact(len(seq.Values)).Encode(buffer)
 	for _, v := range seq.Values {
-		v.Encode(enc)
+		v.Encode(buffer)
 	}
 }
 
-func (dec *Decoder) DecodeSequenceU8() Sequence[U8] {
-	return Sequence[U8]{Values: ToSliceU8(dec)}
+func DecodeSequenceU8(buffer *bytes.Buffer) Sequence[U8] {
+	return Sequence[U8]{Values: ToSliceU8(buffer)}
 }
 
-func ToSliceU8(dec *Decoder) []U8 {
-	size := dec.DecodeCompact()
+func ToSliceU8(buffer *bytes.Buffer) []U8 {
+	size := DecodeCompact(buffer)
 	values := make([]U8, size)
 	for i := 0; i < len(values); i++ {
-		values[i] = dec.DecodeU8()
+		values[i] = DecodeU8(buffer)
 	}
 	return values
 }

@@ -1,6 +1,7 @@
 package goscale
 
 import (
+	"bytes"
 	"fmt"
 )
 
@@ -13,35 +14,22 @@ import (
 
 type Bool bool
 
-func (value Bool) Encode(enc *Encoder) {
+func (value Bool) Encode(buffer *bytes.Buffer) {
+	encoder := Encoder{Writer: buffer}
 	if value {
-		enc.EncodeByte(0x01)
+		encoder.EncodeByte(0x01)
 	} else {
-		enc.EncodeByte(0x00)
+		encoder.EncodeByte(0x00)
 	}
 }
 
-func (dec *Decoder) DecodeBool() Bool {
-	buf := make([]byte, 1)
-	dec.Read(buf)
-	return Bool(buf[0] > 0) // dec.DecodeByte() > 0
+func DecodeBool(buffer *bytes.Buffer) Bool {
+	decoder := Decoder{Reader: buffer}
+	result := make([]byte, 1)
+	decoder.Read(result)
+	return Bool(result[0] > 0)
 }
 
 func (value Bool) String() string {
 	return fmt.Sprint(bool(value))
 }
-
-// func (enc Encoder) EncodeBool(value bool) {
-// 	if value {
-// 		enc.EncodeByte(0x01)
-// 	} else {
-// 		enc.EncodeByte(0x00)
-// 	}
-// }
-
-// func (dec Decoder) DecodeBool() bool {
-// 	buf := make([]byte, 1)
-// 	dec.Read(buf)
-// 	return buf[0] > 0
-// 	// return dec.DecodeByte() > 0
-// }
