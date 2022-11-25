@@ -93,10 +93,5 @@ For all `Option<T>` a pointer to the underlying type is used.
 | `Option<u32>`      | `*uint32`                |
 | `Option<i64>`      | `*int64`                 |
 | `Option<u64>`      | `*uint64`                |
-| `Option<i128>`     | `**big.Int`              |
-| `Option<u128>`     | `**scale.Uint128`        |
 | `Option<bytes>`    | `*[]byte`                |
-| `Option<string>`   | `*string`                |
-| `Option<enum>`     | `*scale.VaryingDataType` |
-| `Option<struct>`   | `*struct`                |
 | `None`             | `nil`                    |
