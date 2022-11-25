@@ -7,6 +7,10 @@ type Encodable interface {
 	String() string
 }
 
+func SliceU8ToSequenceU8(values []U8) Sequence[U8] {
+	return Sequence[U8]{Values: values}
+}
+
 func StringToSliceU8(s string) []U8 {
 	result := make([]U8, len(s))
 
@@ -17,4 +21,14 @@ func StringToSliceU8(s string) []U8 {
 	}
 
 	return result
+}
+
+func SliceU8ToString(values []U8) string {
+	result := make([]byte, len(values))
+
+	for i, v := range values {
+		result[i] = byte(v)
+	}
+
+	return string(result)
 }
