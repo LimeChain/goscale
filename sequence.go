@@ -25,10 +25,10 @@ func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
 }
 
 func DecodeSequenceU8(buffer *bytes.Buffer) Sequence[U8] {
-	return Sequence[U8]{Values: ToSliceU8(buffer)}
+	return Sequence[U8]{Values: DecodeSliceU8(buffer)}
 }
 
-func ToSliceU8(buffer *bytes.Buffer) []U8 {
+func DecodeSliceU8(buffer *bytes.Buffer) []U8 {
 	size := DecodeCompact(buffer)
 	values := make([]U8, size)
 	for i := 0; i < len(values); i++ {
@@ -44,27 +44,6 @@ func (seq Sequence[U8]) String() string {
 	}
 	return strings.Join(res, "")
 }
-
-// func (enc Encoder) EncodeByteSlice(value []byte) {
-// 	size := len(value)
-// 	enc.EncodeUintCompact(uint64(size))
-// 	enc.Write(value)
-// }
-
-// func (dec Decoder) DecodeByteSlice() []byte {
-// 	size := dec.DecodeUintCompact()
-// 	value := make([]byte, size)
-// 	dec.Read(value)
-// 	return value
-// }
-
-// func (enc Encoder) EncodeString(value string) {
-// 	enc.EncodeByteSlice([]byte(value))
-// }
-
-// func (dec Decoder) DecodeString() string {
-// 	return string(dec.DecodeByteSlice())
-// }
 
 // func (enc Encoder) EncodeSlice(value interface{}) {
 // 	if reflect.TypeOf(value).Kind() != reflect.Slice {
