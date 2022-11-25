@@ -57,20 +57,3 @@ Not all SCALE primitive types have a corresponding Go type, thus a few custom de
 |------------|---------------------------|
 | `bytes`    | `[]byte`                  |
 | `string`   | `string`                  |
-
-## Option
-
-* [x] [Done](https://github.com/LimeChain/goscale/blob/master/option.go)
-
-| SCALE              | Go                       |
-| ------------------ | ------------------------ |
-| `Option<i8>`       | `*int8`                  |
-| `Option<u8>`       | `*uint8`                 |
-| `Option<i16>`      | `*int16`                 |
-| `Option<u16>`      | `*uint16`                |
-| `Option<i32>`      | `*int32`                 |
-| `Option<u32>`      | `*uint32`                |
-| `Option<i64>`      | `*int64`                 |
-| `Option<u64>`      | `*uint64`                |
-| `Option<bytes>`    | `*[]byte`                |
-| `None`             | `nil`                    |
