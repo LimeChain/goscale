@@ -261,39 +261,6 @@ func Test_EncodeNestedSequence(t *testing.T) {
 	}
 }
 
-// TODO: implement tuple encoding
-type ExampleStruct struct{}
-
-func (es ExampleStruct) Encode(buffer *bytes.Buffer) {}
-
-func (es ExampleStruct) String() string {
-	return ""
-}
-
-func Test_EncodeStructSequence(t *testing.T) {
-	var testExamples = []struct {
-		label       string
-		input       Sequence[ExampleStruct]
-		expectation []byte
-	}{
-		{
-			label:       "([ExampleStruct{}, ...])",
-			input:       Sequence[ExampleStruct]{Values: []ExampleStruct{{}, {}, {}}},
-			expectation: []byte{0x0c},
-		},
-	}
-
-	for _, testExample := range testExamples {
-		t.Run(testExample.label, func(t *testing.T) {
-			buffer := &bytes.Buffer{}
-
-			testExample.input.Encode(buffer)
-
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-		})
-	}
-}
-
 // TODO check for better string SCALE representation
 // func Test_EncodeStringSequence(t *testing.T) {
 // 	var testExamples = []struct {
