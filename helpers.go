@@ -23,3 +23,15 @@ func assertEqual(t *testing.T, result interface{}, expectation interface{}) {
 		expectation, reflect.TypeOf(expectation),
 	)
 }
+
+func assertPanic(t *testing.T, f func()) {
+	defer func() {
+		r := recover()
+		if r == nil {
+			t.Errorf("code did not panic as expected")
+		}
+		t.Log(r)
+	}()
+
+	f()
+}
