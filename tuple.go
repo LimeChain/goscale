@@ -50,14 +50,90 @@ func EncodeTuple(value Tuple, buffer *bytes.Buffer) {
 			case reflect.Uint64:
 				(field.Interface().(U64)).Encode(buffer)
 			case reflect.String:
-				SliceU8ToSequenceU8(StringToSliceU8(field.Interface().(string))).Encode(buffer)
+				(field.Interface().(Str)).Encode(buffer)
 			case reflect.Slice:
-				// TODO handle the cases of sequence of any type
-				// field.Interface().(Any type).Encode(buffer)
-				SliceU8ToSequenceU8(StringToSliceU8(string(field.Interface().([]U8)))).Encode(buffer)
-			// case reflect.Array:
+				// TODO: handle sequence of (Sequence, Fixed Sequence, Map, Tuple)
+				elemType := reflect.SliceOf(field.Type())
+
+				if elemType == reflect.TypeOf([][]Bool{}) {
+					elemValues, ok := field.Interface().([]Bool)
+					if !ok {
+						panic("unable to convert to Sequence[Bool]")
+					}
+					Sequence[Bool]{Values: elemValues}.Encode(buffer)
+
+				} else if elemType == reflect.TypeOf([][]Compact{}) {
+					elemValues, ok := field.Interface().([]Compact)
+					if !ok {
+						panic("unable to convert to Sequence[Compact]")
+					}
+					Sequence[Compact]{Values: elemValues}.Encode(buffer)
+
+				} else if elemType == reflect.TypeOf([][]U8{}) {
+					elemValues, ok := field.Interface().([]U8)
+					if !ok {
+						panic("unable to convert to Sequence[U8]")
+					}
+					Sequence[U8]{Values: elemValues}.Encode(buffer)
+
+				} else if elemType == reflect.TypeOf([][]I8{}) {
+					elemValues, ok := field.Interface().([]I8)
+					if !ok {
+						panic("unable to convert to Sequence[I8]")
+					}
+					Sequence[I8]{Values: elemValues}.Encode(buffer)
+
+				} else if elemType == reflect.TypeOf([][]U16{}) {
+					elemValues, ok := field.Interface().([]U16)
+					if !ok {
+						panic("unable to convert to Sequence[U16]")
+					}
+					Sequence[U16]{Values: elemValues}.Encode(buffer)
+
+				} else if elemType == reflect.TypeOf([][]I16{}) {
+					elemValues, ok := field.Interface().([]I16)
+					if !ok {
+						panic("unable to convert to Sequence[I16]")
+					}
+					Sequence[I16]{Values: elemValues}.Encode(buffer)
+
+				} else if elemType == reflect.TypeOf([][]U32{}) {
+					elemValues, ok := field.Interface().([]U32)
+					if !ok {
+						panic("unable to convert to Sequence[U32]")
+					}
+					Sequence[U32]{Values: elemValues}.Encode(buffer)
+
+				} else if elemType == reflect.TypeOf([][]I32{}) {
+					elemValues, ok := field.Interface().([]I32)
+					if !ok {
+						panic("unable to convert to Sequence[I32]")
+					}
+					Sequence[I32]{Values: elemValues}.Encode(buffer)
+
+				} else if elemType == reflect.TypeOf([][]U64{}) {
+					elemValues, ok := field.Interface().([]U64)
+					if !ok {
+						panic("unable to convert to Sequence[U64]")
+					}
+					Sequence[U64]{Values: elemValues}.Encode(buffer)
+
+				} else if elemType == reflect.TypeOf([][]I64{}) {
+					elemValues, ok := field.Interface().([]I64)
+					if !ok {
+						panic("unable to convert to Sequence[I64]")
+					}
+					Sequence[I64]{Values: elemValues}.Encode(buffer)
+
+				} else {
+					panic("Tuple type encoding is not implemented")
+				}
+			case reflect.Array:
+				panic("encoding of type Fixed Sequence is not implemented")
 			case reflect.Struct:
 				EncodeTuple(field.Interface(), buffer)
+			case reflect.Map:
+				panic("encoding of type Map is not implemented")
 			// case reflect.Float32:
 			// case reflect.Float64:
 			// case reflect.Complex64:
@@ -67,7 +143,6 @@ func EncodeTuple(value Tuple, buffer *bytes.Buffer) {
 			// case reflect.Pointer:
 			// case reflect.Chan:
 			// case reflect.Func:
-			// case reflect.Map:
 			// case reflect.Interface:
 			default:
 				panic("unreachable case")

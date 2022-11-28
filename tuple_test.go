@@ -6,7 +6,7 @@ import (
 )
 
 type ApiItem struct {
-	Name    Sequence[U8]
+	Name    FixedSequence[U8]
 	Version U32
 }
 
@@ -27,14 +27,14 @@ type VersionData struct {
 
 func Test_EncodeTuple(t *testing.T) {
 	input := VersionData{
-		SpecName:         Sequence[U8]{Values: StringToSliceU8("polkadot")},
-		ImplName:         Sequence[U8]{Values: StringToSliceU8("parity-polkadot")},
+		SpecName:         Sequence[U8]{Values: StringToSliceU8("abc")},
+		ImplName:         Sequence[U8]{Values: StringToSliceU8("xyz")},
 		AuthoringVersion: Compact(1),
 		SpecVersion:      U32(2),
 		ImplVersion:      U32(3),
 		// Apis: Sequence[ApiItem]{
 		// 	Values: []ApiItem{
-		// 		{Name: Sequence[U8]{Values: []U8{6, 7, 8}}, Version: U32(9)},
+		// 		{Name: FixedSequence[U8]{Values: []U8{6, 7, 8}}, Version: U32(9)},
 		// 	},
 		// },
 		TransactionVersion: U32(4),
@@ -49,7 +49,7 @@ func Test_EncodeTuple(t *testing.T) {
 		{
 			label:       "VersionData{}",
 			input:       input,
-			expectation: []byte{},
+			expectation: []byte{0x0c, 0x61, 0x62, 0x63, 0x0c, 0x78, 0x79, 0x7a, 0x04, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x05},
 		},
 	}
 
