@@ -28,32 +28,7 @@ func DecodeOption[T Encodable](dec Encodable, buffer *bytes.Buffer) Option[T] {
 	}
 
 	if b {
-		switch dec.(type) {
-		case Bool:
-			option.Value = DecodeBool(buffer)
-		case U8:
-			option.Value = DecodeU8(buffer)
-		case I8:
-			option.Value = DecodeI8(buffer)
-		case U16:
-			option.Value = DecodeU16(buffer)
-		case I16:
-			option.Value = DecodeI16(buffer)
-		case U32:
-			option.Value = DecodeU32(buffer)
-		case I32:
-			option.Value = DecodeI32(buffer)
-		case U64:
-			option.Value = DecodeU64(buffer)
-		case I64:
-			option.Value = DecodeI64(buffer)
-		case Compact:
-			option.Value = DecodeCompact(buffer)
-		case Sequence[U8]:
-			option.Value = DecodeSequenceU8(buffer)
-		default:
-			panic("type not found")
-		}
+		option.Value = decodeByType(dec, buffer)
 	}
 
 	return option
