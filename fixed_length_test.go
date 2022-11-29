@@ -2,6 +2,8 @@ package goscale
 
 import (
 	"bytes"
+	"math"
+	"math/big"
 	"testing"
 )
 
@@ -355,4 +357,74 @@ func Test_DecodeInt64(t *testing.T) {
 			assertEqual(t, result, testExample.expectation)
 		})
 	}
+}
+
+func Test_EncodeU128(t *testing.T) {
+	var examples = []struct {
+		label  string
+		input  string
+		expect []byte
+	}{
+		{label: "Encode U128 - (0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9c)", input: "340282366920938463463374607431768211356", expect: []byte{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x9c}},
+		{label: "Encode U128 - (0x2a)", input: "42", expect: []byte{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2a}},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+
+			value, ok := new(big.Int).SetString(e.input, 10)
+			if !ok {
+				panic("not ok")
+			}
+			input := NewU128FromBigInt(value)
+
+			// when:
+			input.Encode(buffer)
+
+			// then:
+			assertEqual(t, buffer.Bytes(), e.expect)
+		})
+	}
+}
+
+func Test_DecodeU128(t *testing.T) {
+	var examples = []struct {
+		label  string
+		input  []byte
+		expect U128
+	}{
+		{label: "Decode U128 - (0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)", input: []byte{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, expect: U128{math.MaxUint64, math.MaxUint64}},
+		{label: "Decode U128 - (42)", input: []byte{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2a}, expect: U128{0, 3026418949592973312}},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeU128(buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+		})
+	}
+}
+
+func Test_NewU128FromBigIntPanic(t *testing.T) {
+	t.Run("Exceeds U128", func(t *testing.T) {
+		// given:
+		value, ok := new(big.Int).SetString("340282366920938463463374607431768211456", 10) // MaxUint128 + 1
+		if !ok {
+			panic("not ok")
+		}
+
+		// then:
+		assertPanic(t, func() {
+			NewU128FromBigInt(value)
+		})
+	})
 }

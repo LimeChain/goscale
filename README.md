@@ -33,7 +33,7 @@ Not all SCALE primitive types have a corresponding Go type, thus a few custom de
 | `i64`      | `int64`                   |
 | `u64`      | `uint64`                  |
 | `i128`     | `*big.Int`                |
-| `u128`     | `*goscale.Uint128`        |
+| `u128`     | `goscale.U128`            |
 
 
 ## Length and Compact (Variable Width Integers)
