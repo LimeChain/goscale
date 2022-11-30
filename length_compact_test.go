@@ -99,7 +99,6 @@ func Test_EncodeUintCompact(t *testing.T) {
 }
 
 func Test_DecodeUintCompact(t *testing.T) {
-	t.Skip()
 	var testExamples = []struct {
 		label       string
 		input       []byte
@@ -119,10 +118,11 @@ func Test_DecodeUintCompact(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
+			buffer.Write(testExample.input)
 
-			testExample.expectation.Encode(buffer)
+			result := DecodeCompact(buffer)
 
-			// assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, result, testExample.expectation)
 		})
 	}
 }
