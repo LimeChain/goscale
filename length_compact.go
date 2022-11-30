@@ -9,7 +9,7 @@ import (
 /*
 	https://spec.polkadot.network/#sect-sc-length-and-compact-encoding
 
-	SCALE Length and Compact Encoding translates to Go's integer types of variying sizes.
+	SCALE Length and Compact Encoding translates to Go's integer types of varying sizes.
 */
 
 /*
