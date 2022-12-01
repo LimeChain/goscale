@@ -8,6 +8,7 @@ Substrate Ref - https://docs.substrate.io/reference/scale-codec/
 package goscale
 
 import (
+	"bytes"
 	"io"
 	"strconv"
 )
@@ -50,4 +51,37 @@ func (dec Decoder) DecodeByte() byte {
 	buf := make([]byte, 1)
 	dec.Read(buf[:1])
 	return buf[0]
+}
+
+func decodeByType(i interface{}, buffer *bytes.Buffer) Encodable {
+	switch i.(type) {
+	case Bool:
+		return DecodeBool(buffer)
+	case U8:
+		return DecodeU8(buffer)
+	case I8:
+		return DecodeI8(buffer)
+	case U16:
+		return DecodeU16(buffer)
+	case I16:
+		return DecodeI16(buffer)
+	case U32:
+		return DecodeU32(buffer)
+	case I32:
+		return DecodeI32(buffer)
+	case U64:
+		return DecodeU64(buffer)
+	case I64:
+		return DecodeI64(buffer)
+	case Compact:
+		return DecodeCompact(buffer)
+	case Sequence[U8]:
+		return DecodeSequenceU8(buffer)
+	case Empty:
+		return DecodeEmpty()
+	//TODO: case Result[Encodable]:
+	//return DecodeResult()
+	default:
+		panic("type not found")
+	}
 }
