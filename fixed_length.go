@@ -178,6 +178,14 @@ func (u U128) Encode(buffer *bytes.Buffer) {
 	u[1].Encode(buffer)
 }
 
+func (u U128) ToBigInt() big.Int {
+	bytes := make([]byte, 16)
+
+	binary.LittleEndian.PutUint64(bytes[:8], uint64(u[0]))
+	binary.LittleEndian.PutUint64(bytes[8:], uint64(u[1]))
+	return *big.NewInt(0).SetBytes(bytes)
+}
+
 func DecodeU128(buffer *bytes.Buffer) U128 {
 	decoder := Decoder{Reader: buffer}
 	buf := make([]byte, 16)
