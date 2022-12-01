@@ -1,10 +1,14 @@
 package goscale
 
+/*
+	Ref: https://spec.polkadot.network/#defn-option-type)
+
+	Option is a varying data structure that can store an Encodable Value.
+	HasValue indicates if Value is available.
+*/
+
 import "bytes"
 
-// Option is a varying data structure that can store an Encodable Value.
-// HasValue indicates if Value is available.
-// Ref: https://spec.polkadot.network/#defn-option-type)
 type Option[T Encodable] struct {
 	HasValue bool
 	Value    Encodable

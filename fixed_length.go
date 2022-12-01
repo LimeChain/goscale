@@ -8,7 +8,7 @@ import (
 )
 
 /*
-	https://spec.polkadot.network/#defn-little-endian
+	Ref: https://spec.polkadot.network/#defn-little-endian
 
 	SCALE Fixed Length type translates to Go's fixed-width integer types.
 	Values are encoded using a fixed-width, non-negative, little-endian format.

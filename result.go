@@ -1,5 +1,11 @@
 package goscale
 
+/*
+	Ref: https://spec.polkadot.network/#defn-result-type)
+
+	SCALE Result Type.
+*/
+
 import (
 	"bytes"
 	"fmt"
