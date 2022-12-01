@@ -1,5 +1,11 @@
 package goscale
 
+/*
+	Ref: https://spec.polkadot.network/#defn-scale-list
+
+	SCALE Fixed Sequence type translates to Go's array type.
+*/
+
 import "bytes"
 
 type FixedSequence[T Encodable] struct {
