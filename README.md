@@ -1,68 +1,60 @@
 # Implementation of SCALE codec in Go with minimal reflection dependency
 
-Not all SCALE primitive types have a corresponding Go type, thus a few custom defined types are introduced to implement the missing SCALE types.
-
-**Run Tests**
-
-```sh
-  go test -v
-```
+The SCALE types in Go are represented by a set of custom-defined types that implement the `Encode` method. There is also a `Decode` function for each type and the type to which data should be decoded is inferred by the context (not self-contained in the encoded data).
 
 
-## Boolean
+## [Boolean](https://github.com/LimeChain/goscale/blob/master/boolean.go)
 
-* [x] [Done](https://github.com/LimeChain/goscale/blob/master/boolean.go)
-
-| SCALE      | Go                        |
+| SCALE/Rust | Go                        |
 |------------|---------------------------|
-| `bool`     | `bool`                    |
+| `bool`     | `goscale.Bool`            |
 
 
-## Fixed Length Integers
+## [Fixed Length Integers](https://github.com/LimeChain/goscale/blob/master/fixed_length.go)
 
-* [x] [Done](https://github.com/LimeChain/goscale/blob/master/fixed_length.go)
-
-| SCALE      | Go                        |
+| SCALE/Rust | Go                        |
 |------------|---------------------------|
-| `i8`       | `int8`                    |
-| `u8`       | `uint8`                   |
-| `i16`      | `int16`                   |
-| `u16`      | `uint16`                  |
-| `i32`      | `int32`                   |
-| `u32`      | `uint32`                  |
-| `i64`      | `int64`                   |
-| `u64`      | `uint64`                  |
-| `i128`     | `*big.Int`                |
-| `u128`     | `*goscale.Uint128`        |
+| `i8`       | `goscale.I8`              |
+| `u8`       | `goscale.U8`              |
+| `i16`      | `goscale.I16`             |
+| `u16`      | `goscale.U16`             |
+| `i32`      | `goscale.I32`             |
+| `u32`      | `goscale.U32`             |
+| `i64`      | `goscale.I64`             |
+| `u64`      | `goscale.U64`             |
+| `i128`     | `*big.Int` (TODO)         |
+| `u128`     | `*goscale.Uint128` (TODO) |
 
 
-## Length and Compact (Variable Width Integers)
+## [Length and Compact (Variable Width Integers)](https://github.com/LimeChain/goscale/blob/master/length_compact.go)
 
-* [x] [Done](https://github.com/LimeChain/goscale/blob/master/length_compact.go)
-
-| SCALE           | Go         |
-|-----------------|------------|
-| `Compact<u8>`   | `uint`     |
-| `Compact<u16>`  | `uint`     |
-| `Compact<u32>`  | `uint`     |
-| `Compact<u64>`  | `uint`     |
-| `Compact<u128>` | `*big.Int` |
+| SCALE/Rust      | Go                |
+|-----------------|-------------------|
+| `Compact<u8>`   | `goscale.Compact` |
+| `Compact<u16>`  | `goscale.Compact` |
+| `Compact<u32>`  | `goscale.Compact` |
+| `Compact<u64>`  | `goscale.Compact` |
+| `Compact<u128>` | `*big.Int` (TODO) |
 
 
-## Sequence
+## [Sequence](https://github.com/LimeChain/goscale/blob/master/sequence.go)
 
-* [x] [Done](https://github.com/LimeChain/goscale/blob/master/sequence.go)
+| SCALE/Rust | Go                          |
+|------------|-----------------------------|
+| `bytes`    | `goscale.Sequence[U8]`      |
+| `string`   | `goscale.Sequence[U8]`      |
+| `[u8; u8]` | `goscale.FixedSequence[U8]` |
 
-| SCALE      | Go                        |
-|------------|---------------------------|
-| `bytes`    | `[]byte`                  |
-| `string`   | `string`                  |
 
-## Option
+## [Empty](https://github.com/LimeChain/goscale/blob/master/empty.go)
 
-* [x] [Done](https://github.com/LimeChain/goscale/blob/master/option.go)
+| SCALE/Rust         | Go                       |
+| ------------------ | ------------------------ |
 
-| SCALE              | Go                       |
+
+## [Option](https://github.com/LimeChain/goscale/blob/master/option.go)
+
+| SCALE/Rust         | Go                       |
 | ------------------ | ------------------------ |
 | `Option<i8>`       | `*int8`                  |
 | `Option<u8>`       | `*uint8`                 |
@@ -74,3 +66,16 @@ Not all SCALE primitive types have a corresponding Go type, thus a few custom de
 | `Option<u64>`      | `*uint64`                |
 | `Option<bytes>`    | `*[]byte`                |
 | `None`             | `nil`                    |
+
+
+## [Result](https://github.com/LimeChain/goscale/blob/master/result.go)
+
+| SCALE/Rust         | Go                       |
+| ------------------ | ------------------------ |
+
+
+### Run Tests
+
+```sh
+  go test -v
+```
