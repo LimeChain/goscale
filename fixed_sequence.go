@@ -3,11 +3,11 @@ package goscale
 import "bytes"
 
 type FixedSequence[T Encodable] struct {
-	Value []T
+	Values []T
 }
 
 func (fa FixedSequence[T]) Encode(buffer *bytes.Buffer) {
-	for _, value := range fa.Value {
+	for _, value := range fa.Values {
 		value.Encode(buffer)
 	}
 }
@@ -20,6 +20,6 @@ func DecodeFixedSequence(len int, enc Encodable, buffer *bytes.Buffer) FixedSequ
 	}
 
 	return FixedSequence[Encodable]{
-		Value: result,
+		Values: result,
 	}
 }
