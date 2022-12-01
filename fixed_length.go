@@ -1,18 +1,18 @@
 package goscale
 
+/*
+	Ref: https://spec.polkadot.network/#defn-little-endian
+
+	SCALE Fixed Length type translates to Go's fixed-width integer types.
+	Values are encoded using a fixed-width, non-negative, little-endian format.
+*/
+
 import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
 	"math/big"
 )
-
-/*
-	https://spec.polkadot.network/#defn-little-endian
-
-	SCALE Fixed Length type translates to Go's fixed-width integer types.
-	Values are encoded using a fixed-width, non-negative, little-endian format.
-*/
 
 // TODO: handle *big.Int, *scale.Uint128
 

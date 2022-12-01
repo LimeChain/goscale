@@ -1,16 +1,16 @@
 package goscale
 
+/*
+	Ref: https://spec.polkadot.network/#defn-scale-boolean
+
+	SCALE Boolean type translates to Go's boolean type.
+	Values are encoded using the least significant bit of a single byte.
+*/
+
 import (
 	"bytes"
 	"fmt"
 )
-
-/*
-	https://spec.polkadot.network/#defn-scale-boolean
-
-	SCALE's Boolean type translates to Go's boolean type.
-	Values are encoded using the least significant bit of a single byte.
-*/
 
 type Bool bool
 

@@ -1,5 +1,11 @@
 package goscale
 
+/*
+	Ref: https://spec.polkadot.network/#sect-sc-length-and-compact-encoding
+
+	SCALE Length and Compact Encoding translates to Go's integer types of variying sizes.
+*/
+
 import (
 	"bytes"
 	"encoding/binary"
@@ -8,14 +14,6 @@ import (
 )
 
 /*
-	https://spec.polkadot.network/#sect-sc-length-and-compact-encoding
-
-	SCALE Length and Compact Encoding translates to Go's integer types of varying sizes.
-*/
-
-/*
-	TODO: handle numbers wider than 64 bits (byte slices)
-
 	Error: 0x0100: Zero encoded in mode 1)
 
 	0b00 00 00 00 / 00 00 00 00 / 00 00 00 00 / 00 00 00 00`

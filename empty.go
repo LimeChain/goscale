@@ -1,5 +1,12 @@
 package goscale
 
+/*
+	Ref: https://spec.polkadot.network/#defn-scale-empty
+
+	SCALE Empty type.
+	Values are encoded as byte array of zero length.
+*/
+
 import "bytes"
 
 type Empty struct {
