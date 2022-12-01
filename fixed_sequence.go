@@ -2,24 +2,24 @@ package goscale
 
 import "bytes"
 
-type FixedArray[T Encodable] struct {
+type FixedSequence[T Encodable] struct {
 	Value []T
 }
 
-func (fa FixedArray[T]) Encode(buffer *bytes.Buffer) {
+func (fa FixedSequence[T]) Encode(buffer *bytes.Buffer) {
 	for _, value := range fa.Value {
 		value.Encode(buffer)
 	}
 }
 
-func DecodeFixedArray(len int, enc Encodable, buffer *bytes.Buffer) FixedArray[Encodable] {
+func DecodeFixedSequence(len int, enc Encodable, buffer *bytes.Buffer) FixedSequence[Encodable] {
 	result := make([]Encodable, len)
 
 	for i := 0; i < len; i++ {
 		result[i] = decodeByType(enc, buffer)
 	}
 
-	return FixedArray[Encodable]{
+	return FixedSequence[Encodable]{
 		Value: result,
 	}
 }
