@@ -1,18 +1,18 @@
 package goscale
 
-import (
-	"bytes"
-	"encoding/binary"
-	"fmt"
-	"math/big"
-)
-
 /*
 	Ref: https://spec.polkadot.network/#defn-little-endian
 
 	SCALE Fixed Length type translates to Go's fixed-width integer types.
 	Values are encoded using a fixed-width, non-negative, little-endian format.
 */
+
+import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
+	"math/big"
+)
 
 // TODO: handle *big.Int, *scale.Uint128
 
@@ -178,6 +178,10 @@ func (u U128) Encode(buffer *bytes.Buffer) {
 	u[1].Encode(buffer)
 }
 
+func (u U128) String() string {
+	return fmt.Sprintf(u[0].String(), u[1].String())
+}
+
 func DecodeU128(buffer *bytes.Buffer) U128 {
 	decoder := Decoder{Reader: buffer}
 	buf := make([]byte, 16)
@@ -187,7 +191,4 @@ func DecodeU128(buffer *bytes.Buffer) U128 {
 		U64(binary.LittleEndian.Uint64(buf[:8])),
 		U64(binary.LittleEndian.Uint64(buf[8:])),
 	}
-}
-func (u U128) String() string {
-	return fmt.Sprintf(u[0].String(), u[1].String())
 }
