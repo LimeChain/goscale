@@ -1,17 +1,15 @@
 package goscale
 
+/*
+	Ref: https://spec.polkadot.network/#defn-scale-list
+
+	SCALE Sequence type translates to Go's slice and string types.
+*/
+
 import (
 	"bytes"
 	"strings"
 )
-
-/*
-	https://spec.polkadot.network/#defn-scale-list
-
-	SCALE Sequence type translates to Go's byte slice, string and array types.
-*/
-
-// TODO: handle fixed size sequence (Array type)
 
 type Sequence[T Encodable] struct {
 	Values []T

@@ -5,13 +5,13 @@ import (
 	"testing"
 )
 
-func Test_EncodeFixedArray(t *testing.T) {
+func Test_EncodeFixedSequence(t *testing.T) {
 	var examples = []struct {
 		label  string
-		input  FixedArray[Encodable]
+		input  FixedSequence[Encodable]
 		expect []byte
 	}{
-		{label: "Encode FixedArray[U8]", input: FixedArray[Encodable]{[]Encodable{U8(5), U8(6), U8(7)}}, expect: []byte{0x5, 0x6, 0x7}},
+		{label: "Encode FixedSequence[U8]", input: FixedSequence[Encodable]{[]Encodable{U8(5), U8(6), U8(7)}}, expect: []byte{0x5, 0x6, 0x7}},
 	}
 
 	for _, e := range examples {
@@ -25,13 +25,13 @@ func Test_EncodeFixedArray(t *testing.T) {
 	}
 }
 
-func Test_DecodeFixedArray(t *testing.T) {
+func Test_DecodeFixedSequence(t *testing.T) {
 	var examples = []struct {
 		label  string
 		input  []byte
-		expect FixedArray[Encodable]
+		expect FixedSequence[Encodable]
 	}{
-		{label: "Decode FixedArray[U8]", input: []byte{0x5, 0x6, 0x7}, expect: FixedArray[Encodable]{[]Encodable{U8(5), U8(6), U8(7)}}},
+		{label: "Decode FixedSequence[U8]", input: []byte{0x5, 0x6, 0x7}, expect: FixedSequence[Encodable]{[]Encodable{U8(5), U8(6), U8(7)}}},
 	}
 
 	for _, e := range examples {
@@ -41,7 +41,7 @@ func Test_DecodeFixedArray(t *testing.T) {
 			buffer.Write(e.input)
 
 			// when:
-			result := DecodeFixedArray(len(e.input), U8(0), buffer)
+			result := DecodeFixedSequence(len(e.input), U8(0), buffer)
 
 			// then:
 			assertEqual(t, result, e.expect)
