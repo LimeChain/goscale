@@ -100,7 +100,7 @@ func Test_VaryingData_Decode(t *testing.T) {
 	}
 }
 
-func Test_VaryingData_Panic(t *testing.T) {
+func Test_VaryingData_Decode_Panic(t *testing.T) {
 	// given:
 	values := make([]Encodable, 256)
 
