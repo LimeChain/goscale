@@ -83,6 +83,7 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 
 | SCALE/Rust         | Go                       |
 | ------------------ | ------------------------ |
+|                    | goscale.Dictionary       |
 
 
 ### Run Tests
