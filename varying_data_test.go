@@ -47,7 +47,7 @@ func Test_VaryingData_Encode(t *testing.T) {
 
 func Test_NewVaryingData_InvalidLength(t *testing.T) {
 	// given:
-	values := make([]Encodable, 256)
+	values := make([]Encodable, math.MaxUint8+1)
 
 	// then:
 	assertPanic(t, func() {
@@ -108,7 +108,7 @@ func Test_VaryingData_Decode(t *testing.T) {
 
 func Test_VaryingData_Decode_Panic(t *testing.T) {
 	// given:
-	values := make([]Encodable, 256)
+	values := make([]Encodable, math.MaxUint8+1)
 
 	// then:
 	assertPanic(t, func() {

@@ -34,7 +34,7 @@ func DecodeVaryingData(values []Encodable, buffer *bytes.Buffer) VaryingData {
 	}
 
 	result := make([]Encodable, vLen)
-	for i := 0; i < len(values); i++ {
+	for i := 0; i < vLen; i++ {
 		key := DecodeU8(buffer)
 		value := decodeByType(values[key], buffer)
 
