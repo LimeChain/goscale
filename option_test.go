@@ -36,6 +36,7 @@ func Test_EncodeOption(t *testing.T) {
 		{label: "Encode Option(true, U64(max))", input: Option[Encodable]{true, U64(math.MaxUint64)}, expect: []byte{0x1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 		{label: "Encode Option(true, I64(min))", input: Option[Encodable]{true, I64(math.MinInt64)}, expect: []byte{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80}},
 		{label: "Encode Option(false, I64(min))", input: Option[Encodable]{false, I64(math.MinInt64)}, expect: []byte{0x0}},
+		{label: "Encode Option(true, U128(max)", input: Option[Encodable]{true, U128{math.MaxUint64, math.MaxUint64}}, expect: []byte{0x1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 
 		{label: "Encode Option(true, Compact(MaxUint64)", input: Option[Encodable]{true, Compact(math.MaxUint64)}, expect: []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 
@@ -163,6 +164,13 @@ func Test_DecodeOption(t *testing.T) {
 			input:         []byte{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
 			encodable:     I64(0),
 			expect:        Option[Encodable]{true, I64(math.MinInt64)},
+			bufferLenLeft: 0,
+		},
+		{
+			label:         "Decode Option(true, U128(max))",
+			input:         []byte{0x1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
+			encodable:     U128{},
+			expect:        Option[Encodable]{true, U128{math.MaxUint64, math.MaxUint64}},
 			bufferLenLeft: 0,
 		},
 		{

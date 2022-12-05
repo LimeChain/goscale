@@ -23,7 +23,7 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 | `i64`      | `goscale.I64`             |
 | `u64`      | `goscale.U64`             |
 | `i128`     | `*big.Int` (TODO)         |
-| `u128`     | `*goscale.Uint128` (TODO) |
+| `u128`     | `goscale.U128`            |
 
 
 ## [Length and Compact (Variable Width Integers)](https://github.com/LimeChain/goscale/blob/master/length_compact.go)

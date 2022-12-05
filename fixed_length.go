@@ -11,6 +11,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"math/big"
 )
 
 // TODO: handle *big.Int, *scale.Uint128
@@ -152,4 +153,42 @@ func DecodeI64(buffer *bytes.Buffer) I64 {
 
 func (value I64) String() string {
 	return fmt.Sprint(int64(value))
+}
+
+type U128 [2]U64
+
+func NewU128FromBigInt(v *big.Int) U128 {
+	b := v.Bytes()
+	if len(b) > 16 {
+		panic("invalid big.Int u128 length")
+	}
+
+	for len(b) != 16 {
+		b = append([]byte{0}, b...)
+	}
+
+	return U128{
+		U64(binary.LittleEndian.Uint64(b[:8])),
+		U64(binary.LittleEndian.Uint64(b[8:])),
+	}
+}
+
+func (u U128) Encode(buffer *bytes.Buffer) {
+	u[0].Encode(buffer)
+	u[1].Encode(buffer)
+}
+
+func (u U128) String() string {
+	return fmt.Sprintf(u[0].String(), u[1].String())
+}
+
+func DecodeU128(buffer *bytes.Buffer) U128 {
+	decoder := Decoder{Reader: buffer}
+	buf := make([]byte, 16)
+	decoder.Read(buf)
+
+	return U128{
+		U64(binary.LittleEndian.Uint64(buf[:8])),
+		U64(binary.LittleEndian.Uint64(buf[8:])),
+	}
 }

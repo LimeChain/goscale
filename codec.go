@@ -73,6 +73,8 @@ func decodeByType(i interface{}, buffer *bytes.Buffer) Encodable {
 		return DecodeU64(buffer)
 	case I64:
 		return DecodeI64(buffer)
+	case U128:
+		return DecodeU128(buffer)
 	case Compact:
 		return DecodeCompact(buffer)
 	case Sequence[U8]:
