@@ -186,6 +186,10 @@ func (u U128) ToBigInt() big.Int {
 	return *big.NewInt(0).SetBytes(bytes)
 }
 
+func (u U128) String() string {
+	return fmt.Sprintf(u[0].String(), u[1].String())
+}
+
 func DecodeU128(buffer *bytes.Buffer) U128 {
 	decoder := Decoder{Reader: buffer}
 	buf := make([]byte, 16)
