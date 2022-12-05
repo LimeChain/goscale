@@ -178,6 +178,10 @@ func (u U128) Encode(buffer *bytes.Buffer) {
 	u[1].Encode(buffer)
 }
 
+func (u U128) String() string {
+	return fmt.Sprintf(u[0].String(), u[1].String())
+}
+
 func DecodeU128(buffer *bytes.Buffer) U128 {
 	decoder := Decoder{Reader: buffer}
 	buf := make([]byte, 16)
@@ -187,7 +191,4 @@ func DecodeU128(buffer *bytes.Buffer) U128 {
 		U64(binary.LittleEndian.Uint64(buf[:8])),
 		U64(binary.LittleEndian.Uint64(buf[8:])),
 	}
-}
-func (u U128) String() string {
-	return fmt.Sprintf(u[0].String(), u[1].String())
 }
