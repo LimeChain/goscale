@@ -2,12 +2,13 @@ package goscale
 
 import (
 	"bytes"
+	"math"
 )
 
 type VaryingData []Encodable
 
 func NewVaryingData(values ...Encodable) VaryingData {
-	if len(values) > 255 {
+	if len(values) > math.MaxUint8 {
 		panic("exceeds uint8 length")
 	}
 
@@ -28,7 +29,7 @@ func (vd VaryingData) Encode(buffer *bytes.Buffer) {
 
 func DecodeVaryingData(values []Encodable, buffer *bytes.Buffer) VaryingData {
 	vLen := len(values)
-	if vLen > 255 {
+	if vLen > math.MaxUint8 {
 		panic("exceeds uint8 length")
 	}
 
