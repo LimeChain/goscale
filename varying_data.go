@@ -1,5 +1,11 @@
 package goscale
 
+/*
+	Ref: https://spec.polkadot.network/#defn-varrying-data-type)
+
+	SCALE Varying Data Type.
+*/
+
 import (
 	"bytes"
 	"math"
