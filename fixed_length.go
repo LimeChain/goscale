@@ -196,6 +196,3 @@ func DecodeU128(buffer *bytes.Buffer) U128 {
 		U64(binary.LittleEndian.Uint64(buf[8:])),
 	}
 }
-func (u U128) String() string {
-	return fmt.Sprintf(u[0].String(), u[1].String())
-}
