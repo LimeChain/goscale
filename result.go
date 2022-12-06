@@ -8,7 +8,6 @@ package goscale
 
 import (
 	"bytes"
-	"fmt"
 )
 
 type Result[T Encodable] struct {
@@ -28,6 +27,6 @@ func DecodeResult[T Encodable](dec Encodable, buffer *bytes.Buffer) Result[T] {
 	}
 }
 
-func (r Result[T]) String() string {
-	return fmt.Sprintf(r.ok.String(), r.value.String())
-}
+// func (r Result[T]) String() string {
+// 	return fmt.Sprintf(r.ok.String(), r.value.String())
+// }
