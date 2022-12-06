@@ -1,13 +1,20 @@
 package goscale
 
+/*
+	Ref: https://spec.polkadot.network/#defn-varrying-data-type)
+
+	SCALE Varying Data Type.
+*/
+
 import (
 	"bytes"
+	"math"
 )
 
 type VaryingData []Encodable
 
 func NewVaryingData(values ...Encodable) VaryingData {
-	if len(values) > 255 {
+	if len(values) > math.MaxUint8 {
 		panic("exceeds uint8 length")
 	}
 
@@ -20,25 +27,24 @@ func NewVaryingData(values ...Encodable) VaryingData {
 }
 
 func (vd VaryingData) Encode(buffer *bytes.Buffer) {
-	for k, v := range vd {
-		U8(k).Encode(buffer)
+	for i, v := range vd {
+		U8(i).Encode(buffer)
 		v.Encode(buffer)
 	}
 }
 
 func DecodeVaryingData(values []Encodable, buffer *bytes.Buffer) VaryingData {
 	vLen := len(values)
-	if vLen > 255 {
+	if vLen > math.MaxUint8 {
 		panic("exceeds uint8 length")
 	}
 
 	result := make([]Encodable, vLen)
-	for i := 0; i < len(values); i++ {
+	for i := 0; i < vLen; i++ {
+		index := DecodeU8(buffer)
+		value := decodeByType(values[index], buffer)
 
-		key := DecodeU8(buffer)
-		value := decodeByType(values[key], buffer)
-
-		result[key] = value
+		result[index] = value
 	}
 
 	return result

@@ -166,6 +166,7 @@ func NewU128FromBigInt(v *big.Int) U128 {
 	for len(b) != 16 {
 		b = append([]byte{0}, b...)
 	}
+	reverseSlice(b)
 
 	return U128{
 		U64(binary.LittleEndian.Uint64(b[:8])),
@@ -181,8 +182,9 @@ func (u U128) Encode(buffer *bytes.Buffer) {
 func (u U128) ToBigInt() big.Int {
 	bytes := make([]byte, 16)
 
-	binary.LittleEndian.PutUint64(bytes[:8], uint64(u[0]))
-	binary.LittleEndian.PutUint64(bytes[8:], uint64(u[1]))
+	binary.BigEndian.PutUint64(bytes[:8], uint64(u[1]))
+	binary.BigEndian.PutUint64(bytes[8:], uint64(u[0]))
+
 	return *big.NewInt(0).SetBytes(bytes)
 }
 

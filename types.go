@@ -1,10 +1,27 @@
 package goscale
 
-import "bytes"
+import (
+	"bytes"
+)
 
 type Encodable interface {
 	Encode(buffer *bytes.Buffer) // TODO return an error
-	String() string
+}
+
+type Ordered interface {
+	I8 | I16 | I32 | I64 | U8 | U16 | U32 | U64 | Str
+}
+
+type Str string
+
+func (value Str) Encode(buffer *bytes.Buffer) {
+	seq := Sequence[U8]{Values: StringToSliceU8(string(value))}
+	seq.Encode(buffer)
+}
+
+func DecodeStr(buffer *bytes.Buffer) Str {
+	seq := Sequence[U8]{Values: DecodeSliceU8(buffer)}
+	return Str(SliceU8ToString(seq.Values))
 }
 
 func SliceU8ToSequenceU8(values []U8) Sequence[U8] {

@@ -38,9 +38,9 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 
 ## [VaryingData](https://github.com/LimeChain/goscale/blob/master/varying_data.go)
 
-| SCALE/Rust    | Go                    |
-|---------------|-----------------------|
-| `VaryingData` | `goscale.VaryingData` |
+| SCALE/Rust                   | Go                    |
+|------------------------------|-----------------------|
+| `Enumeration(tagged-union)`  | `goscale.VaryingData` |
 
 ## [Sequence](https://github.com/LimeChain/goscale/blob/master/sequence.go)
 
@@ -77,6 +77,13 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 
 | SCALE/Rust         | Go                       |
 | ------------------ | ------------------------ |
+
+
+## [Dictionary](https://github.com/LimeChain/goscale/blob/master/dictionary.go)
+
+| SCALE/Rust         | Go                       |
+| ------------------ | ------------------------ |
+|                    | goscale.Dictionary       |
 
 
 ### Run Tests
