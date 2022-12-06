@@ -168,26 +168,14 @@ func (c CompactU128) Encode(buffer *bytes.Buffer) {
 	// The upper six bits are the number of bytes following, plus four. The value is contained, LE encoded, in the bytes following.
 	// The final (most significant) byte must be non-zero. Valid only for values (2**30)-(2**536-1).
 	// => (001100|11 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000) =>
-	numBytes := len(bn.Bytes())
+	b := bn.Bytes()
+	numBytes := len(b)
 	topSixBits := uint8(numBytes - 4)
-
 	encoder.EncodeByte((topSixBits << 2) + 3)
-	value := make([]byte, 16)
-	binary.LittleEndian.PutUint64(value[:8], uint64(c.U128[0]))
-	binary.LittleEndian.PutUint64(value[8:], uint64(c.U128[1]))
 
-	index := 0
-	for i, v := range value {
-		if v != 0 {
-			index = i
-			break
-		}
-	}
+	reverseSlice(b)
 
-	result := value[index:]
-	reverseSlice(result)
-
-	encoder.Write(result)
+	encoder.Write(b)
 }
 
 func DecodeCompactU128(buffer *bytes.Buffer) CompactU128 {
