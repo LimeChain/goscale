@@ -61,15 +61,18 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 
 | SCALE/Rust         | Go                       |
 | ------------------ | ------------------------ |
-| `Option<i8>`       | `*int8`                  |
-| `Option<u8>`       | `*uint8`                 |
-| `Option<i16>`      | `*int16`                 |
-| `Option<u16>`      | `*uint16`                |
-| `Option<i32>`      | `*int32`                 |
-| `Option<u32>`      | `*uint32`                |
-| `Option<i64>`      | `*int64`                 |
-| `Option<u64>`      | `*uint64`                |
-| `Option<bytes>`    | `*[]byte`                |
+| `Option<bool>`     | `Option[goscale.Bool]`   |
+| `Option<i8>`       | `Option[goscale.I8]`     |
+| `Option<u8>`       | `Option[goscale.U8]`     |
+| `Option<i16>`      | `Option[goscale.I16]`    |
+| `Option<u16>`      | `Option[goscale.U16]`    |
+| `Option<i32>`      | `Option[goscale.I32]`    |
+| `Option<u32>`      | `Option[goscale.U32]`    |
+| `Option<i64>`      | `Option[goscale.I64]`    |
+| `Option<u64>`      | `Option[goscale.U64]`    |
+| `Option<u128>`     | `Option[goscale.U128]`   |
+| `Option<bytes>`    | `Option[Sequence[U8]]`   |
+| `OptionBool`       | `OptionBool`             |
 | `None`             | `nil`                    |
 
 
