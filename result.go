@@ -20,13 +20,9 @@ func (r Result[T]) Encode(buffer *bytes.Buffer) {
 	r.value.Encode(buffer)
 }
 
-func DecodeResult[T Encodable](dec Encodable, buffer *bytes.Buffer) Result[T] {
+func DecodeResult[T Encodable](buffer *bytes.Buffer) Result[T] {
 	return Result[T]{
 		ok:    DecodeBool(buffer),
-		value: decodeByType(dec, buffer),
+		value: decodeByType(*new(T), buffer),
 	}
 }
-
-// func (r Result[T]) String() string {
-// 	return fmt.Sprintf(r.ok.String(), r.value.String())
-// }
