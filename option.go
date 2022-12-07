@@ -11,7 +11,7 @@ import "bytes"
 
 type Option[T Encodable] struct {
 	HasValue bool
-	Value    Encodable
+	Value    T
 }
 
 func (o Option[T]) Encode(buffer *bytes.Buffer) {
@@ -24,7 +24,7 @@ func (o Option[T]) Encode(buffer *bytes.Buffer) {
 	}
 }
 
-func DecodeOption[T Encodable](dec Encodable, buffer *bytes.Buffer) Option[T] {
+func DecodeOption[T Encodable](buffer *bytes.Buffer) Option[T] {
 	b := DecodeBool(buffer)
 
 	option := Option[T]{
@@ -32,8 +32,44 @@ func DecodeOption[T Encodable](dec Encodable, buffer *bytes.Buffer) Option[T] {
 	}
 
 	if b {
-		option.Value = decodeByType(dec, buffer)
+		value := decodeByType(*new(T), buffer)
+		option.Value = value.(T)
 	}
 
 	return option
+}
+
+type OptionBool Option[Bool]
+
+func (o OptionBool) Encode(buffer *bytes.Buffer) {
+	encoder := Encoder{Writer: buffer}
+	if !o.HasValue {
+		encoder.EncodeByte(0)
+	} else {
+		if o.Value {
+			encoder.EncodeByte(1)
+		} else {
+			encoder.EncodeByte(2)
+		}
+	}
+}
+
+func DecodeOptionBool(buffer *bytes.Buffer) OptionBool {
+	decoder := Decoder{Reader: buffer}
+	b := decoder.DecodeByte()
+
+	result := OptionBool{}
+
+	switch b {
+	case 0:
+		result.HasValue = false
+	case 1:
+		result.HasValue = true
+		result.Value = true
+	case 2:
+		result.HasValue = true
+		result.Value = false
+	}
+
+	return result
 }
