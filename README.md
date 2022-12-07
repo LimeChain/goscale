@@ -34,7 +34,7 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 | `Compact<u16>`  | `goscale.Compact` |
 | `Compact<u32>`  | `goscale.Compact` |
 | `Compact<u64>`  | `goscale.Compact` |
-| `Compact<u128>` | `*big.Int` (TODO) |
+| `Compact<u128>` | `*big.Int`        |
 
 ## [VaryingData](https://github.com/LimeChain/goscale/blob/master/varying_data.go)
 
