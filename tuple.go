@@ -52,7 +52,7 @@ func EncodeTuple(value Tuple, buffer *bytes.Buffer) {
 			case reflect.String:
 				(field.Interface().(Str)).Encode(buffer)
 			case reflect.Slice:
-				// TODO: handle sequence of (Sequence, Fixed Sequence, Map, Tuple)
+				// TODO: handle Sequence of { Sequence | Fixed Sequence | Dictionary | Tuple }
 				elemType := reflect.SliceOf(field.Type())
 
 				if elemType == reflect.TypeOf([][]Bool{}) {
@@ -126,14 +126,15 @@ func EncodeTuple(value Tuple, buffer *bytes.Buffer) {
 					Sequence[I64]{Values: elemValues}.Encode(buffer)
 
 				} else {
-					panic("Tuple type encoding is not implemented")
+					// panic("Tuple type encoding is not implemented")
+					EncodeTuple(field, buffer)
 				}
 			case reflect.Array:
 				panic("encoding of type Fixed Sequence is not implemented")
 			case reflect.Struct:
 				EncodeTuple(field.Interface(), buffer)
 			case reflect.Map:
-				panic("encoding of type Map is not implemented")
+				panic("encoding of type Dictionary is not implemented")
 			// case reflect.Float32:
 			// case reflect.Float64:
 			// case reflect.Complex64:
