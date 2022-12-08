@@ -14,14 +14,11 @@ import (
 	"math/big"
 )
 
-// TODO: handle *big.Int, *scale.Uint128
-
 type U8 uint8
 
 func (value U8) Encode(buffer *bytes.Buffer) {
 	encoder := Encoder{Writer: buffer}
 	encoder.EncodeByte(byte(value))
-	// binary.Write(encoder.Writer, binary.LittleEndian, value)
 }
 
 func DecodeU8(buffer *bytes.Buffer) U8 {
@@ -57,7 +54,6 @@ func (value U16) Encode(buffer *bytes.Buffer) {
 	result := make([]byte, 2)
 	binary.LittleEndian.PutUint16(result, uint16(value))
 	encoder.Write(result)
-	// binary.Write(encoder.Writer, binary.LittleEndian, value)
 }
 
 func DecodeU16(buffer *bytes.Buffer) U16 {
@@ -92,7 +88,6 @@ func (value U32) Encode(buffer *bytes.Buffer) {
 	result := make([]byte, 4)
 	binary.LittleEndian.PutUint32(result, uint32(value))
 	encoder.Write(result)
-	// binary.Write(encoder.Writer, binary.LittleEndian, value)
 }
 
 func DecodeU32(buffer *bytes.Buffer) U32 {
@@ -127,7 +122,6 @@ func (value U64) Encode(buffer *bytes.Buffer) {
 	result := make([]byte, 8)
 	binary.LittleEndian.PutUint64(result, uint64(value))
 	encoder.Write(result)
-	// binary.Write(encoder.Writer, binary.LittleEndian, value)
 }
 
 func DecodeU64(buffer *bytes.Buffer) U64 {

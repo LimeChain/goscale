@@ -2,7 +2,6 @@ package goscale
 
 import (
 	"bytes"
-	"fmt"
 	"math"
 	"math/big"
 	"testing"
@@ -466,7 +465,6 @@ func Test_EncodeI128(t *testing.T) {
 				panic("not ok")
 			}
 			input := NewI128FromBigInt(*value)
-			fmt.Println(input)
 
 			// when:
 			input.Encode(buffer)
@@ -503,7 +501,6 @@ func Test_DecodeI128(t *testing.T) {
 
 			// when:
 			result := DecodeI128(buffer)
-			fmt.Println(result)
 			bigInt := result.ToBigInt()
 
 			// then:

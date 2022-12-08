@@ -5,7 +5,7 @@ import (
 )
 
 type Encodable interface {
-	Encode(buffer *bytes.Buffer) // TODO return an error
+	Encode(buffer *bytes.Buffer)
 }
 
 type Ordered interface {
@@ -32,9 +32,7 @@ func StringToSliceU8(s string) []U8 {
 	result := make([]U8, len(s))
 
 	for i, v := range []byte(s) {
-		result[i] = U8(v)
-		// TODO: fix
-		// result = append(result, sc.U8(v)) -> panic: cannot convert pointer to integer -> /tinygo/interp/memory.go:541
+		result[i] = U8(v) // TODO: https://github.com/LimeChain/goscale/issues/38
 	}
 
 	return result

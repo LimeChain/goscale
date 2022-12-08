@@ -9,9 +9,7 @@ package goscale
 import "bytes"
 
 type FixedSequence[T Encodable] struct {
-	// TODO needs to be an array,
-	// but currently it is not possible to be parameterized
-	Values []T
+	Values []T // TODO: https://github.com/LimeChain/goscale/issues/37
 }
 
 func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) {

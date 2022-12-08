@@ -261,7 +261,6 @@ func Test_EncodeNestedSequence(t *testing.T) {
 	}
 }
 
-// TODO check for better string SCALE representation
 func Test_EncodeStringSequence(t *testing.T) {
 	var testExamples = []struct {
 		label       string
