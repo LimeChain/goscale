@@ -86,12 +86,12 @@ func Test_EncodeOptionBool(t *testing.T) {
 	}
 }
 
-func Test_EncodeOptionReverts(t *testing.T) {
+func Test_EncodeOptionPanics(t *testing.T) {
 	var examples = []struct {
 		label string
 		input Option[Encodable]
 	}{
-		{label: "Revert Option(true, nil)", input: Option[Encodable]{true, nil}},
+		{label: "Panic EncodeOption(true, nil)", input: Option[Encodable]{true, nil}},
 	}
 
 	for _, e := range examples {
@@ -214,6 +214,35 @@ func Test_DecodeOptionBool(t *testing.T) {
 			// then:
 			assertEqual(t, result, e.expect)
 			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionBoolPanics(t *testing.T) {
+	var examples = []struct {
+		label string
+		input []byte
+	}{
+		{
+			label: "Panic DecodeOptionBool(0x03)",
+			input: []byte{0x3},
+		},
+		{
+			label: "Panic DecodeOptionBool(0xff)",
+			input: []byte{0xff},
+		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// then:
+			assertPanic(t, func() {
+				DecodeOptionBool(buffer)
+			})
 		})
 	}
 }
@@ -560,22 +589,22 @@ func Test_DecodeOptionSequenceU8(t *testing.T) {
 	}
 }
 
-func Test_DecodeOptionReverts(t *testing.T) {
+func Test_DecodeOptionPanics(t *testing.T) {
 	var examples = []struct {
 		label     string
 		encodable Encodable
 		input     []byte
 	}{
-		{label: "Revert Option(0x1)", encodable: Bool(false), input: []byte{0x1}},
-		{label: "Revert Option(empty slice)", encodable: Bool(false), input: []byte{}},
-		{label: "Revert Option(nil)", encodable: Bool(false), input: nil},
-		{label: "Revert Option(different type)", encodable: testEncodable{}, input: []byte{0x1}},
-		{label: "Revert Option(U16) - cannot read bytes, which are not found)", encodable: U16(0), input: []byte{0x1, 0x5}},
-		{label: "Revert Option(U32) - cannot read bytes, which are not found)", encodable: U32(0), input: []byte{0x1, 0x5}},
-		{label: "Revert Option(U64) - cannot read bytes, which are not found)", encodable: U64(0), input: []byte{0x1, 0x5}},
-		{label: "Revert Option(I16) - cannot read bytes, which are not found)", encodable: I16(0), input: []byte{0x1, 0x5}},
-		{label: "Revert Option(I32) - cannot read bytes, which are not found)", encodable: I32(0), input: []byte{0x1, 0x5}},
-		{label: "Revert Option(I64) - cannot read bytes, which are not found)", encodable: I64(0), input: []byte{0x1, 0x5}},
+		{label: "Panic DecodeOption(0x1)", encodable: Bool(false), input: []byte{0x1}},
+		{label: "Panic DecodeOption(empty slice)", encodable: Bool(false), input: []byte{}},
+		{label: "Panic DecodeOption(nil)", encodable: Bool(false), input: nil},
+		{label: "Panic DecodeOption(different type)", encodable: testEncodable{}, input: []byte{0x1}},
+		{label: "Panic DecodeOption(U16) - cannot read bytes, which are not found)", encodable: U16(0), input: []byte{0x1, 0x5}},
+		{label: "Panic DecodeOption(U32) - cannot read bytes, which are not found)", encodable: U32(0), input: []byte{0x1, 0x5}},
+		{label: "Panic DecodeOption(U64) - cannot read bytes, which are not found)", encodable: U64(0), input: []byte{0x1, 0x5}},
+		{label: "Panic DecodeOption(I16) - cannot read bytes, which are not found)", encodable: I16(0), input: []byte{0x1, 0x5}},
+		{label: "Panic DecodeOption(I32) - cannot read bytes, which are not found)", encodable: I32(0), input: []byte{0x1, 0x5}},
+		{label: "Panic DecodeOption(I64) - cannot read bytes, which are not found)", encodable: I64(0), input: []byte{0x1, 0x5}},
 	}
 
 	for _, e := range examples {

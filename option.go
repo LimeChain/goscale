@@ -69,6 +69,8 @@ func DecodeOptionBool(buffer *bytes.Buffer) OptionBool {
 	case 2:
 		result.HasValue = true
 		result.Value = false
+	default:
+		panic("invalid OptionBool representation")
 	}
 
 	return result
