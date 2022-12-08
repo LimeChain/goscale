@@ -70,6 +70,7 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 | `Option<u32>`      | `Option[goscale.U32]`    |
 | `Option<i64>`      | `Option[goscale.I64]`    |
 | `Option<u64>`      | `Option[goscale.U64]`    |
+| `Option<i128>`     | `Option[goscale.I128]`   |
 | `Option<u128>`     | `Option[goscale.U128]`   |
 | `Option<bytes>`    | `Option[Sequence[U8]]`   |
 | `OptionBool`       | `OptionBool`             |

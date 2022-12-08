@@ -28,6 +28,7 @@ func Test_EncodeResult(t *testing.T) {
 		{label: "Encode Result(true, I64(min))", input: Result[Encodable]{true, I64(math.MinInt64)}, expect: []byte{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80}},
 		{label: "Encode Result(false, I64(min))", input: Result[Encodable]{false, I64(math.MinInt64)}, expect: []byte{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80}},
 		{label: "Encode Result(true, U128(max))", input: Result[Encodable]{true, U128{math.MaxUint64, math.MaxUint64}}, expect: []byte{0x1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
+		{label: "Encode Result(false, I128(min)", input: Result[Encodable]{false, I128{U64(0), U64(math.MaxInt64 + 1)}}, expect: []byte{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80}},
 
 		{label: "Encode Result(true, Compact(MaxUint64)", input: Result[Encodable]{true, Compact(math.MaxUint64)}, expect: []byte{0x01, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 
@@ -364,6 +365,46 @@ func Test_DecodeResultI64(t *testing.T) {
 
 			// when:
 			result := DecodeResult[I64](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeResultI128(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Result[I128]
+		stringValue   string
+	}{
+		{
+			label:         "Decode Result(false, I128(min))",
+			input:         []byte{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
+			expect:        Result[I128]{true, I128{U64(0), U64(math.MaxInt64 + 1)}},
+			bufferLenLeft: 0,
+			stringValue:   "-170141183460469231731687303715884105728",
+		},
+		{
+			label:         "Decode Result(false, I128(max))",
+			input:         []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f},
+			expect:        Result[I128]{false, I128{U64(math.MaxUint64), U64(math.MaxInt64)}},
+			bufferLenLeft: 0,
+			stringValue:   "170141183460469231731687303715884105727",
+		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeResult[I128](buffer)
 
 			// then:
 			assertEqual(t, result, e.expect)

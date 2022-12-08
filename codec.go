@@ -1,9 +1,9 @@
 /*
-	Simple Concatenated Aggregate Little-Endian” (SCALE) codec
+Simple Concatenated Aggregate Little-Endian” (SCALE) codec
 
-	Polkadot Spec - https://spec.polkadot.network/#sect-scale-codec
+Polkadot Spec - https://spec.polkadot.network/#sect-scale-codec
 
-	Substrate Ref - https://docs.substrate.io/reference/scale-codec/
+Substrate Ref - https://docs.substrate.io/reference/scale-codec/
 */
 package goscale
 
@@ -75,6 +75,8 @@ func decodeByType(i interface{}, buffer *bytes.Buffer) Encodable {
 		return DecodeI64(buffer)
 	case U128:
 		return DecodeU128(buffer)
+	case I128:
+		return DecodeI128(buffer)
 	case Compact:
 		return DecodeCompact(buffer)
 	case Sequence[U8]:
