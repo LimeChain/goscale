@@ -12,7 +12,7 @@ import (
 
 type Result[T Encodable] struct {
 	ok    Bool
-	value Encodable
+	value T
 }
 
 func (r Result[T]) Encode(buffer *bytes.Buffer) {
@@ -21,8 +21,10 @@ func (r Result[T]) Encode(buffer *bytes.Buffer) {
 }
 
 func DecodeResult[T Encodable](buffer *bytes.Buffer) Result[T] {
+	ok := DecodeBool(buffer)
+	value := decodeByType(*new(T), buffer)
 	return Result[T]{
-		ok:    DecodeBool(buffer),
-		value: decodeByType(*new(T), buffer),
+		ok:    ok,
+		value: value.(T),
 	}
 }
