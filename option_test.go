@@ -628,22 +628,12 @@ func Test_DecodeOptionSequenceU8(t *testing.T) {
 	}
 }
 
-func Test_DecodeOptionPanics(t *testing.T) {
+func Test_DecodeOptionPanicsMissingBoolBytes(t *testing.T) {
 	var examples = []struct {
-		label     string
-		encodable Encodable
-		input     []byte
+		label string
+		input []byte
 	}{
-		{label: "Panic DecodeOption(0x1)", encodable: Bool(false), input: []byte{0x1}},
-		{label: "Panic DecodeOption(empty slice)", encodable: Bool(false), input: []byte{}},
-		{label: "Panic DecodeOption(nil)", encodable: Bool(false), input: nil},
-		{label: "Panic DecodeOption(different type)", encodable: testEncodable{}, input: []byte{0x1}},
-		{label: "Panic DecodeOption(U16) - cannot read bytes, which are not found)", encodable: U16(0), input: []byte{0x1, 0x5}},
-		{label: "Panic DecodeOption(U32) - cannot read bytes, which are not found)", encodable: U32(0), input: []byte{0x1, 0x5}},
-		{label: "Panic DecodeOption(U64) - cannot read bytes, which are not found)", encodable: U64(0), input: []byte{0x1, 0x5}},
-		{label: "Panic DecodeOption(I16) - cannot read bytes, which are not found)", encodable: I16(0), input: []byte{0x1, 0x5}},
-		{label: "Panic DecodeOption(I32) - cannot read bytes, which are not found)", encodable: I32(0), input: []byte{0x1, 0x5}},
-		{label: "Panic DecodeOption(I64) - cannot read bytes, which are not found)", encodable: I64(0), input: []byte{0x1, 0x5}},
+		{label: "Panic DecodeOption(0x1)", input: []byte{0x1}},
 	}
 
 	for _, e := range examples {
@@ -654,7 +644,117 @@ func Test_DecodeOptionPanics(t *testing.T) {
 
 			// then:
 			assertPanic(t, func() {
-				DecodeOption[Encodable](buffer)
+				DecodeOption[Bool](buffer)
+			})
+		})
+	}
+}
+
+func Test_DecodeOptionPanicsInvalidFirstBoolByte(t *testing.T) {
+	var examples = []struct {
+		label string
+		input []byte
+	}{
+		{label: "Panic DecodeOption(invalid first byte)", input: []byte{0x3}},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// then:
+			assertPanic(t, func() {
+				DecodeOption[Bool](buffer)
+			})
+		})
+	}
+}
+
+func Test_DecodeOptionPanicsEmptySlice(t *testing.T) {
+	var examples = []struct {
+		label string
+		input []byte
+	}{
+		{label: "Panic DecodeOption(empty slice)", input: []byte{}},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// then:
+			assertPanic(t, func() {
+				DecodeOption[Bool](buffer)
+			})
+		})
+	}
+}
+
+func Test_DecodeOptionPanicsNil(t *testing.T) {
+	var examples = []struct {
+		label string
+		input []byte
+	}{
+		{label: "Panic DecodeOption(nil)", input: nil},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// then:
+			assertPanic(t, func() {
+				DecodeOption[Bool](buffer)
+			})
+		})
+	}
+}
+
+func Test_DecodeOptionPanicsDifferentType(t *testing.T) {
+	var examples = []struct {
+		label string
+		input []byte
+	}{
+		{label: "Panic DecodeOption(different type)", input: []byte{0x1}},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// then:
+			assertPanic(t, func() {
+				DecodeOption[testEncodable](buffer)
+			})
+		})
+	}
+}
+
+func Test_DecodeOptionPanicsU8MissingBytes(t *testing.T) {
+	var examples = []struct {
+		label string
+		input []byte
+	}{
+		{label: "Panic DecodeOption(U16 - cannot read bytes, which are not found)", input: []byte{0x1, 0x5}},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// then:
+			assertPanic(t, func() {
+				DecodeOption[U16](buffer)
 			})
 		})
 	}
