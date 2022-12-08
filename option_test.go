@@ -60,6 +60,32 @@ func Test_EncodeOption(t *testing.T) {
 	}
 }
 
+func Test_EncodeOptionBool(t *testing.T) {
+	var examples = []struct {
+		label  string
+		input  OptionBool
+		expect []byte
+	}{
+		{label: "Encode OptionBool(true, false)", input: OptionBool{true, Bool(false)}, expect: []byte{0x2}},
+		{label: "Encode OptionBool(true, true)", input: OptionBool{true, Bool(true)}, expect: []byte{0x1}},
+		{label: "Encode Option(false, nil)", input: OptionBool{HasValue: false}, expect: []byte{0x0}},
+		{label: "Encode Option(false, true)", input: OptionBool{false, Bool(true)}, expect: []byte{0x0}},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+
+			// when:
+			e.input.Encode(buffer)
+
+			// then:
+			assertEqual(t, buffer.Bytes(), e.expect)
+		})
+	}
+}
+
 func Test_EncodeOptionReverts(t *testing.T) {
 	var examples = []struct {
 		label string
@@ -81,110 +107,438 @@ func Test_EncodeOptionReverts(t *testing.T) {
 	}
 }
 
-func Test_DecodeOption(t *testing.T) {
+func Test_DecodeOptionNil(t *testing.T) {
 	var examples = []struct {
 		label         string
 		input         []byte
-		encodable     Encodable
 		bufferLenLeft int
 		expect        Option[Encodable]
 	}{
 		{
 			label:         "Decode Option(false, nil)",
 			input:         []byte{0x0},
-			encodable:     Bool(false),
 			bufferLenLeft: 0,
 			expect:        Option[Encodable]{false, nil},
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[Encodable](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionFromBool(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[Bool]
+	}{
 		{
 			label:         "Decode Option(true,false)",
 			input:         []byte{0x1, 0x0},
-			encodable:     Bool(false),
 			bufferLenLeft: 0,
-			expect:        Option[Encodable]{true, Bool(false)},
+			expect:        Option[Bool]{true, Bool(false)},
 		},
 		{
 			label:         "Decode Option(true,true)",
 			input:         []byte{0x1, 0x1, 0x3},
-			encodable:     Bool(false),
 			bufferLenLeft: 1,
-			expect:        Option[Encodable]{true, Bool(true)},
+			expect:        Option[Bool]{true, Bool(true)},
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[Bool](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionBool(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        OptionBool
+	}{
+		{
+			label:         "Decode OptionBool(true,nil)",
+			input:         []byte{0x0},
+			bufferLenLeft: 0,
+			expect:        OptionBool{HasValue: false},
+		},
+		{
+			label:         "Decode OptionBool(true,false)",
+			input:         []byte{0x2},
+			bufferLenLeft: 0,
+			expect:        OptionBool{true, Bool(false)},
+		},
+		{
+			label:         "Decode OptionBool(true,true)",
+			input:         []byte{0x1, 0x3},
+			bufferLenLeft: 1,
+			expect:        OptionBool{true, Bool(true)},
+		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOptionBool(buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionU8(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[U8]
+	}{
 		{
 			label:         "Decode Option(true, U8(max))",
 			input:         []byte{0x1, 0xff, 0xff},
-			encodable:     U8(0),
-			expect:        Option[Encodable]{true, U8(math.MaxUint8)},
+			expect:        Option[U8]{true, U8(math.MaxUint8)},
 			bufferLenLeft: 1,
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[U8](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionI8(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[I8]
+	}{
 		{
 			label:         "Decode Option(true, I8(min))",
 			input:         []byte{0x1, 0x80},
-			encodable:     I8(0),
-			expect:        Option[Encodable]{true, I8(math.MinInt8)},
+			expect:        Option[I8]{true, I8(math.MinInt8)},
 			bufferLenLeft: 0,
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[I8](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionU16(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[U16]
+	}{
 		{
 			label:         "Decode Option(true, U16(max))",
 			input:         []byte{0x1, 0xff, 0xff},
-			encodable:     U16(0),
-			expect:        Option[Encodable]{true, U16(math.MaxUint16)},
+			expect:        Option[U16]{true, U16(math.MaxUint16)},
 			bufferLenLeft: 0,
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[U16](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionI16(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[I16]
+	}{
 		{
 			label:         "Decode Option(true, I16(min))",
 			input:         []byte{0x1, 0x0, 0x80},
-			encodable:     I16(0),
-			expect:        Option[Encodable]{true, I16(math.MinInt16)},
+			expect:        Option[I16]{true, I16(math.MinInt16)},
 			bufferLenLeft: 0,
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[I16](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionU32(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[U32]
+	}{
 		{
 			label:         "Decode Option(true, U32(max))",
 			input:         []byte{0x1, 0xff, 0xff, 0xff, 0xff},
-			encodable:     U32(0),
-			expect:        Option[Encodable]{true, U32(math.MaxUint32)},
+			expect:        Option[U32]{true, U32(math.MaxUint32)},
 			bufferLenLeft: 0,
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[U32](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionI32(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[I32]
+	}{
 		{
 			label:         "Decode Option(true, I32(min))",
 			input:         []byte{0x1, 0x0, 0x0, 0x0, 0x80},
-			encodable:     I32(0),
-			expect:        Option[Encodable]{true, I32(math.MinInt32)},
+			expect:        Option[I32]{true, I32(math.MinInt32)},
 			bufferLenLeft: 0,
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[I32](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionU64(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[U64]
+	}{
 		{
 			label:         "Decode Option(true, U64(max))",
 			input:         []byte{0x1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-			encodable:     U64(0),
-			expect:        Option[Encodable]{true, U64(math.MaxUint64)},
+			expect:        Option[U64]{true, U64(math.MaxUint64)},
 			bufferLenLeft: 0,
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[U64](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionI64(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[I64]
+	}{
 		{
 			label:         "Decode Option(true, I64(min))",
 			input:         []byte{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
-			encodable:     I64(0),
-			expect:        Option[Encodable]{true, I64(math.MinInt64)},
+			expect:        Option[I64]{true, I64(math.MinInt64)},
 			bufferLenLeft: 0,
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[I64](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionU128(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[U128]
+	}{
 		{
 			label:         "Decode Option(true, U128(max))",
 			input:         []byte{0x1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-			encodable:     U128{},
-			expect:        Option[Encodable]{true, U128{math.MaxUint64, math.MaxUint64}},
+			expect:        Option[U128]{true, U128{math.MaxUint64, math.MaxUint64}},
 			bufferLenLeft: 0,
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[U128](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionCompact(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[Compact]
+	}{
 		{
 			label:         "Decode Compact(maxUint64)",
 			input:         []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-			encodable:     Compact(0),
-			expect:        Option[Encodable]{HasValue: true, Value: Compact(math.MaxUint64)},
+			expect:        Option[Compact]{HasValue: true, Value: Compact(math.MaxUint64)},
 			bufferLenLeft: 0,
 		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[Compact](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionSequenceU8(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[Sequence[U8]]
+	}{
 		{
 			label:         "Decode Seq[U8]",
 			input:         []byte{0x1, 0x4, 0x2a},
-			encodable:     Sequence[U8]{},
-			expect:        Option[Encodable]{HasValue: true, Value: Sequence[U8]{[]U8{42}}},
+			expect:        Option[Sequence[U8]]{HasValue: true, Value: Sequence[U8]{[]U8{42}}},
 			bufferLenLeft: 0,
 		},
 		// TODO: Decode Option<Result<true, any>>
@@ -197,7 +551,7 @@ func Test_DecodeOption(t *testing.T) {
 			buffer.Write(e.input)
 
 			// when:
-			result := DecodeOption[Encodable](e.encodable, buffer)
+			result := DecodeOption[Sequence[U8]](buffer)
 
 			// then:
 			assertEqual(t, result, e.expect)
@@ -232,7 +586,7 @@ func Test_DecodeOptionReverts(t *testing.T) {
 
 			// then:
 			assertPanic(t, func() {
-				DecodeOption[Encodable](e.encodable, buffer)
+				DecodeOption[Encodable](buffer)
 			})
 		})
 	}
