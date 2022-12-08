@@ -9,23 +9,23 @@ package goscale
 import "bytes"
 
 type FixedSequence[T Encodable] struct {
+	// TODO needs to be an array,
+	// but currently it is not possible to be parameterized
 	Values []T
 }
 
-func (fa FixedSequence[T]) Encode(buffer *bytes.Buffer) {
-	for _, value := range fa.Values {
+func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) {
+	for _, value := range fseq.Values {
 		value.Encode(buffer)
 	}
 }
 
-func DecodeFixedSequence(len int, enc Encodable, buffer *bytes.Buffer) FixedSequence[Encodable] {
-	result := make([]Encodable, len)
+func DecodeFixedSequence[T Encodable](size int, buffer *bytes.Buffer) FixedSequence[T] {
+	result := make([]T, size)
 
-	for i := 0; i < len; i++ {
-		result[i] = decodeByType(enc, buffer)
+	for i := 0; i < size; i++ {
+		result[i] = decodeByType(*new(T), buffer).(T)
 	}
 
-	return FixedSequence[Encodable]{
-		Values: result,
-	}
+	return FixedSequence[T]{Values: result}
 }
