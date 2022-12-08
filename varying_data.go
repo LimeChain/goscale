@@ -19,9 +19,7 @@ func NewVaryingData(values ...Encodable) VaryingData {
 	}
 
 	var result []Encodable
-	for _, v := range values {
-		result = append(result, v)
-	}
+	result = append(result, values...)
 
 	return result
 }
