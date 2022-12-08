@@ -7,8 +7,6 @@ import (
 	"testing"
 )
 
-// TODO: {label: "int(-127)", input: int(-127), expectation: []byte{0x13, 0x81, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
-
 func Test_EncodeUintCompact32(t *testing.T) {
 	var testExamples = []struct {
 		label       string
