@@ -56,6 +56,8 @@ func Test_DecodeBoolPanics(t *testing.T) {
 	}{
 		{label: "(0xff)", input: []byte{0xff}},
 		{label: "(0x3)", input: []byte{0x3}},
+		{label: "([])", input: []byte{}},
+		{label: "(nil)", input: nil},
 	}
 
 	for _, testExample := range testExamples {
