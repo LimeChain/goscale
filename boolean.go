@@ -25,9 +25,15 @@ func (value Bool) Encode(buffer *bytes.Buffer) {
 
 func DecodeBool(buffer *bytes.Buffer) Bool {
 	decoder := Decoder{Reader: buffer}
-	result := make([]byte, 1)
-	decoder.Read(result)
-	return Bool(result[0] > 0)
+	result := decoder.DecodeByte()
+	switch result {
+	case 0:
+		return false
+	case 1:
+		return true
+	default:
+		panic("invalid bool representation")
+	}
 }
 
 func (value Bool) String() string {

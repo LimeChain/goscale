@@ -474,3 +474,24 @@ func Test_DecodeResultSeqU8(t *testing.T) {
 		})
 	}
 }
+
+func Test_DecodeResultPanicInvalidFirstByte(t *testing.T) {
+	var testExamples = []struct {
+		label string
+		input []byte
+	}{
+		{label: "Panic DecodeResult(0xff, 0x1)", input: []byte{0xff, 0x1}},
+		{label: "Panic DecodeResult(0x3, 0x1)", input: []byte{0x3, 0x1}},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			buffer := &bytes.Buffer{}
+			buffer.Write(testExample.input)
+
+			assertPanic(t, func() {
+				DecodeResult[Bool](buffer)
+			})
+		})
+	}
+}

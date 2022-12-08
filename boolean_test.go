@@ -48,3 +48,24 @@ func Test_DecodeBool(t *testing.T) {
 		})
 	}
 }
+
+func Test_DecodeBoolPanics(t *testing.T) {
+	var testExamples = []struct {
+		label string
+		input []byte
+	}{
+		{label: "(0xff)", input: []byte{0xff}},
+		{label: "(0x3)", input: []byte{0x3}},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			buffer := &bytes.Buffer{}
+			buffer.Write(testExample.input)
+
+			assertPanic(t, func() {
+				DecodeBool(buffer)
+			})
+		})
+	}
+}
