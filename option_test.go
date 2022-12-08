@@ -37,6 +37,7 @@ func Test_EncodeOption(t *testing.T) {
 		{label: "Encode Option(true, I64(min))", input: Option[Encodable]{true, I64(math.MinInt64)}, expect: []byte{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80}},
 		{label: "Encode Option(false, I64(min))", input: Option[Encodable]{false, I64(math.MinInt64)}, expect: []byte{0x0}},
 		{label: "Encode Option(true, U128(max)", input: Option[Encodable]{true, U128{math.MaxUint64, math.MaxUint64}}, expect: []byte{0x1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
+		{label: "Encode Option(true, I128(min)", input: Option[Encodable]{true, I128{U64(0), U64(math.MaxInt64 + 1)}}, expect: []byte{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80}},
 
 		{label: "Encode Option(true, Compact(MaxUint64)", input: Option[Encodable]{true, Compact(math.MaxUint64)}, expect: []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 
@@ -487,6 +488,44 @@ func Test_DecodeOptionI64(t *testing.T) {
 
 			// when:
 			result := DecodeOption[I64](buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
+			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+		})
+	}
+}
+
+func Test_DecodeOptionI128(t *testing.T) {
+	var examples = []struct {
+		label         string
+		input         []byte
+		bufferLenLeft int
+		expect        Option[I128]
+		stringValue   string
+	}{
+		{
+			label:         "Decode Option(true, I128(min))",
+			input:         []byte{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
+			expect:        Option[I128]{true, I128{U64(0), U64(math.MaxInt64 + 1)}},
+			bufferLenLeft: 0,
+		},
+		{
+			label:         "Decode Option(true, I128(max))",
+			input:         []byte{0x1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f},
+			expect:        Option[I128]{true, I128{U64(math.MaxUint64), U64(math.MaxInt64)}},
+			bufferLenLeft: 0,
+		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeOption[I128](buffer)
 
 			// then:
 			assertEqual(t, result, e.expect)

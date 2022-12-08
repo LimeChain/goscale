@@ -158,14 +158,9 @@ func (value I64) String() string {
 type U128 [2]U64
 
 func NewU128FromBigInt(v *big.Int) U128 {
-	b := v.Bytes()
-	if len(b) > 16 {
-		panic("invalid big.Int u128 length")
-	}
+	b := make([]byte, 16)
+	v.FillBytes(b)
 
-	for len(b) != 16 {
-		b = append([]byte{0}, b...)
-	}
 	reverseSlice(b)
 
 	return U128{
@@ -181,15 +176,10 @@ func (u U128) Encode(buffer *bytes.Buffer) {
 
 func (u U128) ToBigInt() big.Int {
 	bytes := make([]byte, 16)
-
 	binary.BigEndian.PutUint64(bytes[:8], uint64(u[1]))
 	binary.BigEndian.PutUint64(bytes[8:], uint64(u[0]))
 
 	return *big.NewInt(0).SetBytes(bytes)
-}
-
-func (u U128) String() string {
-	return fmt.Sprintf(u[0].String(), u[1].String())
 }
 
 func DecodeU128(buffer *bytes.Buffer) U128 {
@@ -200,5 +190,69 @@ func DecodeU128(buffer *bytes.Buffer) U128 {
 	return U128{
 		U64(binary.LittleEndian.Uint64(buf[:8])),
 		U64(binary.LittleEndian.Uint64(buf[8:])),
+	}
+}
+
+type I128 [2]U64
+
+func NewI128FromBigInt(v big.Int) I128 {
+	b := make([]byte, 16)
+	v.FillBytes(b)
+
+	reverseSlice(b)
+
+	var result [2]U64
+	result[0] = U64(binary.LittleEndian.Uint64(b[:8]))
+	result[1] = U64(binary.LittleEndian.Uint64(b[8:]))
+
+	if v.Sign() < 0 {
+		result[0] = ^result[0]
+		result[1] = ^result[1]
+
+		result[0]++
+		if result[0] == 0 {
+			result[1]++
+		}
+	}
+
+	return I128{
+		result[0],
+		result[1],
+	}
+}
+
+func (value I128) Encode(buffer *bytes.Buffer) {
+	value[0].Encode(buffer)
+	value[1].Encode(buffer)
+}
+
+func (value I128) ToBigInt() big.Int {
+	isNegative := value[1]&U64(1<<63) != 0
+	if isNegative {
+		if value[0] == 0 {
+			value[1]--
+		}
+		value[0]--
+
+		value[0] = ^value[0]
+		value[1] = ^value[1]
+	}
+
+	bytes := make([]byte, 16)
+	binary.BigEndian.PutUint64(bytes[:8], uint64(value[1]))
+	binary.BigEndian.PutUint64(bytes[8:], uint64(value[0]))
+
+	result := big.NewInt(0).SetBytes(bytes)
+	if isNegative {
+		result.Neg(result)
+	}
+
+	return *result
+}
+
+func DecodeI128(buffer *bytes.Buffer) I128 {
+	return I128{
+		DecodeU64(buffer),
+		DecodeU64(buffer),
 	}
 }
