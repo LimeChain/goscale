@@ -33,7 +33,7 @@ func Test_EncodeResult(t *testing.T) {
 		{label: "Encode Result(true, Compact(MaxUint64)", input: Result[Encodable]{true, Compact(math.MaxUint64)}, expect: []byte{0x01, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 
 		{label: "Encode Result(true, empty Seq[U8])", input: Result[Encodable]{true, Sequence[U8]{}}, expect: []byte{0x1, 0x0}},
-		{label: "Encode Result(true, Seq[U8])", input: Result[Encodable]{true, Sequence[U8]{[]U8{42}}}, expect: []byte{0x1, 0x4, 0x2a}},
+		{label: "Encode Result(true, Seq[U8])", input: Result[Encodable]{true, Sequence[U8]{42}}, expect: []byte{0x1, 0x4, 0x2a}},
 	}
 
 	for _, e := range examples {
@@ -454,7 +454,7 @@ func Test_DecodeResultSeqU8(t *testing.T) {
 		{
 			label:         "Decode Seq[U8]",
 			input:         []byte{0x1, 0x4, 0x2a},
-			expect:        Result[Sequence[U8]]{true, Sequence[U8]{[]U8{42}}},
+			expect:        Result[Sequence[U8]]{true, Sequence[U8]{42}},
 			bufferLenLeft: 0,
 		},
 	}

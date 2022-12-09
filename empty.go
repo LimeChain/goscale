@@ -9,8 +9,7 @@ package goscale
 
 import "bytes"
 
-type Empty struct {
-}
+type Empty struct{}
 
 func (e Empty) Encode(buffer *bytes.Buffer) {
 	encoder := Encoder{Writer: buffer}

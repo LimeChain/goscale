@@ -42,9 +42,9 @@ func Test_EncodeOption(t *testing.T) {
 		{label: "Encode Option(true, Compact(MaxUint64)", input: Option[Encodable]{true, Compact(math.MaxUint64)}, expect: []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 
 		{label: "Encode Option(true, empty Seq[U8])", input: Option[Encodable]{true, Sequence[U8]{}}, expect: []byte{0x1, 0x0}},
-		{label: "Encode Option(true, Seq[U8])", input: Option[Encodable]{true, Sequence[U8]{[]U8{42}}}, expect: []byte{0x1, 0x4, 0x2a}},
+		{label: "Encode Option(true, Seq[U8])", input: Option[Encodable]{true, Sequence[U8]{42}}, expect: []byte{0x1, 0x4, 0x2a}},
 
-		{label: "Encode Option(true, Result(true, Seq[U8])", input: Option[Encodable]{true, Result[Encodable]{true, Sequence[U8]{[]U8{42}}}}, expect: []byte{0x1, 0x1, 0x4, 0x2a}},
+		{label: "Encode Option(true, Result(true, Seq[U8])", input: Option[Encodable]{true, Result[Encodable]{true, Sequence[U8]{42}}}, expect: []byte{0x1, 0x1, 0x4, 0x2a}},
 	}
 
 	for _, e := range examples {
@@ -604,9 +604,11 @@ func Test_DecodeOptionSequenceU8(t *testing.T) {
 		expect        Option[Sequence[U8]]
 	}{
 		{
-			label:         "Decode Seq[U8]",
-			input:         []byte{0x1, 0x4, 0x2a},
-			expect:        Option[Sequence[U8]]{HasValue: true, Value: Sequence[U8]{[]U8{42}}},
+			label: "Decode Seq[U8]",
+			input: []byte{0x1, 0x4, 0x2a},
+			expect: Option[Sequence[U8]]{
+				HasValue: true, Value: Sequence[U8]{42},
+			},
 			bufferLenLeft: 0,
 		},
 		// TODO: Decode Option<Result<true, any>>
