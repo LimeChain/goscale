@@ -22,7 +22,7 @@ func Test_VaryingData_Encode(t *testing.T) {
 			expect: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1}},
 		{
 			label:  "Encode VaryingData(U64,U32,Sequence[U8])",
-			input:  NewVaryingData(U64(math.MaxUint64), U32(math.MaxUint32), Sequence[U8]{[]U8{42}}),
+			input:  NewVaryingData(U64(math.MaxUint64), U32(math.MaxUint32), Sequence[U8]{42}),
 			expect: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1, 0xff, 0xff, 0xff, 0xff, 0x2, 0x4, 0x2a}},
 		{
 			label:  "Encode VaryingData(I8,U16,I16,CompactUint,CompactUint,I32,I64)",
@@ -77,7 +77,7 @@ func Test_VaryingData_Decode(t *testing.T) {
 			label:  "Decode VaryingData(U64,U32,Sequence[U8])",
 			input:  []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1, 0xff, 0xff, 0xff, 0xff, 0x2, 0x4, 0x2a},
 			order:  []Encodable{U64(0), U32(0), Sequence[U8]{}},
-			expect: NewVaryingData(U64(math.MaxUint64), U32(math.MaxUint32), Sequence[U8]{[]U8{42}}),
+			expect: NewVaryingData(U64(math.MaxUint64), U32(math.MaxUint32), Sequence[U8]{42}),
 		},
 		{
 			label:  "Decode VaryingData(I8,U16,I16,CompactUint,CompactUint,I32,I64)",

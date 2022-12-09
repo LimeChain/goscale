@@ -8,12 +8,12 @@ import (
 func Test_EncodeString(t *testing.T) {
 	var testExamples = []struct {
 		label       string
-		input       string
+		input       Str
 		expectation []byte
 	}{
 		{
 			label:       "(abc)",
-			input:       "abc",
+			input:       Str("abc"),
 			expectation: []byte{0x0c, 0x61, 0x62, 0x63},
 		},
 	}
@@ -22,11 +22,9 @@ func Test_EncodeString(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			SliceU8ToSequenceU8(StringToSliceU8(testExample.input)).Encode(buffer)
+			testExample.input.Encode(buffer)
 
-			result := buffer.Bytes()
-
-			assertEqual(t, result, testExample.expectation)
+			assertEqual(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -35,12 +33,12 @@ func Test_DecodeString(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       []byte
-		expectation string
+		expectation Str
 	}{
 		{
 			label:       "(0x0c616263)",
 			input:       []byte{0x0c, 0x61, 0x62, 0x63},
-			expectation: "abc",
+			expectation: Str("abc"),
 		},
 	}
 
@@ -48,9 +46,9 @@ func Test_DecodeString(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			SliceU8ToSequenceU8(StringToSliceU8(string(testExample.expectation))).Encode(buffer)
+			testExample.expectation.Encode(buffer)
 
-			result := SliceU8ToString(DecodeSequenceU8(buffer).Values)
+			result := DecodeStr(buffer)
 
 			assertEqual(t, result, testExample.expectation)
 		})
@@ -65,7 +63,7 @@ func Test_EncodeU8Sequence(t *testing.T) {
 	}{
 		{
 			label:       "(0x616263)",
-			input:       Sequence[U8]{Values: []U8{0x61, 0x62, 0x63}},
+			input:       Sequence[U8]{0x61, 0x62, 0x63},
 			expectation: []byte{0x0c, 0x61, 0x62, 0x63},
 		},
 	}
@@ -90,7 +88,7 @@ func Test_DecodeU8Sequence(t *testing.T) {
 		{
 			label:       "(0x616263)",
 			input:       []byte{0x0c, 0x61, 0x62, 0x63},
-			expectation: Sequence[U8]{Values: []U8{0x61, 0x62, 0x63}},
+			expectation: Sequence[U8]{0x61, 0x62, 0x63},
 		},
 	}
 
@@ -100,7 +98,7 @@ func Test_DecodeU8Sequence(t *testing.T) {
 
 			testExample.expectation.Encode(buffer)
 
-			result := DecodeSequenceU8(buffer)
+			result := Sequence[U8](DecodeSliceU8(buffer))
 
 			assertEqual(t, result, testExample.expectation)
 		})
@@ -115,7 +113,7 @@ func Test_EncodeBoolSequence(t *testing.T) {
 	}{
 		{
 			label:       "([false,true,true])",
-			input:       Sequence[Bool]{Values: []Bool{false, true, true}},
+			input:       Sequence[Bool]{false, true, true},
 			expectation: []byte{0x0c, 0x00, 0x01, 0x01},
 		},
 	}
@@ -139,7 +137,7 @@ func Test_EncodeCompactSequence(t *testing.T) {
 	}{
 		{
 			label: "()",
-			input: Sequence[Compact]{Values: []Compact{42, 63, 64, 65535, 1073741823}},
+			input: Sequence[Compact]{42, 63, 64, 65535, 1073741823},
 			expectation: []byte{
 				0x14,
 				0xa8,
@@ -170,7 +168,7 @@ func Test_EncodeI8Sequence(t *testing.T) {
 	}{
 		{
 			label:       "(0x616263)",
-			input:       Sequence[I8]{Values: []I8{0x61, 0x62, 0x63}},
+			input:       Sequence[I8]{0x61, 0x62, 0x63},
 			expectation: []byte{0x0c, 0x61, 0x62, 0x63},
 		},
 	}
@@ -194,7 +192,7 @@ func Test_EncodeI16Sequence(t *testing.T) {
 	}{
 		{
 			label:       "[]int16{0,1,-1,2,-2,3,-3}",
-			input:       Sequence[I16]{Values: []I16{0, 1, -1, 2, -2, 3, -3}},
+			input:       Sequence[I16]{0, 1, -1, 2, -2, 3, -3},
 			expectation: []byte{0x1c, 0x00, 0x00, 0x01, 0x00, 0xff, 0xff, 0x02, 0x00, 0xfe, 0xff, 0x03, 0x00, 0xfd, 0xff},
 		},
 	}
@@ -218,7 +216,7 @@ func Test_EncodeU16Sequence(t *testing.T) {
 	}{
 		{
 			label:       "([4,8,15,16,23,42])",
-			input:       Sequence[U16]{Values: []U16{4, 8, 15, 16, 23, 42}},
+			input:       Sequence[U16]{4, 8, 15, 16, 23, 42},
 			expectation: []byte{0x18, 0x04, 0x00, 0x08, 0x00, 0x0f, 0x00, 0x10, 0x00, 0x17, 0x00, 0x2a, 0x00},
 		},
 	}
@@ -242,10 +240,10 @@ func Test_EncodeNestedSequence(t *testing.T) {
 	}{
 		{
 			label: "()",
-			input: Sequence[Sequence[U8]]{Values: []Sequence[U8]{
-				{Values: []U8{0x33, 0x55}},
-				{Values: []U8{0x77, 0x99}},
-			}},
+			input: Sequence[Sequence[U8]]{
+				Sequence[U8]{0x33, 0x55},
+				Sequence[U8]{0x77, 0x99},
+			},
 			expectation: []byte{0x08, 0x08, 0x33, 0x55, 0x08, 0x77, 0x99},
 		},
 	}
@@ -269,7 +267,7 @@ func Test_EncodeStringSequence(t *testing.T) {
 	}{
 		{
 			label: "([\"a1\",\"b2\",\"c3\"])",
-			input: Sequence[Str]{Values: []Str{"a1", "b2", "c3"}},
+			input: Sequence[Str]{"a1", "b2", "c3"},
 			expectation: []byte{
 				0x0c,
 				0x08, 0x61, 0x31,
@@ -279,7 +277,7 @@ func Test_EncodeStringSequence(t *testing.T) {
 		},
 		{
 			label: "([\"Hamlet\",\"Война и мир\",\"三国演义\",\"أَلْف لَيْلَة وَلَيْلَة\u200e\"])",
-			input: Sequence[Str]{Values: []Str{"Hamlet", "Война и мир", "三国演义", "أَلْف لَيْلَة وَلَيْلَة\u200e"}},
+			input: Sequence[Str]{"Hamlet", "Война и мир", "三国演义", "أَلْف لَيْلَة وَلَيْلَة\u200e"},
 			expectation: []byte{
 				0x10,
 				0x18, 0x48, 0x61, 0x6d, 0x6c, 0x65, 0x74,
@@ -297,6 +295,58 @@ func Test_EncodeStringSequence(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+		})
+	}
+}
+
+func Test_EncodeFixedSequence(t *testing.T) {
+	var examples = []struct {
+		label  string
+		input  FixedSequence[Encodable]
+		expect []byte
+	}{
+		{
+			label:  "Encode FixedSequence[U8]",
+			input:  FixedSequence[Encodable]{U8(5), U8(6), U8(7)},
+			expect: []byte{0x5, 0x6, 0x7},
+		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			buffer := &bytes.Buffer{}
+
+			e.input.Encode(buffer)
+
+			assertEqual(t, buffer.Bytes(), e.expect)
+		})
+	}
+}
+
+func Test_DecodeFixedSequence(t *testing.T) {
+	var examples = []struct {
+		label  string
+		input  []byte
+		expect FixedSequence[U8]
+	}{
+		{
+			label:  "Decode FixedSequence[U8]",
+			input:  []byte{0x5, 0x6, 0x7},
+			expect: FixedSequence[U8]{5, 6, 7},
+		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeFixedSequence[U8](len(e.input), buffer)
+
+			// then:
+			assertEqual(t, result, e.expect)
 		})
 	}
 }
