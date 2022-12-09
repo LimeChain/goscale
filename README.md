@@ -1,4 +1,4 @@
-# Implementation of SCALE codec in Go with minimal reflection dependency
+# Implementation of SCALE codec in Go compatible with a Tinygo based toolchain
 
 The SCALE types in Go are represented by a set of custom-defined types that implement the `Encode` method. There is also a `Decode` function for each type and the type to which data should be decoded is inferred by the context (not self-contained in the encoded data).
 
@@ -37,12 +37,6 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 | `Compact<u128>` | `*big.Int`        |
 
 
-## [VaryingData](https://github.com/LimeChain/goscale/blob/master/varying_data.go)
-
-| SCALE/Rust                   | Go                    |
-|------------------------------|-----------------------|
-| `Enumeration(tagged-union)`  | `goscale.VaryingData` |
-
 
 ## [Sequence](https://github.com/LimeChain/goscale/blob/master/sequence.go)
 
@@ -51,12 +45,27 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 | `bytes`    | `goscale.Sequence[U8]`      |
 | `string`   | `goscale.Sequence[U8]`      |
 | `[u8; u8]` | `goscale.FixedSequence[U8]` |
+| `string`   | `goscale.Str`               |
+
+
+## [Dictionary](https://github.com/LimeChain/goscale/blob/master/dictionary.go)
+
+| SCALE/Rust         | Go                       |
+| ------------------ | ------------------------ |
+|                    | goscale.Dictionary[K, V] |
 
 
 ## [Empty](https://github.com/LimeChain/goscale/blob/master/empty.go)
 
 | SCALE/Rust         | Go                       |
 | ------------------ | ------------------------ |
+
+
+## [VaryingData](https://github.com/LimeChain/goscale/blob/master/varying_data.go)
+
+| SCALE/Rust                   | Go                    |
+|------------------------------|-----------------------|
+| `Enumeration(tagged-union)`  | `goscale.VaryingData` |
 
 
 ## [Option](https://github.com/LimeChain/goscale/blob/master/option.go)
@@ -83,13 +92,6 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 
 | SCALE/Rust         | Go                       |
 | ------------------ | ------------------------ |
-
-
-## [Dictionary](https://github.com/LimeChain/goscale/blob/master/dictionary.go)
-
-| SCALE/Rust         | Go                       |
-| ------------------ | ------------------------ |
-|                    | goscale.Dictionary       |
 
 
 ### Run Tests
