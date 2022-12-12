@@ -12,7 +12,6 @@ import (
 )
 
 type Sequence[T Encodable] []T
-type FixedSequence[T Encodable] []T // TODO: https://github.com/LimeChain/goscale/issues/37
 
 func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
 	Compact(len(seq)).Encode(buffer)
@@ -21,14 +20,21 @@ func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
 	}
 }
 
-func DecodeSliceU8(buffer *bytes.Buffer) []U8 {
+func DecodeSequence[T Encodable](buffer *bytes.Buffer) Sequence[T] {
 	size := DecodeCompact(buffer)
-	values := make([]U8, size)
+	values := make([]T, size)
+
 	for i := 0; i < len(values); i++ {
-		values[i] = DecodeU8(buffer)
+		values[i] = decodeByType(*new(T), buffer).(T)
 	}
 	return values
 }
+
+func DecodeSliceU8(buffer *bytes.Buffer) []U8 {
+	return DecodeSequence[U8](buffer)
+}
+
+type FixedSequence[T Encodable] []T // TODO: https://github.com/LimeChain/goscale/issues/37
 
 func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) {
 	for _, value := range fseq {
