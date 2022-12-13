@@ -41,10 +41,6 @@ func DecodeBool(buffer *bytes.Buffer) Bool {
 	}
 }
 
-func (value Bool) IsTrue() bool {
-	return value == Bool(true)
-}
-
 func (value Bool) String() string {
 	return fmt.Sprint(bool(value))
 }

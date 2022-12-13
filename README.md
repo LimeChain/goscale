@@ -1,4 +1,4 @@
-# Implementation of SCALE codec in Go compatible with a Tinygo based toolchain
+# SCALE codec Implementation in Go compatible with a Tinygo based toolchain
 
 The SCALE types in Go are represented by a set of custom-defined types that implement the `Encodable` interface. There is also a `Decode` function for each type and the type to which data should be decoded is inferred by the context (not self-contained in the encoded data).
 
@@ -43,7 +43,6 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 | SCALE/Rust | Go                          |
 |------------|-----------------------------|
 | `bytes`    | `goscale.Sequence[U8]`      |
-| `string`   | `goscale.Sequence[U8]`      |
 | `[u8; u8]` | `goscale.FixedSequence[U8]` |
 | `string`   | `goscale.Str`               |
 
@@ -59,6 +58,7 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 
 | SCALE/Rust         | Go                       |
 | ------------------ | ------------------------ |
+|                    |                          |
 
 
 ## [VaryingData](https://github.com/LimeChain/goscale/blob/master/varying_data.go)
@@ -66,6 +66,7 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 | SCALE/Rust                   | Go                    |
 |------------------------------|-----------------------|
 | `Enumeration(tagged-union)`  | `goscale.VaryingData` |
+|                              |                       |      
 
 
 ## [Option](https://github.com/LimeChain/goscale/blob/master/option.go)
@@ -92,15 +93,13 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 
 | SCALE/Rust         | Go                       |
 | ------------------ | ------------------------ |
-
+|                    |                          |
 
 
 ## [Tuple](https://github.com/LimeChain/goscale/blob/master/tuple.go)
 
 Go structs are encoded as SCALE Tuple, where each struct field is encoded in a sequence containing all the fields.
-To decode SCALE encoded structs, it is required to have prior knowledge of the destination data type, since it is not self-contained in the SCALE encoded data itself.
-
-Struct tags allow modification of the struct field ordering, that preserve the encoding/decoding order.
+To decode SCALE encoded structs, it is required to have prior knowledge of the destination data type.
 
 | SCALE      | Go                        |
 |------------|---------------------------|
