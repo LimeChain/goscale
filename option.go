@@ -10,7 +10,7 @@ package goscale
 import "bytes"
 
 type Option[T Encodable] struct {
-	HasValue bool
+	HasValue Bool
 	Value    T
 }
 
@@ -28,7 +28,7 @@ func DecodeOption[T Encodable](buffer *bytes.Buffer) Option[T] {
 	b := DecodeBool(buffer)
 
 	option := Option[T]{
-		HasValue: b == true,
+		HasValue: b,
 	}
 
 	if b {
