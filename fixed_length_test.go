@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func Test_EncodeUint8(t *testing.T) {
+func Test_EncodeU8(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       U8
@@ -28,7 +28,7 @@ func Test_EncodeUint8(t *testing.T) {
 	}
 }
 
-func Test_DecodeUint8(t *testing.T) {
+func Test_DecodeU8(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       []byte
@@ -50,7 +50,7 @@ func Test_DecodeUint8(t *testing.T) {
 	}
 }
 
-func Test_EncodeInt8(t *testing.T) {
+func Test_EncodeI8(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       I8
@@ -74,7 +74,7 @@ func Test_EncodeInt8(t *testing.T) {
 	}
 }
 
-func Test_DecodeInt8(t *testing.T) {
+func Test_DecodeI8(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       []byte
@@ -99,7 +99,7 @@ func Test_DecodeInt8(t *testing.T) {
 	}
 }
 
-func Test_EncodeUint16(t *testing.T) {
+func Test_EncodeU16(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       U16
@@ -120,7 +120,7 @@ func Test_EncodeUint16(t *testing.T) {
 	}
 }
 
-func Test_DecodeUint16(t *testing.T) {
+func Test_DecodeU16(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       []byte
@@ -142,7 +142,7 @@ func Test_DecodeUint16(t *testing.T) {
 	}
 }
 
-func Test_EncodeInt16(t *testing.T) {
+func Test_EncodeI16(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       I16
@@ -164,7 +164,7 @@ func Test_EncodeInt16(t *testing.T) {
 	}
 }
 
-func Test_DecodeInt16(t *testing.T) {
+func Test_DecodeI16(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       []byte
@@ -187,7 +187,7 @@ func Test_DecodeInt16(t *testing.T) {
 	}
 }
 
-func Test_EncodeUint32(t *testing.T) {
+func Test_EncodeU32(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       U32
@@ -207,7 +207,7 @@ func Test_EncodeUint32(t *testing.T) {
 	}
 }
 
-func Test_DecodeUint32(t *testing.T) {
+func Test_DecodeU32(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       []byte
@@ -229,7 +229,7 @@ func Test_DecodeUint32(t *testing.T) {
 	}
 }
 
-func Test_EncodeInt32(t *testing.T) {
+func Test_EncodeI32(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       I32
@@ -251,7 +251,7 @@ func Test_EncodeInt32(t *testing.T) {
 	}
 }
 
-func Test_DecodeInt32(t *testing.T) {
+func Test_DecodeI32(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       []byte
@@ -275,7 +275,7 @@ func Test_DecodeInt32(t *testing.T) {
 	}
 }
 
-func Test_EncodeUint64(t *testing.T) {
+func Test_EncodeU64(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       U64
@@ -295,7 +295,7 @@ func Test_EncodeUint64(t *testing.T) {
 	}
 }
 
-func Test_DecodeUint64(t *testing.T) {
+func Test_DecodeU64(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       []byte
