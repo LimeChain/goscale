@@ -302,12 +302,12 @@ func Test_EncodeStringSequence(t *testing.T) {
 func Test_EncodeFixedSequence(t *testing.T) {
 	var examples = []struct {
 		label  string
-		input  FixedSequence[Encodable]
+		input  FixedSequence[U8]
 		expect []byte
 	}{
 		{
 			label:  "Encode FixedSequence[U8]",
-			input:  FixedSequence[Encodable]{U8(5), U8(6), U8(7)},
+			input:  FixedSequence[U8]{5, 6, 7},
 			expect: []byte{0x5, 0x6, 0x7},
 		},
 	}
