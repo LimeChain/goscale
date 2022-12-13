@@ -317,7 +317,7 @@ func Test_DecodeU64(t *testing.T) {
 	}
 }
 
-func Test_EncodeInt64(t *testing.T) {
+func Test_EncodeI64(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       I64
@@ -337,7 +337,7 @@ func Test_EncodeInt64(t *testing.T) {
 	}
 }
 
-func Test_DecodeInt64(t *testing.T) {
+func Test_DecodeI64(t *testing.T) {
 	var testExamples = []struct {
 		label       string
 		input       []byte
