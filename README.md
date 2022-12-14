@@ -1,6 +1,12 @@
-# SCALE codec Implementation in Go compatible with a Tinygo based toolchain
+# SCALE codec implementation in Go compatible with a Tinygo based toolchain
 
-The SCALE types in Go are represented by a set of custom-defined types that implement the `Encodable` interface. There is also a `Decode` function for each type and the type to which data should be decoded is inferred by the context (not self-contained in the encoded data).
+The SCALE types in Go are represented by a set of custom-defined types that implement the `Encodable` interface. There is also a `Decode` function for each type. Note that the type to which data should be decoded is inferred by the context, it is not self-contained in the SCALE encoded data. 
+
+One exception is the `Tuple` type, which does not have methods attached, but instead, there are `EncodeTuple / DecodeTuple` functions that can be called with any custom struct that embeds the `Tuple` interface.
+
+**Implementation Notes**
+* *`custom defined types` and usage of `generics` help to minimize the reflection usage.*
+* *there is a `FixedSequence` type (with the same representation as the `Sequence` type), but it makes possible encoding of arrays (which are fixed-size sequences) that can not be represented by the `Sequence` type. Note that there are no type checks on the size*
 
 
 ## [Boolean](https://github.com/LimeChain/goscale/blob/master/boolean.go)
@@ -37,7 +43,6 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 | `Compact<u128>` | `*big.Int`        |
 
 
-
 ## [Sequence](https://github.com/LimeChain/goscale/blob/master/sequence.go)
 
 | SCALE/Rust | Go                          |
@@ -51,7 +56,7 @@ The SCALE types in Go are represented by a set of custom-defined types that impl
 
 | SCALE/Rust         | Go                       |
 | ------------------ | ------------------------ |
-|                    | goscale.Dictionary[K, V] |
+|                    | `goscale.Dictionary[K, V]` |
 
 
 ## [Empty](https://github.com/LimeChain/goscale/blob/master/empty.go)
@@ -109,5 +114,5 @@ To decode SCALE encoded structs, it is required to have prior knowledge of the d
 ### Run Tests
 
 ```sh
-  go test -v
+go test -v
 ```

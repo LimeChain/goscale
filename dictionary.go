@@ -34,6 +34,12 @@ func (d Dictionary[K, V]) Encode(buffer *bytes.Buffer) {
 	}
 }
 
+func (d Dictionary[K, V]) Bytes() []byte {
+	buffer := &bytes.Buffer{}
+	d.Encode(buffer)
+	return buffer.Bytes()
+}
+
 func DecodeDictionary[K Comparable, V Encodable](buffer *bytes.Buffer) Dictionary[K, V] {
 	result := Dictionary[K, V]{}
 
