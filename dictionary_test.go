@@ -45,8 +45,7 @@ func Test_DecodeDictionaryStrBool(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeDictionary[Str, Bool](buffer)
 
@@ -105,8 +104,7 @@ func Test_DecodeDictionaryU8Str(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeDictionary[U8, Str](buffer)
 

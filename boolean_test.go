@@ -39,8 +39,7 @@ func Test_DecodeBool(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeBool(buffer)
 
