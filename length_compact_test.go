@@ -59,8 +59,7 @@ func Test_DecodeUintCompact32(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeCompact(buffer)
 

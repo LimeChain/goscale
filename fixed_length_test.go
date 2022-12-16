@@ -40,8 +40,7 @@ func Test_DecodeU8(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeU8(buffer)
 
@@ -89,8 +88,7 @@ func Test_DecodeI8(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeI8(buffer)
 
@@ -132,8 +130,7 @@ func Test_DecodeU16(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeU16(buffer)
 
@@ -177,8 +174,7 @@ func Test_DecodeI16(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeI16(buffer)
 
@@ -219,8 +215,7 @@ func Test_DecodeU32(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeU32(buffer)
 
@@ -265,8 +260,7 @@ func Test_DecodeI32(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeI32(buffer)
 
@@ -307,8 +301,7 @@ func Test_DecodeU64(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeU64(buffer)
 
@@ -349,8 +342,7 @@ func Test_DecodeI64(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeI64(buffer)
 

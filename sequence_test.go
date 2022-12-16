@@ -45,8 +45,7 @@ func Test_DecodeString(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := DecodeStr(buffer)
 
@@ -95,8 +94,7 @@ func Test_DecodeU8Sequence(t *testing.T) {
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
-
-			testExample.expectation.Encode(buffer)
+			buffer.Write(testExample.input)
 
 			result := Sequence[U8](DecodeSliceU8(buffer))
 
