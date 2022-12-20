@@ -28,6 +28,7 @@ func Test_EncodeEmpty(t *testing.T) {
 
 			// then:
 			assertEqual(t, buffer.Bytes(), e.expect)
+			assertEqual(t, e.input.Bytes(), []byte{})
 		})
 	}
 }

@@ -24,6 +24,7 @@ func Test_EncodeU8(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -69,6 +70,7 @@ func Test_EncodeI8(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -114,6 +116,7 @@ func Test_EncodeU16(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -157,6 +160,7 @@ func Test_EncodeI16(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -199,6 +203,7 @@ func Test_EncodeU32(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -242,6 +247,7 @@ func Test_EncodeI32(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -285,6 +291,7 @@ func Test_EncodeU64(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -326,6 +333,7 @@ func Test_EncodeI64(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -380,6 +388,8 @@ func Test_EncodeU128(t *testing.T) {
 
 			// then:
 			assertEqual(t, buffer.Bytes(), e.expect)
+			// and:
+			assertEqual(t, input.Bytes(), e.expect)
 		})
 	}
 }
@@ -463,6 +473,8 @@ func Test_EncodeI128(t *testing.T) {
 
 			// then:
 			assertEqual(t, buffer.Bytes(), e.expect)
+			// and:
+			assertEqual(t, input.Bytes(), e.expect)
 		})
 	}
 }

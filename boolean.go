@@ -16,11 +16,16 @@ type Bool bool
 
 func (value Bool) Encode(buffer *bytes.Buffer) {
 	encoder := Encoder{Writer: buffer}
+	encoder.Write(value.Bytes())
+}
+
+func (value Bool) Bytes() []byte {
+	buf := make([]byte, 1)
 	if value {
-		encoder.EncodeByte(0x01)
-	} else {
-		encoder.EncodeByte(0x00)
+		buf[0] = 1
 	}
+
+	return buf
 }
 
 func DecodeBool(buffer *bytes.Buffer) Bool {

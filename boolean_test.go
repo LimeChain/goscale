@@ -22,6 +22,7 @@ func Test_EncodeBool(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }

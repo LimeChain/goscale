@@ -20,6 +20,13 @@ func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
 	}
 }
 
+func (seq Sequence[Encodable]) Bytes() []byte {
+	buffer := &bytes.Buffer{}
+	seq.Encode(buffer)
+
+	return buffer.Bytes()
+}
+
 func DecodeSequence[T Encodable](buffer *bytes.Buffer) Sequence[T] {
 	size := DecodeCompact(buffer)
 	values := make([]T, size)
@@ -42,6 +49,13 @@ func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) {
 	}
 }
 
+func (fseq FixedSequence[T]) Bytes() []byte {
+	buffer := &bytes.Buffer{}
+	fseq.Encode(buffer)
+
+	return buffer.Bytes()
+}
+
 func DecodeFixedSequence[T Encodable](size int, buffer *bytes.Buffer) FixedSequence[T] {
 	result := make([]T, size)
 	for i := 0; i < size; i++ {
@@ -54,8 +68,11 @@ func DecodeFixedSequence[T Encodable](size int, buffer *bytes.Buffer) FixedSeque
 type Str string
 
 func (value Str) Encode(buffer *bytes.Buffer) {
-	seq := Sequence[U8](StrToSliceU8(value))
-	seq.Encode(buffer)
+	buffer.Write(value.Bytes())
+}
+
+func (value Str) Bytes() []byte {
+	return Sequence[U8](StrToSliceU8(value)).Bytes()
 }
 
 func DecodeStr(buffer *bytes.Buffer) Str {

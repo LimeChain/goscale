@@ -33,6 +33,7 @@ func Test_EncodeUintCompact32(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -92,6 +93,7 @@ func Test_EncodeUintCompact(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -163,6 +165,7 @@ func Test_EncodeCompactU128(t *testing.T) {
 
 			// then:
 			assertEqual(t, buffer.Bytes(), e.expect)
+			assertEqual(t, e.input.Bytes(), e.expect)
 		})
 	}
 }

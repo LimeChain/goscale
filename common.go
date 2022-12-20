@@ -4,6 +4,7 @@ import "bytes"
 
 type Encodable interface {
 	Encode(buffer *bytes.Buffer)
+	Bytes() []byte
 }
 
 type Ordered interface {

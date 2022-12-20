@@ -46,6 +46,8 @@ func Test_EncodeResult(t *testing.T) {
 
 			// then:
 			assertEqual(t, buffer.Bytes(), e.expect)
+			// and:
+			assertEqual(t, e.input.Bytes(), e.expect)
 		})
 	}
 }

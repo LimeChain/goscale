@@ -20,6 +20,13 @@ func (r Result[T]) Encode(buffer *bytes.Buffer) {
 	r.Value.Encode(buffer)
 }
 
+func (r Result[T]) Bytes() []byte {
+	buffer := &bytes.Buffer{}
+	r.Encode(buffer)
+
+	return buffer.Bytes()
+}
+
 func DecodeResult[T Encodable](buffer *bytes.Buffer) Result[T] {
 	ok := DecodeBool(buffer)
 	value := decodeByType(*new(T), buffer)
