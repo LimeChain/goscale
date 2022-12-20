@@ -25,7 +25,7 @@ func (d Dictionary[K, V]) Encode(buffer *bytes.Buffer) {
 	for k := range d {
 		keys = append(keys, k)
 	}
-	sort.Slice(keys, func(i, j int) bool { return keys[i] > keys[j] })
+	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
 
 	for _, k := range keys {
 		v := d[k]
