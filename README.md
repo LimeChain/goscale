@@ -1,6 +1,6 @@
 # Implementation of SCALE codec in Go compatible with a Tinygo based toolchain
 
-The SCALE types in Go are represented by a set of custom-defined types that implement the `Encode` method. There is also a `Decode` function for each type and the type to which data should be decoded is inferred by the context (not self-contained in the encoded data).
+The SCALE types in Go are represented by a set of custom-defined types that implement the `Encodable` interface. There is also a `Decode` function for each type and the type to which data should be decoded is inferred by the context (not self-contained in the encoded data).
 
 
 ## [Boolean](https://github.com/LimeChain/goscale/blob/master/boolean.go)

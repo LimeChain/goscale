@@ -31,6 +31,13 @@ func (vd VaryingData) Encode(buffer *bytes.Buffer) {
 	}
 }
 
+func (vd VaryingData) Bytes() []byte {
+	buffer := &bytes.Buffer{}
+	vd.Encode(buffer)
+
+	return buffer.Bytes()
+}
+
 func DecodeVaryingData(values []Encodable, buffer *bytes.Buffer) VaryingData {
 	vLen := len(values)
 	if vLen > math.MaxUint8 {

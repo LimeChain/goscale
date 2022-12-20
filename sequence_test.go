@@ -25,6 +25,7 @@ func Test_EncodeString(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -74,6 +75,7 @@ func Test_EncodeU8Sequence(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -123,6 +125,7 @@ func Test_EncodeBoolSequence(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -154,6 +157,7 @@ func Test_EncodeCompactSequence(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -178,6 +182,7 @@ func Test_EncodeI8Sequence(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -202,6 +207,7 @@ func Test_EncodeI16Sequence(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -226,6 +232,7 @@ func Test_EncodeU16Sequence(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -253,6 +260,7 @@ func Test_EncodeNestedSequence(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -293,6 +301,7 @@ func Test_EncodeStringSequence(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -317,6 +326,7 @@ func Test_EncodeFixedSequence(t *testing.T) {
 			e.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), e.expect)
+			assertEqual(t, e.input.Bytes(), e.expect)
 		})
 	}
 }

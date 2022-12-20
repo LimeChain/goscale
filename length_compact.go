@@ -17,7 +17,10 @@ type Compact uint
 
 func (value Compact) Encode(buffer *bytes.Buffer) {
 	encoder := Encoder{Writer: buffer}
+	encoder.Write(value.Bytes())
+}
 
+func (value Compact) Bytes() []byte {
 	intBuf := make([]byte, 8)
 	if value < 1<<30 {
 		if value < 1<<6 {
@@ -26,7 +29,7 @@ func (value Compact) Encode(buffer *bytes.Buffer) {
 			// (1<<6 - 1 => 63) => (00111111) =>
 			// 111111|00
 			// binary.Write(encoder.Writer, binary.LittleEndian, uint8(n)<<2)
-			encoder.EncodeByte(byte(value) << 2)
+			return []byte{byte(value) << 2}
 		} else if value < 1<<14 {
 			// 0b01: two-byte mode:
 			// upper six bits and the following byte is the LE encoding of the value (valid only for values 64-(2**14-1)).
@@ -35,7 +38,7 @@ func (value Compact) Encode(buffer *bytes.Buffer) {
 			// binary.Write(encoder.Writer, binary.LittleEndian, uint16(n<<2)+1)
 			buf := intBuf[:2]
 			binary.LittleEndian.PutUint16(buf, uint16(value<<2)+1)
-			encoder.Write(buf)
+			return buf
 		} else {
 			// 0b10: four-byte mode:
 			// upper six bits and the following three bytes are the LE encoding of the value (valid only for values (2**14)-(2**30-1)).
@@ -44,9 +47,8 @@ func (value Compact) Encode(buffer *bytes.Buffer) {
 			// binary.Write(encoder.Writer, binary.LittleEndian, uint32(n<<2)+2)
 			buf := intBuf[:4]
 			binary.LittleEndian.PutUint32(buf, uint32(value<<2)+2)
-			encoder.Write(buf)
+			return buf
 		}
-		return
 	}
 
 	// 0b11: Big-integer mode:
@@ -64,9 +66,9 @@ func (value Compact) Encode(buffer *bytes.Buffer) {
 	if n > 4 {
 		panic("assertion error: n>4 needed to compact-encode uint64")
 	}
-	encoder.EncodeByte((n << 2) + 3)
 	binary.LittleEndian.PutUint64(intBuf[:8], uint64(value))
-	encoder.Write(intBuf[:4+n])
+
+	return append([]byte{(n << 2) + 3}, intBuf[:4+n]...)
 }
 
 func DecodeCompact(buffer *bytes.Buffer) Compact {
@@ -114,6 +116,10 @@ type CompactU128 struct {
 
 func (c CompactU128) Encode(buffer *bytes.Buffer) {
 	encoder := Encoder{Writer: buffer}
+	encoder.Write(c.Bytes())
+}
+
+func (c CompactU128) Bytes() []byte {
 	bn := c.ToBigInt()
 
 	if bn.IsUint64() {
@@ -125,7 +131,7 @@ func (c CompactU128) Encode(buffer *bytes.Buffer) {
 				// (1<<6 - 1 => 63) => (00111111) =>
 				// 111111|00
 				// binary.Write(encoder.Writer, binary.LittleEndian, uint8(n)<<2)
-				encoder.EncodeByte(byte(value) << 2)
+				return []byte{byte(value) << 2}
 			} else if value < 1<<14 {
 				// 0b01: two-byte mode:
 				// upper six bits and the following byte is the LE encoding of the value (valid only for values 64-(2**14-1)).
@@ -134,7 +140,7 @@ func (c CompactU128) Encode(buffer *bytes.Buffer) {
 				// binary.Write(encoder.Writer, binary.LittleEndian, uint16(n<<2)+1)
 				buf := make([]byte, 2)
 				binary.LittleEndian.PutUint16(buf, uint16(value<<2)+1)
-				encoder.Write(buf)
+				return buf
 			} else {
 				// 0b10: four-byte mode:
 				// upper six bits and the following three bytes are the LE encoding of the value (valid only for values (2**14)-(2**30-1)).
@@ -143,9 +149,8 @@ func (c CompactU128) Encode(buffer *bytes.Buffer) {
 				// binary.Write(encoder.Writer, binary.LittleEndian, uint32(n<<2)+2)
 				buf := make([]byte, 4)
 				binary.LittleEndian.PutUint32(buf, uint32(value<<2)+2)
-				encoder.Write(buf)
+				return buf
 			}
-			return
 		}
 	}
 
@@ -156,11 +161,10 @@ func (c CompactU128) Encode(buffer *bytes.Buffer) {
 	b := bn.Bytes()
 	numBytes := len(b)
 	topSixBits := uint8(numBytes - 4)
-	encoder.EncodeByte((topSixBits << 2) + 3)
 
 	reverseSlice(b)
 
-	encoder.Write(b)
+	return append([]byte{(topSixBits << 2) + 3}, b...)
 }
 
 func DecodeCompactU128(buffer *bytes.Buffer) CompactU128 {

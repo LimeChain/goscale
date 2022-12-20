@@ -11,6 +11,11 @@ type testEncodable struct {
 
 func (testEncodable) Encode(*bytes.Buffer) {
 }
+
+func (testEncodable) Bytes() []byte {
+	return []byte{}
+}
+
 func (testEncodable) String() string {
 	return ""
 }

@@ -14,7 +14,11 @@ type Empty struct{}
 func (e Empty) Encode(buffer *bytes.Buffer) {
 	encoder := Encoder{Writer: buffer}
 
-	encoder.Write([]byte{})
+	encoder.Write(e.Bytes())
+}
+
+func (e Empty) Bytes() []byte {
+	return []byte{}
 }
 
 func (e Empty) String() string {
