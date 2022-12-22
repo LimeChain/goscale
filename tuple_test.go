@@ -643,3 +643,60 @@ func Test_EncodeTupleAll(t *testing.T) {
 		})
 	}
 }
+
+type TupleExample struct {
+	// Tuple
+	A0  Bool
+	A1  U8
+	A2  I8
+	A3  U16
+	A4  I16
+	A5  U32
+	A6  I32
+	A7  U64
+	A8  I64
+	A9  U128
+	A10 I128
+	A11 Compact // CompactU128
+	A12 Str
+}
+
+func Test_DecodeTupleExample(t *testing.T) {
+	t.Skip()
+	var testExamples = []struct {
+		label       string
+		input       []byte
+		expectation TupleExample
+	}{
+		{
+			label: "[]",
+			input: []byte{},
+			expectation: TupleExample{
+				A0:  true,
+				A1:  1,
+				A2:  2,
+				A3:  3,
+				A4:  4,
+				A5:  5,
+				A6:  6,
+				A7:  7,
+				A8:  8,
+				A12: "abc",
+			},
+		},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			buffer := &bytes.Buffer{}
+			// buffer.Write(testExample.input)
+			EncodeTuple(testExample.expectation, buffer)
+			// t.Logf("\n\nRESULT: %#x\n\n", buffer.Bytes())
+
+			v := TupleExample{}
+			DecodeTuple(buffer, &v)
+
+			assertEqual(t, v, testExample.expectation)
+		})
+	}
+}
