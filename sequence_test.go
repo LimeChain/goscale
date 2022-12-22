@@ -265,6 +265,100 @@ func Test_EncodeNestedSequence(t *testing.T) {
 	}
 }
 
+func Test_EncodeOptionSequence(t *testing.T) {
+	var testExamples = []struct {
+		label       string
+		input       Sequence[Option[U8]]
+		expectation []byte
+	}{
+		{
+			label: "([Option(true, 1),Option(true, 3),Option(true, 5)])",
+			input: Sequence[Option[U8]]{
+				Option[U8]{true, 1},
+				Option[U8]{true, 3},
+				Option[U8]{true, 5},
+			},
+			expectation: []byte{0x0c, 0x01, 0x01, 0x01, 0x03, 0x01, 0x05},
+		},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			buffer := &bytes.Buffer{}
+
+			testExample.input.Encode(buffer)
+
+			assertEqual(t, buffer.Bytes(), testExample.expectation)
+		})
+	}
+}
+
+func Test_EncodeResultSequence(t *testing.T) {
+	var testExamples = []struct {
+		label       string
+		input       Sequence[Result[U8]]
+		expectation []byte
+	}{
+		{
+			label: "([Result(true, 1),Result(true, 3),Result(true, 5)])",
+			input: Sequence[Result[U8]]{
+				Result[U8]{true, 1},
+				Result[U8]{true, 3},
+				Result[U8]{true, 5},
+			},
+			expectation: []byte{0x0c, 0x01, 0x01, 0x01, 0x03, 0x01, 0x05},
+		},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			buffer := &bytes.Buffer{}
+
+			testExample.input.Encode(buffer)
+
+			assertEqual(t, buffer.Bytes(), testExample.expectation)
+		})
+	}
+}
+
+func Test_EncodeTupleExampleSequence(t *testing.T) {
+	type TupleBoolU8Str struct {
+		Tuple
+		A0 Bool
+		A1 U8
+		A2 Str
+	}
+
+	var testExamples = []struct {
+		label       string
+		input       Sequence[TupleBoolU8Str]
+		expectation []byte
+	}{
+		{
+			label: "(Sequence[TupleBoolU8Str])",
+			input: Sequence[TupleBoolU8Str]{
+				TupleBoolU8Str{A0: true, A1: 3, A2: "abc"},
+				TupleBoolU8Str{A0: false, A1: 5, A2: "xyz"},
+			},
+			expectation: []byte{
+				0x08,
+				0x01, 0x03, 0x0c, 0x61, 0x062, 0x63,
+				0x00, 0x05, 0x0c, 0x78, 0x79, 0x7a,
+			},
+		},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			buffer := &bytes.Buffer{}
+
+			testExample.input.Encode(buffer)
+
+			assertEqual(t, buffer.Bytes(), testExample.expectation)
+		})
+	}
+}
+
 func Test_EncodeStringSequence(t *testing.T) {
 	var testExamples = []struct {
 		label       string

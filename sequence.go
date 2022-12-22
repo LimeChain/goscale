@@ -9,14 +9,20 @@ package goscale
 
 import (
 	"bytes"
+	"reflect"
 )
 
 type Sequence[T Encodable] []T
 
 func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
 	Compact(len(seq)).Encode(buffer)
+
 	for _, v := range seq {
-		v.Encode(buffer)
+		if reflect.TypeOf(v).Kind() == reflect.Struct {
+			EncodeTuple(v, buffer)
+		} else {
+			v.Encode(buffer)
+		}
 	}
 }
 
@@ -44,8 +50,12 @@ func DecodeSliceU8(buffer *bytes.Buffer) []U8 {
 type FixedSequence[T Encodable] []T // TODO: https://github.com/LimeChain/goscale/issues/37
 
 func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) {
-	for _, value := range fseq {
-		value.Encode(buffer)
+	for _, v := range fseq {
+		if reflect.TypeOf(v).Kind() == reflect.Struct {
+			EncodeTuple(v, buffer)
+		} else {
+			v.Encode(buffer)
+		}
 	}
 }
 
