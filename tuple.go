@@ -18,8 +18,16 @@ import (
 // unsafe.Pointer
 // uintptr
 
-type Tuple interface {
+type Tuple struct {
 	Encodable
+}
+
+func (t Tuple) Encode(buffer *bytes.Buffer) {
+	panic("allows the Tuple type to conform to the Encodable interface")
+}
+
+func (t Tuple) Bytes() []byte {
+	panic("allows the Tuple type to conform to the Encodable interface")
 }
 
 func EncodeTuple(t interface{}, buffer *bytes.Buffer) {
