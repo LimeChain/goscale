@@ -40,7 +40,7 @@ One exception is the `Tuple` type, which does not have methods attached, but ins
 | `Compact<u16>`  | `goscale.Compact` |
 | `Compact<u32>`  | `goscale.Compact` |
 | `Compact<u64>`  | `goscale.Compact` |
-| `Compact<u128>` | `*big.Int`        |
+| `Compact<u128>` | `goscale.Compact` |
 
 
 ## [Sequence](https://github.com/LimeChain/goscale/blob/master/sequence.go)

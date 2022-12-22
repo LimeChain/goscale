@@ -15,7 +15,7 @@ import (
 type Sequence[T Encodable] []T
 
 func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
-	Compact(len(seq)).Encode(buffer)
+	toCompact(uint64(len(seq))).Encode(buffer)
 
 	for _, v := range seq {
 		if reflect.TypeOf(v).Kind() == reflect.Struct {
@@ -35,7 +35,8 @@ func (seq Sequence[Encodable]) Bytes() []byte {
 
 func DecodeSequence[T Encodable](buffer *bytes.Buffer) Sequence[T] {
 	size := DecodeCompact(buffer)
-	values := make([]T, size)
+	v := size.ToBigInt()
+	values := make([]T, v.Int64())
 
 	for i := 0; i < len(values); i++ {
 		values[i] = decodeByType(*new(T), buffer).(T)

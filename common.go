@@ -1,6 +1,9 @@
 package goscale
 
-import "bytes"
+import (
+	"bytes"
+	"math/big"
+)
 
 type Encodable interface {
 	Encode(buffer *bytes.Buffer)
@@ -55,4 +58,8 @@ func reverseSlice(a []byte) {
 	for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {
 		a[i], a[j] = a[j], a[i]
 	}
+}
+
+func toCompact(v uint64) Compact {
+	return Compact(NewU128FromBigInt(new(big.Int).SetUint64(v)))
 }

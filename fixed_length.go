@@ -208,6 +208,10 @@ func (u U128) Bytes() []byte {
 }
 
 func (u U128) ToBigInt() big.Int {
+	return toBigInt(u)
+}
+
+func toBigInt(u U128) big.Int {
 	bytes := make([]byte, 16)
 	binary.BigEndian.PutUint64(bytes[:8], uint64(u[1]))
 	binary.BigEndian.PutUint64(bytes[8:], uint64(u[0]))

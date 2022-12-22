@@ -19,7 +19,7 @@ type Comparable interface {
 type Dictionary[K Comparable, V Encodable] map[K]V
 
 func (d Dictionary[K, V]) Encode(buffer *bytes.Buffer) {
-	Compact(len(d)).Encode(buffer)
+	toCompact(uint64(len(d))).Encode(buffer)
 
 	keys := make([]K, 0)
 	for k := range d {
@@ -43,7 +43,8 @@ func (d Dictionary[K, V]) Bytes() []byte {
 func DecodeDictionary[K Comparable, V Encodable](buffer *bytes.Buffer) Dictionary[K, V] {
 	result := Dictionary[K, V]{}
 
-	size := int(DecodeCompact(buffer))
+	v := DecodeCompact(buffer).ToBigInt()
+	size := int(v.Int64())
 
 	for i := 0; i < size; i++ {
 		key := decodeByType(*new(K), buffer)

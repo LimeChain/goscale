@@ -30,7 +30,7 @@ func Test_EncodeResult(t *testing.T) {
 		{label: "Encode Result(true, U128(max))", input: Result[Encodable]{true, U128{math.MaxUint64, math.MaxUint64}}, expect: []byte{0x1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 		{label: "Encode Result(false, I128(min)", input: Result[Encodable]{false, I128{U64(0), U64(math.MaxInt64 + 1)}}, expect: []byte{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80}},
 
-		{label: "Encode Result(true, Compact(MaxUint64)", input: Result[Encodable]{true, Compact(math.MaxUint64)}, expect: []byte{0x01, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
+		{label: "Encode Result(true, Compact(MaxUint64)", input: Result[Encodable]{true, toCompact(math.MaxUint64)}, expect: []byte{0x01, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 
 		{label: "Encode Result(true, empty Seq[U8])", input: Result[Encodable]{true, Sequence[U8]{}}, expect: []byte{0x1, 0x0}},
 		{label: "Encode Result(true, Seq[U8])", input: Result[Encodable]{true, Sequence[U8]{42}}, expect: []byte{0x1, 0x4, 0x2a}},
@@ -425,7 +425,7 @@ func Test_DecodeResultCompact(t *testing.T) {
 		{
 			label:         "Decode Compact(maxUint64)",
 			input:         []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-			expect:        Result[Compact]{true, Compact(math.MaxUint64)},
+			expect:        Result[Compact]{true, toCompact(math.MaxUint64)},
 			bufferLenLeft: 0,
 		},
 	}
