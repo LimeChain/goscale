@@ -18,10 +18,10 @@ func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
 	Compact(len(seq)).Encode(buffer)
 
 	for _, v := range seq {
-		if reflect.TypeOf(v).Kind() != reflect.Struct {
-			v.Encode(buffer)
-		} else {
+		if reflect.TypeOf(v).Kind() == reflect.Struct {
 			EncodeTuple(v, buffer)
+		} else {
+			v.Encode(buffer)
 		}
 	}
 }
@@ -51,10 +51,10 @@ type FixedSequence[T Encodable] []T // TODO: https://github.com/LimeChain/goscal
 
 func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) {
 	for _, v := range fseq {
-		if reflect.TypeOf(v).Kind() != reflect.Struct {
-			v.Encode(buffer)
-		} else {
+		if reflect.TypeOf(v).Kind() == reflect.Struct {
 			EncodeTuple(v, buffer)
+		} else {
+			v.Encode(buffer)
 		}
 	}
 }
