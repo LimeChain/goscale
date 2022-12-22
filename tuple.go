@@ -11,13 +11,6 @@ import (
 	SCALE Tuple type translates to Go's struct type.
 */
 
-// TODO:
-// *T
-// func() T
-// chan T
-// unsafe.Pointer
-// uintptr
-
 type Tuple struct {
 	Encodable
 }
@@ -96,24 +89,10 @@ func EncodeTuple(t interface{}, buffer *bytes.Buffer) {
 						panic("unreachable case (Struct) in EncodeTuple")
 					}
 				}
-			case reflect.Float32:
-				panic("encoding of Float32 field is not supported")
-			case reflect.Float64:
-				panic("encoding of Float64 field is not supported")
-			case reflect.Complex64:
-				panic("encoding of Complex64 field is not supported")
-			case reflect.Complex128:
-				panic("encoding of Complex128 field is not supported")
-			case reflect.Uintptr:
-				panic("encoding of Uintptr field is not implemented")
-			case reflect.UnsafePointer:
-				panic("encoding of UnsafePointer field is not implemented")
-			case reflect.Pointer:
-				panic("encoding of Pointer field is not implemented")
-			case reflect.Chan:
-				panic("encoding of Chan field is not implemented")
-			case reflect.Func:
-				panic("encoding of Func field is not implemented")
+			case reflect.Float32, reflect.Float64, reflect.Complex64, reflect.Complex128:
+				panic("encoding of T field is not supported")
+			case reflect.Uintptr, reflect.UnsafePointer, reflect.Pointer, reflect.Chan, reflect.Func:
+				panic("encoding of T field is not implemented")
 			case reflect.Interface:
 				/*
 					Here it does nothing, but that allows the usage of the embedded Encodable
@@ -165,6 +144,12 @@ func SequenceFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 	// TODO: Sequence[Sequence[T]]
 	// TODO: Sequence[FixedSequence[T]]
 	// TODO: Sequence[Dictionary[T1, T2]]
+	case reflect.TypeOf(*new(Sequence[Bool])):
+		size := field.Len()
+		Compact(size).Encode(buffer)
+		for i := 0; i < field.Len(); i++ {
+			SequenceFieldEncode(field.Index(i), buffer)
+		}
 
 	default:
 
@@ -231,7 +216,7 @@ func DictionaryFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 		default:
 			// Dictionary[Str, Option], Dictionary[Str, Result], Dictionary[Str, Tuple]
 
-			// TODO: handle FixedSequence
+			// TODO: if it is a FixedSequence[T] don't encode the length
 			size := field.Len()
 			Compact(size).Encode(buffer)
 			for i := 0; i < size; i++ {
@@ -268,157 +253,4 @@ func ConvertTo[T Encodable](v reflect.Value) Encodable {
 		panic("unable to convert to T")
 	}
 	return value
-}
-
-// Tinygo does not support some features needed
-// used in the DecodeTuple method
-func DecodeTuple(buffer *bytes.Buffer, t interface{}) {
-	tVal := reflect.ValueOf(t).Elem()
-	tTyp := reflect.TypeOf(t).Elem()
-
-	if tVal.Kind() != reflect.Struct {
-		panic("not a SCALE Tuple type")
-	}
-
-	for i := 0; i < tVal.NumField(); i++ {
-		field := tVal.Field(i)
-
-		if tTyp.Field(i).IsExported() && field.CanSet() {
-
-			switch field.Kind() {
-			case reflect.Bool:
-				field.Set(reflect.ValueOf(DecodeBool(buffer)))
-			case reflect.Uint, reflect.Int:
-				field.Set(reflect.ValueOf(DecodeCompact(buffer)))
-			case reflect.Uint8:
-				field.Set(reflect.ValueOf(DecodeU8(buffer)))
-			case reflect.Int8:
-				field.Set(reflect.ValueOf(DecodeI8(buffer)))
-			case reflect.Uint16:
-				field.Set(reflect.ValueOf(DecodeU16(buffer)))
-			case reflect.Int16:
-				field.Set(reflect.ValueOf(DecodeI16(buffer)))
-			case reflect.Uint32:
-				field.Set(reflect.ValueOf(DecodeU32(buffer)))
-			case reflect.Int32:
-				field.Set(reflect.ValueOf(DecodeI32(buffer)))
-			case reflect.Uint64:
-				field.Set(reflect.ValueOf(DecodeU64(buffer)))
-			case reflect.Int64:
-				field.Set(reflect.ValueOf(DecodeI64(buffer)))
-			case reflect.String:
-				field.Set(reflect.ValueOf(DecodeStr(buffer)))
-			case reflect.Array:
-				// U128, I128
-				switch field.Type().Name() {
-				case "U128":
-					field.Set(reflect.ValueOf(DecodeU128(buffer)))
-				case "I128":
-					field.Set(reflect.ValueOf(DecodeI128(buffer)))
-				default:
-					panic("unreachable case (Array) in DecodeTuple")
-				}
-			case reflect.Slice:
-				// Sequence[T], VaryingData
-				SequenceFieldDecode(buffer, field)
-				// TODO: FixedSequence[T]
-
-				// case reflect.Map:
-				// 	panic("decoding of SCALE Dictionary field is not implemented")
-				// case reflect.Struct:
-				// 	// Empty, CompactU128
-				// 	switch field.Type() {
-				// 	case reflect.TypeOf(*new(Empty)):
-				// 		DecodeTuple(buffer, field.Interface())
-				// 	case reflect.TypeOf(*new(CompactU128)):
-				// 		reflect.ValueOf(DecodeCompactU128(buffer))
-				// 	default:
-				// 		// Option[T], Result[T], Tuple
-				// 		if field.Kind().String() == "struct" {
-				// 			DecodeTuple(buffer, field.Interface())
-				// 		} else {
-				// 			panic("unreachable case (Struct) in DecodeTuple")
-				// 		}
-				// 	}
-				// case reflect.Float32:
-				// 	panic("decoding of Float32 field is not supported")
-				// case reflect.Float64:
-				// 	panic("decoding of Float64 field is not supported")
-				// case reflect.Complex64:
-				// 	panic("decoding of Complex64 field is not supported")
-				// case reflect.Complex128:
-				// 	panic("decoding of Complex128 field is not supported")
-				// case reflect.Uintptr:
-				// 	panic("decoding of Uintptr field is not implemented")
-				// case reflect.UnsafePointer:
-				// 	panic("decoding of UnsafePointer field is not implemented")
-				// case reflect.Pointer:
-				// 	panic("decoding of Pointer field is not implemented")
-				// case reflect.Chan:
-				// 	panic("decoding of Chan field is not implemented")
-				// case reflect.Func:
-				//  panic("decoding of Func field is not implemented")
-			case reflect.Interface:
-				/*
-					Here it does nothing, but that allows the usage of embedded Encodable
-					in custom-defined structs and thus which allows using them in places where Encodable
-					is expected like in the case of Option[T], Result[T].
-				*/
-			default:
-				panic("unreachable case in DecodeTuple")
-			}
-
-		}
-	}
-}
-
-func SequenceFieldDecode(buffer *bytes.Buffer, field reflect.Value) {
-	switch field.Type().Elem() {
-	case reflect.TypeOf(*new(Bool)):
-		field.Set(reflect.ValueOf(DecodeSequence[Bool](buffer)))
-	case reflect.TypeOf(*new(U8)):
-		field.Set(reflect.ValueOf(DecodeSequence[U8](buffer)))
-	case reflect.TypeOf(*new(I8)):
-		field.Set(reflect.ValueOf(DecodeSequence[I8](buffer)))
-	case reflect.TypeOf(*new(U16)):
-		field.Set(reflect.ValueOf(DecodeSequence[U16](buffer)))
-	case reflect.TypeOf(*new(I16)):
-		field.Set(reflect.ValueOf(DecodeSequence[I16](buffer)))
-	case reflect.TypeOf(*new(U32)):
-		field.Set(reflect.ValueOf(DecodeSequence[U32](buffer)))
-	case reflect.TypeOf(*new(I32)):
-		field.Set(reflect.ValueOf(DecodeSequence[I32](buffer)))
-	case reflect.TypeOf(*new(U64)):
-		field.Set(reflect.ValueOf(DecodeSequence[U64](buffer)))
-	case reflect.TypeOf(*new(I64)):
-		field.Set(reflect.ValueOf(DecodeSequence[I64](buffer)))
-	case reflect.TypeOf(*new(U128)):
-		field.Set(reflect.ValueOf(DecodeSequence[U128](buffer)))
-	case reflect.TypeOf(*new(I128)):
-		field.Set(reflect.ValueOf(DecodeSequence[I128](buffer)))
-	case reflect.TypeOf(*new(Compact)):
-		field.Set(reflect.ValueOf(DecodeSequence[Compact](buffer)))
-	case reflect.TypeOf(*new(CompactU128)):
-		field.Set(reflect.ValueOf(DecodeSequence[CompactU128](buffer)))
-	case reflect.TypeOf(*new(Str)):
-		field.Set(reflect.ValueOf(DecodeSequence[Str](buffer)))
-	case reflect.TypeOf(*new(VaryingData)):
-		field.Set(reflect.ValueOf(DecodeSequence[VaryingData](buffer)))
-	default:
-		switch field.Type() {
-		// case reflect.TypeOf(*new(VaryingData)):
-		// 	field.Set(reflect.ValueOf(DecodeVaryingData(buffer)))
-		default:
-			// Sequence[Option], Sequence[Result], Sequence[Tuple]
-
-			// Tinygo does not support:
-			// panic("unimplemented:reflect.MakeSlice()")
-			// panic("unimplemented: (reflect.Value).Addr()")
-			size := int(DecodeCompact(buffer))
-			field.Set(reflect.MakeSlice(field.Type(), size, size))
-			for i := 0; i < field.Len(); i++ {
-				DecodeTuple(buffer, field.Addr().Elem().Index(i).Addr().Interface())
-			}
-		}
-	}
 }

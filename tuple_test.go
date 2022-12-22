@@ -289,8 +289,8 @@ type TupleNested struct {
 
 type TupleSequence struct {
 	Tuple
-	I0 Sequence[Bool]
-	I1 Sequence[U8]
+	// I0 Sequence[Bool]
+	// I1 Sequence[U8]
 	// I2 Sequence[I8]
 	// I3  Sequence[U16]
 	// I4  Sequence[I16]
@@ -302,13 +302,13 @@ type TupleSequence struct {
 	// I10 Sequence[I128]
 	// I11 Sequence[Compact]
 	// I12 Sequence[CompactU128]
-	I13 Sequence[Str]
-	// I14 Sequence[Sequence[Bool]]
-	I15 Sequence[VaryingData]
-	I16 Sequence[Option[U8]]
-	I17 Sequence[Result[U8]]
-	I18 Sequence[Empty]
-	I19 Sequence[TupleNested]
+	// I13 Sequence[Str]
+	I14 Sequence[Sequence[Bool]]
+	// I15 Sequence[VaryingData]
+	// I16 Sequence[Option[U8]]
+	// I17 Sequence[Result[U8]]
+	// I18 Sequence[Empty]
+	// I19 Sequence[TupleNested]
 }
 
 func Test_EncodeTupleSequence(t *testing.T) {
@@ -320,50 +320,56 @@ func Test_EncodeTupleSequence(t *testing.T) {
 		{
 			label: "TupleSequence",
 			input: TupleSequence{
-				I0: Sequence[Bool]{true, false, true},
+				// I0: Sequence[Bool]{true, false, true},
 
-				I1: Sequence[U8]{1, 2, 3},
+				// I1: Sequence[U8]{1, 2, 3},
 
-				I13: Sequence[Str]{"abc", "xyz"},
+				// I13: Sequence[Str]{"abc", "xyz"},
 
-				I15: Sequence[VaryingData]{
-					NewVaryingData(U8(42), Bool(true)),
-					NewVaryingData(U8(1), Bool(false)),
+				I14: Sequence[Sequence[Bool]]{
+					{true, false},
+					{true, true},
 				},
 
-				I16: Sequence[Option[U8]]{
-					{HasValue: true, Value: 3},
-					{HasValue: true, Value: 5},
-				},
+				// I15: Sequence[VaryingData]{
+				// 	NewVaryingData(U8(42), Bool(true)),
+				// 	NewVaryingData(U8(1), Bool(false)),
+				// },
 
-				I17: Sequence[Result[U8]]{
-					{Ok: true, Value: 3},
-					{Ok: true, Value: 5},
-				},
+				// I16: Sequence[Option[U8]]{
+				// 	{HasValue: true, Value: 3},
+				// 	{HasValue: true, Value: 5},
+				// },
 
-				I18: Sequence[Empty]{{}, {}, {}},
+				// I17: Sequence[Result[U8]]{
+				// 	{Ok: true, Value: 3},
+				// 	{Ok: true, Value: 5},
+				// },
 
-				I19: Sequence[TupleNested]{
-					{
-						Q0: TupleBool{A0: true, A1: false},
-						Q1: TupleU8I8{B0: 1, B1: 2},
-						Q2: TupleStr{H0: "abc", H1: "xyz"},
-					},
-					{
-						Q0: TupleBool{A0: false, A1: true},
-						Q1: TupleU8I8{B0: 3, B1: 4},
-					},
-				},
+				// I18: Sequence[Empty]{{}, {}, {}},
+
+				// I19: Sequence[TupleNested]{
+				// 	{
+				// 		Q0: TupleBool{A0: true, A1: false},
+				// 		Q1: TupleU8I8{B0: 1, B1: 2},
+				// 		Q2: TupleStr{H0: "abc", H1: "xyz"},
+				// 	},
+				// 	{
+				// 		Q0: TupleBool{A0: false, A1: true},
+				// 		Q1: TupleU8I8{B0: 3, B1: 4},
+				// 	},
+				// },
 			},
 			expectation: []byte{
-				0x0c, 0x01, 0x00, 0x01, // Sequence[Bool]
-				0x0c, 0x01, 0x02, 0x03, // Sequence[U8]
-				0x08, 0x0c, 0x61, 0x62, 0x63, 0x0c, 0x78, 0x79, 0x7a, // Sequence[Str]
-				0x08, 0x00, 0x2a, 0x01, 0x01, 0x00, 0x01, 0x01, 0x00, // Sequence[VaryingData]
-				0x08, 0x01, 0x03, 0x01, 0x05, // Sequence[Option[U8]]
-				0x08, 0x01, 0x03, 0x01, 0x05, // Sequence[Result[U8]]
-				0x0c,                                                                                                             // Sequence[Empty]
-				0x08, 0x01, 0x00, 0x01, 0x02, 0x0c, 0x61, 0x62, 0x63, 0x0c, 0x78, 0x79, 0x7a, 0x00, 0x01, 0x03, 0x04, 0x00, 0x00, // Sequence[TupleValue]
+				// 0x0c, 0x01, 0x00, 0x01, // Sequence[Bool]
+				// 0x0c, 0x01, 0x02, 0x03, // Sequence[U8]
+				// 0x08, 0x0c, 0x61, 0x62, 0x63, 0x0c, 0x78, 0x79, 0x7a, // Sequence[Str]
+				0x08, 0x08, 0x01, 0x00, 0x08, 0x01, 0x01, // I14
+				// 0x08, 0x00, 0x2a, 0x01, 0x01, 0x00, 0x01, 0x01, 0x00, // Sequence[VaryingData]
+				// 0x08, 0x01, 0x03, 0x01, 0x05, // Sequence[Option[U8]]
+				// 0x08, 0x01, 0x03, 0x01, 0x05, // Sequence[Result[U8]]
+				// 0x0c,                                                                                                             // Sequence[Empty]
+				// 0x08, 0x01, 0x00, 0x01, 0x02, 0x0c, 0x61, 0x62, 0x63, 0x0c, 0x78, 0x79, 0x7a, 0x00, 0x01, 0x03, 0x04, 0x00, 0x00, // Sequence[TupleValue]
 			},
 		},
 	}
@@ -634,63 +640,6 @@ func Test_EncodeTupleAll(t *testing.T) {
 			EncodeTuple(testExample.input, buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
-		})
-	}
-}
-
-type TupleExample struct {
-	// Tuple
-	A0  Bool
-	A1  U8
-	A2  I8
-	A3  U16
-	A4  I16
-	A5  U32
-	A6  I32
-	A7  U64
-	A8  I64
-	A9  U128
-	A10 I128
-	A11 Compact // CompactU128
-	A12 Str
-}
-
-func Test_DecodeTupleExample(t *testing.T) {
-	t.Skip()
-	var testExamples = []struct {
-		label       string
-		input       []byte
-		expectation TupleExample
-	}{
-		{
-			label: "[]",
-			input: []byte{},
-			expectation: TupleExample{
-				A0:  true,
-				A1:  1,
-				A2:  2,
-				A3:  3,
-				A4:  4,
-				A5:  5,
-				A6:  6,
-				A7:  7,
-				A8:  8,
-				A12: "abc",
-			},
-		},
-	}
-
-	for _, testExample := range testExamples {
-		t.Run(testExample.label, func(t *testing.T) {
-			buffer := &bytes.Buffer{}
-			// buffer.Write(testExample.input)
-			EncodeTuple(testExample.expectation, buffer)
-			// t.Logf("\n\nRESULT: %#x\n\n", buffer.Bytes())
-
-			v := TupleExample{}
-			DecodeTuple(buffer, &v)
-
-			assertEqual(t, v, testExample.expectation)
 		})
 	}
 }
