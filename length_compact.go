@@ -19,7 +19,7 @@ func (c Compact) Encode(buffer *bytes.Buffer) {
 	encoder.Write(c.Bytes())
 }
 
-func (c Compact) ToBigInt() big.Int {
+func (c Compact) ToBigInt() *big.Int {
 	return toBigInt(U128(c))
 }
 
