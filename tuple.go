@@ -39,8 +39,6 @@ func EncodeTuple(t interface{}, buffer *bytes.Buffer) {
 			switch field.Kind() {
 			case reflect.Bool:
 				ConvertTo[Bool](field).Encode(buffer)
-			case reflect.Uint, reflect.Int:
-				ConvertTo[Compact](field).Encode(buffer)
 			case reflect.Uint8:
 				ConvertTo[U8](field).Encode(buffer)
 			case reflect.Int8:
@@ -60,12 +58,14 @@ func EncodeTuple(t interface{}, buffer *bytes.Buffer) {
 			case reflect.String:
 				ConvertTo[Str](field).Encode(buffer)
 			case reflect.Array:
-				// U128, I128
+				// U128, I128, Compact
 				switch field.Type() {
 				case reflect.TypeOf(*new(U128)):
 					ConvertTo[U128](field).Encode(buffer)
 				case reflect.TypeOf(*new(I128)):
 					ConvertTo[I128](field).Encode(buffer)
+				case reflect.TypeOf(*new(Compact)):
+					ConvertTo[Compact](field).Encode(buffer)
 				default:
 					panic("unreachable case (Array) in EncodeTuple")
 				}
@@ -75,12 +75,9 @@ func EncodeTuple(t interface{}, buffer *bytes.Buffer) {
 			case reflect.Map:
 				DictionaryFieldEncode(field, buffer)
 			case reflect.Struct:
-				// Empty, CompactU128
 				switch field.Type() {
 				case reflect.TypeOf(*new(Empty)):
 					EncodeTuple(field.Interface(), buffer)
-				case reflect.TypeOf(*new(CompactU128)):
-					ConvertTo[CompactU128](field).Encode(buffer)
 				default:
 					// Option[T], Result[T], Tuple
 					if field.Kind() == reflect.Struct {
@@ -89,7 +86,7 @@ func EncodeTuple(t interface{}, buffer *bytes.Buffer) {
 						panic("unreachable case (Struct) in EncodeTuple")
 					}
 				}
-			case reflect.Float32, reflect.Float64, reflect.Complex64, reflect.Complex128:
+			case reflect.Int, reflect.Uint, reflect.Float32, reflect.Float64, reflect.Complex64, reflect.Complex128:
 				panic("encoding of T field is not supported")
 			case reflect.Uintptr, reflect.UnsafePointer, reflect.Pointer, reflect.Chan, reflect.Func:
 				panic("encoding of T field is not implemented")
@@ -134,8 +131,6 @@ func SequenceFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 		ConvertToSequence[I128](field).Encode(buffer)
 	case reflect.TypeOf(*new(Compact)):
 		ConvertToSequence[Compact](field).Encode(buffer)
-	case reflect.TypeOf(*new(CompactU128)):
-		ConvertToSequence[CompactU128](field).Encode(buffer)
 	case reflect.TypeOf(*new(Str)):
 		ConvertToSequence[Str](field).Encode(buffer)
 	case reflect.TypeOf(*new(VaryingData)):
@@ -146,7 +141,7 @@ func SequenceFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 	// TODO: Sequence[Dictionary[T1, T2]]
 	case reflect.TypeOf(*new(Sequence[Bool])):
 		size := field.Len()
-		Compact(size).Encode(buffer)
+		ToCompact(uint64(size)).Encode(buffer)
 		for i := 0; i < field.Len(); i++ {
 			SequenceFieldEncode(field.Index(i), buffer)
 		}
@@ -162,7 +157,7 @@ func SequenceFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 			// since there are infinite number of T we can't use switch
 			size := field.Len()
 			// TODO: if it is a FixedSequence[T] don't encode the length
-			Compact(size).Encode(buffer)
+			ToCompact(uint64(size)).Encode(buffer)
 			for i := 0; i < size; i++ {
 				seqElem := field.Index(i)
 				EncodeTuple(seqElem.Interface(), buffer)
@@ -198,8 +193,6 @@ func DictionaryFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 		ConvertToDictionary[Str, I128](field).Encode(buffer)
 	case reflect.TypeOf(*new(Compact)):
 		ConvertToDictionary[Str, Compact](field).Encode(buffer)
-	case reflect.TypeOf(*new(CompactU128)):
-		ConvertToDictionary[Str, CompactU128](field).Encode(buffer)
 	case reflect.TypeOf(*new(Str)):
 		ConvertToDictionary[Str, Str](field).Encode(buffer)
 	case reflect.TypeOf(*new(VaryingData)):
@@ -218,7 +211,7 @@ func DictionaryFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 
 			// TODO: if it is a FixedSequence[T] don't encode the length
 			size := field.Len()
-			Compact(size).Encode(buffer)
+			ToCompact(uint64(size)).Encode(buffer)
 			for i := 0; i < size; i++ {
 				seqElem := field.Index(i)
 				EncodeTuple(seqElem.Interface(), buffer)

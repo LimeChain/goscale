@@ -186,6 +186,10 @@ func (value I64) String() string {
 
 type U128 [2]U64
 
+func NewU128FromUint64(v uint64) U128 {
+	return NewU128FromBigInt(new(big.Int).SetUint64(v))
+}
+
 func NewU128FromBigInt(v *big.Int) U128 {
 	b := make([]byte, 16)
 	v.FillBytes(b)
@@ -207,12 +211,16 @@ func (u U128) Bytes() []byte {
 	return append(u[0].Bytes(), u[1].Bytes()...)
 }
 
-func (u U128) ToBigInt() big.Int {
+func (u U128) ToBigInt() *big.Int {
+	return toBigInt(u)
+}
+
+func toBigInt(u U128) *big.Int {
 	bytes := make([]byte, 16)
 	binary.BigEndian.PutUint64(bytes[:8], uint64(u[1]))
 	binary.BigEndian.PutUint64(bytes[8:], uint64(u[0]))
 
-	return *big.NewInt(0).SetBytes(bytes)
+	return big.NewInt(0).SetBytes(bytes)
 }
 
 func DecodeU128(buffer *bytes.Buffer) U128 {
@@ -263,7 +271,7 @@ func (value I128) Bytes() []byte {
 	return append(value[0].Bytes(), value[1].Bytes()...)
 }
 
-func (value I128) ToBigInt() big.Int {
+func (value I128) ToBigInt() *big.Int {
 	isNegative := value[1]&U64(1<<63) != 0
 	if isNegative {
 		if value[0] == 0 {
@@ -284,7 +292,7 @@ func (value I128) ToBigInt() big.Int {
 		result.Neg(result)
 	}
 
-	return *result
+	return result
 }
 
 func DecodeI128(buffer *bytes.Buffer) I128 {

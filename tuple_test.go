@@ -211,7 +211,7 @@ func Test_EncodeTupleU128I128(t *testing.T) {
 type TupleCompact struct {
 	Tuple
 	G0 Compact
-	G1 CompactU128
+	G1 Compact
 }
 
 func Test_EncodeTupleCompact(t *testing.T) {
@@ -223,8 +223,8 @@ func Test_EncodeTupleCompact(t *testing.T) {
 		{
 			label: "TupleCompact",
 			input: TupleCompact{
-				G0: Compact(1073741824),
-				G1: CompactU128{NewU128FromBigInt(big.NewInt(0).SetUint64(1073741823))},
+				G0: Compact(NewU128FromBigInt(big.NewInt(0).SetInt64(1073741824))),
+				G1: Compact(NewU128FromBigInt(big.NewInt(0).SetUint64(1073741823))),
 			},
 			expectation: []byte{
 				0x03, 0x00, 0x00, 0x00, 0x40, // G0
@@ -301,7 +301,6 @@ type TupleSequence struct {
 	// I9  Sequence[U128]
 	// I10 Sequence[I128]
 	// I11 Sequence[Compact]
-	// I12 Sequence[CompactU128]
 	// I13 Sequence[Str]
 	I14 Sequence[Sequence[Bool]]
 	// I15 Sequence[VaryingData]
