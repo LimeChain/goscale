@@ -26,7 +26,7 @@ func Test_VaryingData_Encode(t *testing.T) {
 			expect: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1, 0xff, 0xff, 0xff, 0xff, 0x2, 0x4, 0x2a}},
 		{
 			label:  "Encode VaryingData(I8,U16,I16,CompactUint,CompactUint,I32,I64)",
-			input:  NewVaryingData(I8(math.MinInt8), U16(math.MaxUint16), I16(math.MinInt16), toCompact(100000000000000), toCompact(5), I32(math.MinInt32), I64(math.MinInt64)),
+			input:  NewVaryingData(I8(math.MinInt8), U16(math.MaxUint16), I16(math.MinInt16), ToCompact(100000000000000), ToCompact(5), I32(math.MinInt32), I64(math.MinInt64)),
 			expect: []byte{0x0, 0x80, 0x1, 0xff, 0xff, 0x2, 0x00, 0x80, 0x3, 0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a, 0x4, 0x14, 0x5, 0x0, 0x0, 0x0, 0x80, 0x6, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
 		},
 	}
@@ -84,14 +84,14 @@ func Test_VaryingData_Decode(t *testing.T) {
 		{
 			label:  "Decode VaryingData(I8,U16,I16,CompactUint,CompactUint,I32,I64)",
 			input:  []byte{0x0, 0x80, 0x1, 0xff, 0xff, 0x2, 0x00, 0x80, 0x3, 0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a, 0x4, 0x14, 0x5, 0x0, 0x0, 0x0, 0x80, 0x6, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
-			order:  []Encodable{I8(0), U16(0), I16(0), toCompact(0), toCompact(0), I32(0), I64(0)},
-			expect: NewVaryingData(I8(math.MinInt8), U16(math.MaxUint16), I16(math.MinInt16), toCompact(100000000000000), toCompact(5), I32(math.MinInt32), I64(math.MinInt64)),
+			order:  []Encodable{I8(0), U16(0), I16(0), ToCompact(0), ToCompact(0), I32(0), I64(0)},
+			expect: NewVaryingData(I8(math.MinInt8), U16(math.MaxUint16), I16(math.MinInt16), ToCompact(100000000000000), ToCompact(5), I32(math.MinInt32), I64(math.MinInt64)),
 		},
 		{
 			label:  "Decode VaryingData(U8, Bool, Compact, I8) with mixed bytes order",
 			input:  []byte{0x1, 0x1, 0x3, 0x80, 0x0, 0x5, 0x2, 0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a},
-			order:  []Encodable{U8(0), Bool(false), toCompact(0), I8(0)},
-			expect: NewVaryingData(U8(5), Bool(true), toCompact(100000000000000), I8(math.MinInt8)),
+			order:  []Encodable{U8(0), Bool(false), ToCompact(0), I8(0)},
+			expect: NewVaryingData(U8(5), Bool(true), ToCompact(100000000000000), I8(math.MinInt8)),
 		},
 	}
 

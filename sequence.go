@@ -15,7 +15,7 @@ import (
 type Sequence[T Encodable] []T
 
 func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
-	toCompact(uint64(len(seq))).Encode(buffer)
+	ToCompact(uint64(len(seq))).Encode(buffer)
 
 	for _, v := range seq {
 		if reflect.TypeOf(v).Kind() == reflect.Struct {

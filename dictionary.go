@@ -19,7 +19,7 @@ type Comparable interface {
 type Dictionary[K Comparable, V Encodable] map[K]V
 
 func (d Dictionary[K, V]) Encode(buffer *bytes.Buffer) {
-	toCompact(uint64(len(d))).Encode(buffer)
+	ToCompact(uint64(len(d))).Encode(buffer)
 
 	keys := make([]K, 0)
 	for k := range d {

@@ -142,7 +142,7 @@ func SequenceFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 	// TODO: Sequence[Dictionary[T1, T2]]
 	case reflect.TypeOf(*new(Sequence[Bool])):
 		size := field.Len()
-		toCompact(uint64(size)).Encode(buffer)
+		ToCompact(uint64(size)).Encode(buffer)
 		for i := 0; i < field.Len(); i++ {
 			SequenceFieldEncode(field.Index(i), buffer)
 		}
@@ -158,7 +158,7 @@ func SequenceFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 			// since there are infinite number of T we can't use switch
 			size := field.Len()
 			// TODO: if it is a FixedSequence[T] don't encode the length
-			toCompact(uint64(size)).Encode(buffer)
+			ToCompact(uint64(size)).Encode(buffer)
 			for i := 0; i < size; i++ {
 				seqElem := field.Index(i)
 				EncodeTuple(seqElem.Interface(), buffer)
@@ -212,7 +212,7 @@ func DictionaryFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 
 			// TODO: if it is a FixedSequence[T] don't encode the length
 			size := field.Len()
-			toCompact(uint64(size)).Encode(buffer)
+			ToCompact(uint64(size)).Encode(buffer)
 			for i := 0; i < size; i++ {
 				seqElem := field.Index(i)
 				EncodeTuple(seqElem.Interface(), buffer)

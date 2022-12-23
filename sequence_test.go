@@ -138,7 +138,7 @@ func Test_EncodeCompactSequence(t *testing.T) {
 	}{
 		{
 			label: "()",
-			input: Sequence[Compact]{toCompact(42), toCompact(63), toCompact(64), toCompact(65535), toCompact(1073741823)},
+			input: Sequence[Compact]{ToCompact(42), ToCompact(63), ToCompact(64), ToCompact(65535), ToCompact(1073741823)},
 			expectation: []byte{
 				0x14,
 				0xa8,
