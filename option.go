@@ -25,7 +25,9 @@ func (o Option[T]) Encode(buffer *bytes.Buffer) {
 }
 
 func (o Option[T]) Bytes() []byte {
-	return append(o.HasValue.Bytes(), o.Value.Bytes()...)
+	buffer := &bytes.Buffer{}
+	o.Encode(buffer)
+	return buffer.Bytes()
 }
 
 func DecodeOption[T Encodable](buffer *bytes.Buffer) Option[T] {
