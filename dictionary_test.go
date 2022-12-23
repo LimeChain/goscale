@@ -30,6 +30,7 @@ func Test_EncodeDictionaryStrBool(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -84,6 +85,7 @@ func Test_EncodeDictionaryU8Str(t *testing.T) {
 			testExample.input.Encode(buffer)
 
 			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }

@@ -62,6 +62,8 @@ func Test_EncodeOption(t *testing.T) {
 
 			// then:
 			assertEqual(t, buffer.Bytes(), e.expect)
+			// and:
+			assertEqual(t, e.input.Bytes(), e.expect)
 		})
 	}
 }
@@ -88,6 +90,8 @@ func Test_EncodeOptionBool(t *testing.T) {
 
 			// then:
 			assertEqual(t, buffer.Bytes(), e.expect)
+			// and:
+			assertEqual(t, e.input.Bytes(), e.expect)
 		})
 	}
 }
