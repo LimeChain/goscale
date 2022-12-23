@@ -75,7 +75,6 @@ func EncodeTuple(t interface{}, buffer *bytes.Buffer) {
 			case reflect.Map:
 				DictionaryFieldEncode(field, buffer)
 			case reflect.Struct:
-				// Empty, Compact
 				switch field.Type() {
 				case reflect.TypeOf(*new(Empty)):
 					EncodeTuple(field.Interface(), buffer)
