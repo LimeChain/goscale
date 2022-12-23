@@ -1,0 +1,9 @@
+ignore:
+  - ".github"
+  - "go.mod"
+  - "go.sum"
+
+coverage:
+  range: "85..100"
+  round: down
+  precision: 2
