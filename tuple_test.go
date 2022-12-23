@@ -642,3 +642,19 @@ func Test_EncodeTupleAll(t *testing.T) {
 		})
 	}
 }
+
+func Test_TupleEncodablePanics(t *testing.T) {
+	type testTuple struct {
+		Tuple
+	}
+	tuple := testTuple{}
+
+	buffer := &bytes.Buffer{}
+
+	assertPanic(t, func() {
+		tuple.Encode(buffer)
+	})
+	assertPanic(t, func() {
+		tuple.Bytes()
+	})
+}
