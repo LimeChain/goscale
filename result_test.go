@@ -33,7 +33,7 @@ func Test_EncodeResult(t *testing.T) {
 
 		{label: "Encode Result(true, empty Seq[U8])", input: Result[Encodable]{true, Sequence[U8]{}}, expect: []byte{0x0, 0x0}},
 		{label: "Encode Result(true, Seq[U8])", input: Result[Encodable]{true, Sequence[U8]{42}}, expect: []byte{0x0, 0x4, 0x2a}},
-		{label: "Encode Result(true, Result(true, Seq[U8])", input: Result[Encodable]{true, Result[Encodable]{false, Sequence[U8]{42, 43}}}, expect: []byte{0x0, 0x1, 0x8, 0x2a, 0x2b}},
+		{label: "Encode Result(true, Result(false, Seq[U8])", input: Result[Encodable]{true, Result[Encodable]{false, Sequence[U8]{42, 43}}}, expect: []byte{0x0, 0x1, 0x8, 0x2a, 0x2b}},
 	}
 
 	for _, e := range examples {
