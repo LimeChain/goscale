@@ -16,7 +16,7 @@ type Result[T Encodable] struct {
 }
 
 func (r Result[T]) Encode(buffer *bytes.Buffer) {
-	r.Ok.Encode(buffer)
+	(!r.Ok).Encode(buffer)
 	r.Value.Encode(buffer)
 }
 
@@ -28,8 +28,9 @@ func (r Result[T]) Bytes() []byte {
 }
 
 func DecodeResult[T Encodable](buffer *bytes.Buffer) Result[T] {
-	ok := DecodeBool(buffer)
+	ok := !DecodeBool(buffer)
 	value := decodeByType(*new(T), buffer)
+
 	return Result[T]{
 		Ok:    ok,
 		Value: value.(T),
