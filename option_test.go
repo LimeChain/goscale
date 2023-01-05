@@ -49,7 +49,7 @@ func Test_EncodeOption(t *testing.T) {
 		{label: "Encode Option(true, empty Seq[U8])", input: Option[Encodable]{true, Sequence[U8]{}}, expect: []byte{0x1, 0x0}},
 		{label: "Encode Option(true, Seq[U8])", input: Option[Encodable]{true, Sequence[U8]{42}}, expect: []byte{0x1, 0x4, 0x2a}},
 
-		{label: "Encode Option(true, Result(true, Seq[U8])", input: Option[Encodable]{true, Result[Encodable]{true, Sequence[U8]{42}}}, expect: []byte{0x1, 0x1, 0x4, 0x2a}},
+		{label: "Encode Option(true, Result(true, Seq[U8])", input: Option[Encodable]{true, Result[Encodable]{true, Sequence[U8]{42}}}, expect: []byte{0x1, 0x0, 0x4, 0x2a}},
 	}
 
 	for _, e := range examples {
