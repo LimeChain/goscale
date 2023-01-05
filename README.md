@@ -1,5 +1,8 @@
 # SCALE codec implementation in Go compatible with a Tinygo based toolchain
 
+
+[![codecov](https://codecov.io/gh/LimeChain/goscale/branch/master/graph/badge.svg?token=3OQPC6VNMB)](https://codecov.io/gh/LimeChain/goscale)
+
 The SCALE types in Go are represented by a set of custom-defined types that implement the `Encodable` interface. There is also a `Decode` function for each type. Note that the type to which data should be decoded is inferred by the context, it is not self-contained in the SCALE encoded data. 
 
 One exception is the `Tuple` type, which does not have methods attached, but instead, there are `EncodeTuple / DecodeTuple` functions that can be called with any custom struct that embeds the `Tuple` interface.
