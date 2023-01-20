@@ -27,10 +27,7 @@ func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
 }
 
 func (seq Sequence[Encodable]) Bytes() []byte {
-	buffer := &bytes.Buffer{}
-	seq.Encode(buffer)
-
-	return buffer.Bytes()
+	return EncodedBytes(seq)
 }
 
 func DecodeSequence[T Encodable](buffer *bytes.Buffer) Sequence[T] {
@@ -50,6 +47,19 @@ func DecodeSliceU8(buffer *bytes.Buffer) []U8 {
 
 type FixedSequence[T Encodable] []T // TODO: https://github.com/LimeChain/goscale/issues/37
 
+// Initializes with the specified size and provides size checks (at least at runtime)
+func NewFixedSequence[T Encodable](size int, values ...T) FixedSequence[T] {
+	if len(values) != size {
+		panic("values size is out of the specified bound")
+	}
+
+	fseq := make(FixedSequence[T], size)
+	for i, v := range values {
+		fseq[i] = T(v)
+	}
+	return fseq
+}
+
 func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) {
 	for _, v := range fseq {
 		if reflect.TypeOf(v).Kind() == reflect.Struct {
@@ -61,10 +71,7 @@ func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) {
 }
 
 func (fseq FixedSequence[T]) Bytes() []byte {
-	buffer := &bytes.Buffer{}
-	fseq.Encode(buffer)
-
-	return buffer.Bytes()
+	return EncodedBytes(fseq)
 }
 
 func DecodeFixedSequence[T Encodable](size int, buffer *bytes.Buffer) FixedSequence[T] {
