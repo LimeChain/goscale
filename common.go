@@ -13,6 +13,12 @@ type Ordered interface {
 	I8 | I16 | I32 | I64 | U8 | U16 | U32 | U64 | Str
 }
 
+func EncodedBytes(e Encodable) []byte {
+	buffer := &bytes.Buffer{}
+	e.Encode(buffer)
+	return buffer.Bytes()
+}
+
 func decodeByType(i interface{}, buffer *bytes.Buffer) Encodable {
 	switch i.(type) {
 	case Bool:
