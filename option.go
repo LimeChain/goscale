@@ -7,11 +7,24 @@ package goscale
 	HasValue indicates if Value is available.
 */
 
-import "bytes"
+import (
+	"bytes"
+)
 
 type Option[T Encodable] struct {
 	HasValue Bool
 	Value    T
+}
+
+func NewOption[T Encodable](value Encodable) Option[T] {
+	switch value := value.(type) {
+	case T:
+		return Option[T]{HasValue: true, Value: value}
+	case nil:
+		return Option[T]{HasValue: false}
+	default:
+		panic("invalid value type for Option[T]")
+	}
 }
 
 func (o Option[T]) Encode(buffer *bytes.Buffer) {
@@ -22,12 +35,6 @@ func (o Option[T]) Encode(buffer *bytes.Buffer) {
 		encoder.EncodeByte(1)
 		o.Value.Encode(buffer)
 	}
-}
-
-func (o Option[T]) Bytes() []byte {
-	buffer := &bytes.Buffer{}
-	o.Encode(buffer)
-	return buffer.Bytes()
 }
 
 func DecodeOption[T Encodable](buffer *bytes.Buffer) Option[T] {
@@ -43,6 +50,12 @@ func DecodeOption[T Encodable](buffer *bytes.Buffer) Option[T] {
 	}
 
 	return option
+}
+
+func (o Option[T]) Bytes() []byte {
+	buffer := &bytes.Buffer{}
+	o.Encode(buffer)
+	return buffer.Bytes()
 }
 
 type OptionBool Option[Bool]
