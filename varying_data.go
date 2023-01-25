@@ -24,23 +24,11 @@ func NewVaryingData(values ...Encodable) VaryingData {
 	return result
 }
 
-func VaryingDataAs[T Encodable](vd VaryingData) []T {
-	result := make([]T, len(vd))
-	for _, v := range vd {
-		result = append(result, v.(T))
-	}
-	return result
-}
-
 func (vd VaryingData) Encode(buffer *bytes.Buffer) {
 	for i, v := range vd {
 		U8(i).Encode(buffer)
 		v.Encode(buffer)
 	}
-}
-
-func (vd VaryingData) Bytes() []byte {
-	return EncodedBytes(vd)
 }
 
 func DecodeVaryingData(values []Encodable, buffer *bytes.Buffer) VaryingData {
@@ -58,4 +46,8 @@ func DecodeVaryingData(values []Encodable, buffer *bytes.Buffer) VaryingData {
 	}
 
 	return result
+}
+
+func (vd VaryingData) Bytes() []byte {
+	return EncodedBytes(vd)
 }
