@@ -37,6 +37,12 @@ func (o Option[T]) Encode(buffer *bytes.Buffer) {
 	}
 }
 
+func (o Option[T]) Bytes() []byte {
+	buffer := &bytes.Buffer{}
+	o.Encode(buffer)
+	return buffer.Bytes()
+}
+
 func DecodeOption[T Encodable](buffer *bytes.Buffer) Option[T] {
 	b := DecodeBool(buffer)
 
@@ -50,12 +56,6 @@ func DecodeOption[T Encodable](buffer *bytes.Buffer) Option[T] {
 	}
 
 	return option
-}
-
-func (o Option[T]) Bytes() []byte {
-	buffer := &bytes.Buffer{}
-	o.Encode(buffer)
-	return buffer.Bytes()
 }
 
 type OptionBool Option[Bool]
