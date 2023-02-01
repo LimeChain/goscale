@@ -97,6 +97,14 @@ func DecodeStr(buffer *bytes.Buffer) Str {
 	return SliceU8ToStr(DecodeSliceU8(buffer))
 }
 
+func SliceU8ToStr(values []U8) Str {
+	result := make([]byte, len(values))
+	for i, v := range values {
+		result[i] = byte(v)
+	}
+	return Str(result)
+}
+
 func StrToSliceU8(s Str) []U8 {
 	result := make([]U8, len(s))
 	for i, v := range []byte(s) {
@@ -105,10 +113,47 @@ func StrToSliceU8(s Str) []U8 {
 	return result
 }
 
-func SliceU8ToStr(values []U8) Str {
-	result := make([]byte, len(values))
-	for i, v := range values {
-		result[i] = byte(v)
+// TODO: need to update Tinygo
+// type SequentialU8 interface {
+// 	Sequence[U8] | FixedSequence[U8]
+// }
+
+// func SequentialU8ToBytes[S SequentialU8](bytes S) []byte {
+// 	result := make([]byte, len(bytes))
+// 	for i, v := range bytes {
+// 		result[i] = byte(v) // TODO: https://github.com/LimeChain/goscale/issues/38
+// 	}
+// 	return result
+// }
+
+func SequenceU8ToBytes(bytes Sequence[U8]) []byte {
+	result := make([]byte, len(bytes))
+	for i, v := range bytes {
+		result[i] = byte(v) // TODO: https://github.com/LimeChain/goscale/issues/38
 	}
-	return Str(result)
+	return result
+}
+
+func FixedSequenceU8ToBytes(bytes FixedSequence[U8]) []byte {
+	result := make([]byte, len(bytes))
+	for i, v := range bytes {
+		result[i] = byte(v) // TODO: https://github.com/LimeChain/goscale/issues/38
+	}
+	return result
+}
+
+func BytesToSequenceU8(bytes []byte) Sequence[U8] {
+	result := make(Sequence[U8], len(bytes))
+	for i, v := range bytes {
+		result[i] = U8(v) // TODO: https://github.com/LimeChain/goscale/issues/38
+	}
+	return result
+}
+
+func BytesToFixedSequenceU8(bytes []byte) FixedSequence[U8] {
+	result := make(FixedSequence[U8], len(bytes))
+	for i, v := range bytes {
+		result[i] = U8(v) // TODO: https://github.com/LimeChain/goscale/issues/38
+	}
+	return result
 }
