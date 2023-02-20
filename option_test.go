@@ -870,7 +870,7 @@ func Test_DecodeOptionCompact(t *testing.T) {
 		{
 			label:         "Decode Compact(maxUint64)",
 			input:         []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-			expect:        NewOption[Compact](ToCompact(math.MaxUint64)),
+			expect:        NewOption[Compact](ToCompact(uint64(math.MaxUint64))),
 			bufferLenLeft: 0,
 		},
 	}

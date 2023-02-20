@@ -65,6 +65,29 @@ func reverseSlice(a []byte) {
 	}
 }
 
-func ToCompact(v uint64) Compact {
-	return Compact(NewU128FromUint64(v))
+func ToCompact(v interface{}) Compact {
+	switch v := v.(type) {
+	case int:
+		return Compact(NewU128FromUint64(uint64(v)))
+	case uint:
+		return Compact(NewU128FromUint64(uint64(v)))
+	case int8:
+		return Compact(NewU128FromUint64(uint64(v)))
+	case uint8:
+		return Compact(NewU128FromUint64(uint64(v)))
+	case int16:
+		return Compact(NewU128FromUint64(uint64(v)))
+	case uint16:
+		return Compact(NewU128FromUint64(uint64(v)))
+	case int32:
+		return Compact(NewU128FromUint64(uint64(v)))
+	case uint32:
+		return Compact(NewU128FromUint64(uint64(v)))
+	case int64:
+		return Compact(NewU128FromUint64(uint64(v)))
+	case uint64:
+		return Compact(NewU128FromUint64(uint64(v)))
+	default:
+		panic("invalid numeric type in ToCompact()")
+	}
 }
