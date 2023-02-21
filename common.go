@@ -100,7 +100,7 @@ func ToCompact(v interface{}) Compact {
 	case I64:
 		return Compact(NewU128FromUint64(uint64(v)))
 	case uint64:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128FromUint64(v))
 	case U64:
 		return Compact(NewU128FromUint64(uint64(v)))
 	default:
