@@ -1,6 +1,9 @@
 package goscale
 
-import "math"
+import (
+	"math"
+	"math/bits"
+)
 
 // TODO:
 // refactor this to be a separate package
@@ -32,6 +35,36 @@ func (a U8) Div(b U8) U8 {
 	return a / b
 }
 
+func (a U8) Max(b U8) U8 {
+	if a > b {
+		return a
+	}
+
+	return b
+}
+
+func (a U8) Min(b U8) U8 {
+	if a < b {
+		return a
+	}
+
+	return b
+}
+
+func (a U8) TrailingZeros() U8 {
+	return U8(bits.TrailingZeros(uint(a)))
+}
+
+func (a U8) Clamp(minValue, maxValue U8) U8 {
+	if a < minValue {
+		return minValue
+	} else if a > maxValue {
+		return maxValue
+	} else {
+		return a
+	}
+}
+
 func (a U16) Add(b U16) U16 {
 	return a + b
 }
@@ -46,6 +79,36 @@ func (a U16) Mul(b U16) U16 {
 
 func (a U16) Div(b U16) U16 {
 	return a / b
+}
+
+func (a U16) Max(b U16) U16 {
+	if a > b {
+		return a
+	}
+
+	return b
+}
+
+func (a U16) Min(b U16) U16 {
+	if a < b {
+		return a
+	}
+
+	return b
+}
+
+func (a U16) TrailingZeros() U16 {
+	return U16(bits.TrailingZeros(uint(a)))
+}
+
+func (a U16) Clamp(minValue, maxValue U16) U16 {
+	if a < minValue {
+		return minValue
+	} else if a > maxValue {
+		return maxValue
+	} else {
+		return a
+	}
 }
 
 func (a U32) Add(b U32) U32 {
@@ -64,6 +127,36 @@ func (a U32) Div(b U32) U32 {
 	return a / b
 }
 
+func (a U32) Max(b U32) U32 {
+	if a > b {
+		return a
+	}
+
+	return b
+}
+
+func (a U32) Min(b U32) U32 {
+	if a < b {
+		return a
+	}
+
+	return b
+}
+
+func (a U32) TrailingZeros() U32 {
+	return U32(bits.TrailingZeros(uint(a)))
+}
+
+func (a U32) Clamp(minValue, maxValue U32) U32 {
+	if a < minValue {
+		return minValue
+	} else if a > maxValue {
+		return maxValue
+	} else {
+		return a
+	}
+}
+
 func (a U64) Add(b U64) U64 {
 	return a + b
 }
@@ -78,6 +171,36 @@ func (a U64) Mul(b U64) U64 {
 
 func (a U64) Div(b U64) U64 {
 	return a / b
+}
+
+func (a U64) Max(b U64) U64 {
+	if a > b {
+		return a
+	}
+
+	return b
+}
+
+func (a U64) Min(b U64) U64 {
+	if a < b {
+		return a
+	}
+
+	return b
+}
+
+func (a U64) TrailingZeros() U64 {
+	return U64(bits.TrailingZeros(uint(a)))
+}
+
+func (a U64) Clamp(minValue, maxValue U64) U64 {
+	if a < minValue {
+		return minValue
+	} else if a > maxValue {
+		return maxValue
+	} else {
+		return a
+	}
 }
 
 func (a U8) SaturatingAdd(b U8) U8 {
