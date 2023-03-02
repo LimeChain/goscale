@@ -14,20 +14,20 @@ func Test_VaryingData_Encode(t *testing.T) {
 	}{
 		{
 			label:  "Encode VaryingData(U8, Bool)",
-			input:  NewVaryingData(U8(42), Bool(true)),
-			expect: []byte{0x0, 0x2a, 0x1, 0x1}},
+			input:  NewVaryingData(U8(0), U8(42)),
+			expect: []byte{0x0, 0x2a}},
 		{
 			label:  "Encode VaryingData(U128, Empty)",
-			input:  NewVaryingData(U128{math.MaxUint64, math.MaxUint64}, Empty{}),
-			expect: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1}},
+			input:  NewVaryingData(U8(0), U128{math.MaxUint64, math.MaxUint64}, Empty{}),
+			expect: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 		{
 			label:  "Encode VaryingData(U64,U32,Sequence[U8])",
-			input:  NewVaryingData(U64(math.MaxUint64), U32(math.MaxUint32), Sequence[U8]{42}),
-			expect: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1, 0xff, 0xff, 0xff, 0xff, 0x2, 0x4, 0x2a}},
+			input:  NewVaryingData(U8(0), U64(math.MaxUint64), U32(math.MaxUint32), Sequence[U8]{42}),
+			expect: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x4, 0x2a}},
 		{
 			label:  "Encode VaryingData(I8,U16,I16,CompactUint,CompactUint,I32,I64)",
-			input:  NewVaryingData(I8(math.MinInt8), U16(math.MaxUint16), I16(math.MinInt16), ToCompact(100000000000000), ToCompact(5), I32(math.MinInt32), I64(math.MinInt64)),
-			expect: []byte{0x0, 0x80, 0x1, 0xff, 0xff, 0x2, 0x00, 0x80, 0x3, 0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a, 0x4, 0x14, 0x5, 0x0, 0x0, 0x0, 0x80, 0x6, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
+			input:  NewVaryingData(U8(0), I8(math.MinInt8), U16(math.MaxUint16), I16(math.MinInt16), ToCompact(100000000000000), ToCompact(5), I32(math.MinInt32), I64(math.MinInt64)),
+			expect: []byte{0x0, 0x80, 0xff, 0xff, 0x00, 0x80, 0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a, 0x14, 0x0, 0x0, 0x0, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
 		},
 	}
 
@@ -59,39 +59,53 @@ func Test_NewVaryingData_InvalidLength(t *testing.T) {
 
 func Test_VaryingData_Decode(t *testing.T) {
 	var examples = []struct {
-		label  string
-		input  []byte
-		order  []Encodable
-		expect VaryingData
+		label       string
+		input       []byte
+		decodeFuncs []func(buffer *bytes.Buffer) []Encodable
+		expect      VaryingData
 	}{
 		{
-			label:  "Decode VaryingData(U8, Bool)",
-			input:  []byte{0x0, 0x2a, 0x1, 0x1},
-			order:  []Encodable{U8(1), Bool(false)},
-			expect: NewVaryingData(U8(42), Bool(true))},
-		{
-			label:  "Decode VaryingData(U128, Empty)",
-			input:  []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1},
-			order:  []Encodable{U128{0, 0}, Empty{}},
-			expect: NewVaryingData(U128{math.MaxUint64, math.MaxUint64}, Empty{}),
+			label: "Decode VaryingData(U8, Bool)",
+			input: []byte{0x0, 0x2a},
+			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
+				func(buffer *bytes.Buffer) []Encodable {
+					return []Encodable{DecodeU8(buffer)}
+				},
+				func(buffer *bytes.Buffer) []Encodable {
+					return []Encodable{DecodeBool(buffer)}
+				},
+			},
+			expect: NewVaryingData(U8(0), U8(42)),
 		},
 		{
-			label:  "Decode VaryingData(U64,U32,Sequence[U8])",
-			input:  []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1, 0xff, 0xff, 0xff, 0xff, 0x2, 0x4, 0x2a},
-			order:  []Encodable{U64(0), U32(0), Sequence[U8]{}},
-			expect: NewVaryingData(U64(math.MaxUint64), U32(math.MaxUint32), Sequence[U8]{42}),
+			label: "Decode VaryingData(U128, Empty)",
+			input: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
+			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
+				func(buffer *bytes.Buffer) []Encodable {
+					return []Encodable{DecodeU128(buffer)}
+				},
+			},
+			expect: NewVaryingData(U8(0), U128{math.MaxUint64, math.MaxUint64}),
 		},
 		{
-			label:  "Decode VaryingData(I8,U16,I16,CompactUint,CompactUint,I32,I64)",
-			input:  []byte{0x0, 0x80, 0x1, 0xff, 0xff, 0x2, 0x00, 0x80, 0x3, 0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a, 0x4, 0x14, 0x5, 0x0, 0x0, 0x0, 0x80, 0x6, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
-			order:  []Encodable{I8(0), U16(0), I16(0), ToCompact(0), ToCompact(0), I32(0), I64(0)},
-			expect: NewVaryingData(I8(math.MinInt8), U16(math.MaxUint16), I16(math.MinInt16), ToCompact(100000000000000), ToCompact(5), I32(math.MinInt32), I64(math.MinInt64)),
+			label: "Decode VaryingData(U64,U32,Sequence[U8])",
+			input: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x4, 0x2a},
+			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
+				func(buffer *bytes.Buffer) []Encodable {
+					return []Encodable{DecodeU64(buffer), DecodeU32(buffer), DecodeSequence[U8](buffer)}
+				},
+			},
+			expect: NewVaryingData(U8(0), U64(math.MaxUint64), U32(math.MaxUint32), Sequence[U8]{42}),
 		},
 		{
-			label:  "Decode VaryingData(U8, Bool, Compact, I8) with mixed bytes order",
-			input:  []byte{0x1, 0x1, 0x3, 0x80, 0x0, 0x5, 0x2, 0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a},
-			order:  []Encodable{U8(0), Bool(false), ToCompact(0), I8(0)},
-			expect: NewVaryingData(U8(5), Bool(true), ToCompact(100000000000000), I8(math.MinInt8)),
+			label: "Decode VaryingData(I8,U16,I16,CompactUint,CompactUint,I32,I64)",
+			input: []byte{0x0, 0x80, 0xff, 0xff, 0x00, 0x80, 0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a, 0x14, 0x0, 0x0, 0x0, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
+			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
+				func(buffer *bytes.Buffer) []Encodable {
+					return []Encodable{DecodeI8(buffer), DecodeU16(buffer), DecodeI16(buffer), DecodeCompact(buffer), DecodeCompact(buffer), DecodeI32(buffer), DecodeI64(buffer)}
+				},
+			},
+			expect: NewVaryingData(U8(0), I8(math.MinInt8), U16(math.MaxUint16), I16(math.MinInt16), ToCompact(100000000000000), ToCompact(5), I32(math.MinInt32), I64(math.MinInt64)),
 		},
 	}
 
@@ -101,19 +115,32 @@ func Test_VaryingData_Decode(t *testing.T) {
 		buffer.Write(e.input)
 
 		// when:
-		result := DecodeVaryingData(e.order, buffer)
+		result := DecodeVaryingData(e.decodeFuncs, buffer)
 
 		// then:
 		assertEqual(t, result, e.expect)
 	}
 }
 
-func Test_VaryingData_Decode_Panic(t *testing.T) {
+func Test_VaryingData_Decode_Panic_ExceedsLength(t *testing.T) {
 	// given:
-	values := make([]Encodable, math.MaxUint8+1)
+	values := make([]func(buffer *bytes.Buffer) []Encodable, math.MaxUint8+1)
 
 	// then:
 	assertPanic(t, func() {
 		DecodeVaryingData(values, &bytes.Buffer{})
+	})
+}
+
+func Test_VaryingData_Decode_Panic_Index_NotFound(t *testing.T) {
+	// given:
+	values := make([]func(buffer *bytes.Buffer) []Encodable, 1)
+
+	buffer := &bytes.Buffer{}
+	buffer.Write(U8(1).Bytes())
+
+	// then:
+	assertPanic(t, func() {
+		DecodeVaryingData(values, buffer)
 	})
 }

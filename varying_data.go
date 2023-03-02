@@ -25,29 +25,30 @@ func NewVaryingData(values ...Encodable) VaryingData {
 }
 
 func (vd VaryingData) Encode(buffer *bytes.Buffer) {
-	for i, v := range vd {
-		U8(i).Encode(buffer)
+	for _, v := range vd {
 		v.Encode(buffer)
 	}
 }
 
-func DecodeVaryingData(values []Encodable, buffer *bytes.Buffer) VaryingData {
-	vLen := len(values)
-	if vLen > math.MaxUint8 {
+func DecodeVaryingData(decodeFuncs []func(buffer *bytes.Buffer) []Encodable, buffer *bytes.Buffer) VaryingData {
+	funcsLen := len(decodeFuncs)
+	if funcsLen > math.MaxUint8 {
 		panic("exceeds uint8 length")
 	}
 
-	result := make([]Encodable, vLen)
-	for i := 0; i < vLen; i++ {
-		index := DecodeU8(buffer)
-		value := decodeByType(values[index], buffer)
-
-		result[index] = value
+	index := DecodeU8(buffer)
+	if int(index) > funcsLen-1 {
+		panic("varying data: decode func not found")
 	}
 
-	return result
-}
+	decoded := decodeFuncs[index](buffer)
 
+	var args []Encodable
+	args = append(args, index)
+	args = append(args, decoded...)
+
+	return NewVaryingData(args...)
+}
 func (vd VaryingData) Bytes() []byte {
 	return EncodedBytes(vd)
 }
