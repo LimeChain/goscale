@@ -1,6 +1,7 @@
 package goscale
 
 import (
+	"errors"
 	"math"
 	"math/bits"
 )
@@ -369,4 +370,15 @@ func (a U64) SaturatingDiv(b U64) U64 {
 	}
 
 	return a / b
+}
+
+// TODO: implement for other types
+func (a U64) CheckedAdd(b U64) (U64, error) {
+	c := a + b
+
+	if c < a {
+		return 0, errors.New("overflow")
+	}
+
+	return c, nil
 }
