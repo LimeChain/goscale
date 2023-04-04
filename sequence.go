@@ -41,6 +41,17 @@ func DecodeSequence[T Encodable](buffer *bytes.Buffer) Sequence[T] {
 	return values
 }
 
+func DecodeSequenceWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffer *bytes.Buffer) T) Sequence[T] {
+	size := DecodeCompact(buffer)
+	v := size.ToBigInt()
+	values := make([]T, v.Int64())
+
+	for i := 0; i < len(values); i++ {
+		values[i] = decodeFunc(buffer)
+	}
+	return values
+}
+
 func DecodeSliceU8(buffer *bytes.Buffer) []U8 {
 	return DecodeSequence[U8](buffer)
 }

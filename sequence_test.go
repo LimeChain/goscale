@@ -480,3 +480,31 @@ func Test_DecodeSequenceU8(t *testing.T) {
 		})
 	}
 }
+
+func Test_DecodeSequenceU8With(t *testing.T) {
+	var examples = []struct {
+		label  string
+		input  []byte
+		expect Sequence[U8]
+	}{
+		{
+			label:  "Decode SequenceWith[U8]",
+			input:  []byte{0x0c, 0x61, 0x62, 0x63},
+			expect: Sequence[U8]{0x61, 0x62, 0x63},
+		},
+	}
+
+	for _, e := range examples {
+		t.Run(e.label, func(t *testing.T) {
+			// given:
+			buffer := &bytes.Buffer{}
+			buffer.Write(e.input)
+
+			// when:
+			result := DecodeSequenceWith(buffer, DecodeU8)
+
+			// then:
+			assertEqual(t, result, e.expect)
+		})
+	}
+}
