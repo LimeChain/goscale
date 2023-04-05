@@ -9,7 +9,6 @@ package goscale
 
 import (
 	"bytes"
-	"reflect"
 )
 
 type Sequence[T Encodable] []T
@@ -18,11 +17,11 @@ func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
 	ToCompact(len(seq)).Encode(buffer)
 
 	for _, v := range seq {
-		if reflect.TypeOf(v).Kind() == reflect.Struct {
-			EncodeTuple(v, buffer)
-		} else {
-			v.Encode(buffer)
-		}
+		//if reflect.TypeOf(v).Kind() == reflect.Struct {
+		//	EncodeTuple(v, buffer)
+		//} else {
+		v.Encode(buffer)
+		//}
 	}
 }
 
@@ -73,11 +72,11 @@ func NewFixedSequence[T Encodable](size int, values ...T) FixedSequence[T] {
 
 func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) {
 	for _, v := range fseq {
-		if reflect.TypeOf(v).Kind() == reflect.Struct {
-			EncodeTuple(v, buffer)
-		} else {
-			v.Encode(buffer)
-		}
+		//if reflect.TypeOf(v).Kind() == reflect.Struct {
+		//	EncodeTuple(v, buffer)
+		//} else {
+		v.Encode(buffer)
+		//}
 	}
 }
 
