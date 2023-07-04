@@ -118,7 +118,7 @@ func SliceU8ToStr(values []U8) Str {
 func StrToSliceU8(s Str) []U8 {
 	result := make([]U8, len(s))
 	for i, v := range []byte(s) {
-		result[i] = U8(v) // TODO: https://github.com/LimeChain/goscale/issues/38
+		result[i] = U8(v)
 	}
 	return result
 }
@@ -139,7 +139,7 @@ func StrToSliceU8(s Str) []U8 {
 func SequenceU8ToBytes(bytes Sequence[U8]) []byte {
 	result := make([]byte, len(bytes))
 	for i, v := range bytes {
-		result[i] = byte(v) // TODO: https://github.com/LimeChain/goscale/issues/38
+		result[i] = byte(v)
 	}
 	return result
 }
@@ -147,7 +147,7 @@ func SequenceU8ToBytes(bytes Sequence[U8]) []byte {
 func FixedSequenceU8ToBytes(bytes FixedSequence[U8]) []byte {
 	result := make([]byte, len(bytes))
 	for i, v := range bytes {
-		result[i] = byte(v) // TODO: https://github.com/LimeChain/goscale/issues/38
+		result[i] = byte(v)
 	}
 	return result
 }
@@ -155,7 +155,7 @@ func FixedSequenceU8ToBytes(bytes FixedSequence[U8]) []byte {
 func BytesToSequenceU8(bytes []byte) Sequence[U8] {
 	result := make(Sequence[U8], len(bytes))
 	for i, v := range bytes {
-		result[i] = U8(v) // TODO: https://github.com/LimeChain/goscale/issues/38
+		result[i] = U8(v)
 	}
 	return result
 }
@@ -163,7 +163,7 @@ func BytesToSequenceU8(bytes []byte) Sequence[U8] {
 func BytesToFixedSequenceU8(bytes []byte) FixedSequence[U8] {
 	result := make(FixedSequence[U8], len(bytes))
 	for i, v := range bytes {
-		result[i] = U8(v) // TODO: https://github.com/LimeChain/goscale/issues/38
+		result[i] = U8(v)
 	}
 	return result
 }
