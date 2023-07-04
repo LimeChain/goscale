@@ -3,6 +3,8 @@ package goscale
 import (
 	"bytes"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_EncodeDictionaryStrBool(t *testing.T) {
@@ -29,8 +31,8 @@ func Test_EncodeDictionaryStrBool(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -55,7 +57,7 @@ func Test_DecodeDictionaryStrBool(t *testing.T) {
 
 			result := DecodeDictionary[Str, Bool](buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -84,8 +86,8 @@ func Test_EncodeDictionaryU8Str(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -115,7 +117,7 @@ func Test_DecodeDictionaryU8Str(t *testing.T) {
 
 			result := DecodeDictionary[U8, Str](buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }

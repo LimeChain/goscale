@@ -5,6 +5,8 @@ import (
 	"math"
 	"math/big"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_EncodeU8(t *testing.T) {
@@ -23,8 +25,8 @@ func Test_EncodeU8(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -45,7 +47,7 @@ func Test_DecodeU8(t *testing.T) {
 
 			result := DecodeU8(buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -69,8 +71,8 @@ func Test_EncodeI8(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -94,7 +96,7 @@ func Test_DecodeI8(t *testing.T) {
 
 			result := DecodeI8(buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -115,8 +117,8 @@ func Test_EncodeU16(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -137,7 +139,7 @@ func Test_DecodeU16(t *testing.T) {
 
 			result := DecodeU16(buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -159,8 +161,8 @@ func Test_EncodeI16(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -182,7 +184,7 @@ func Test_DecodeI16(t *testing.T) {
 
 			result := DecodeI16(buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -202,8 +204,8 @@ func Test_EncodeU32(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -224,7 +226,7 @@ func Test_DecodeU32(t *testing.T) {
 
 			result := DecodeU32(buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -246,8 +248,8 @@ func Test_EncodeI32(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -270,7 +272,7 @@ func Test_DecodeI32(t *testing.T) {
 
 			result := DecodeI32(buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -290,8 +292,8 @@ func Test_EncodeU64(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -312,7 +314,7 @@ func Test_DecodeU64(t *testing.T) {
 
 			result := DecodeU64(buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -332,8 +334,8 @@ func Test_EncodeI64(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -354,7 +356,7 @@ func Test_DecodeI64(t *testing.T) {
 
 			result := DecodeI64(buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -374,7 +376,6 @@ func Test_EncodeU128(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 
 			value, ok := new(big.Int).SetString(e.input, 10)
@@ -383,13 +384,10 @@ func Test_EncodeU128(t *testing.T) {
 			}
 			input := NewU128FromBigInt(value)
 
-			// when:
 			input.Encode(buffer)
 
-			// then:
-			assertEqual(t, buffer.Bytes(), e.expect)
-			// and:
-			assertEqual(t, input.Bytes(), e.expect)
+			assert.Equal(t, buffer.Bytes(), e.expect)
+			assert.Equal(t, input.Bytes(), e.expect)
 		})
 	}
 }
@@ -410,33 +408,26 @@ func Test_DecodeU128(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeU128(buffer)
 			bigInt := result.ToBigInt()
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, bigInt.String(), e.stringValue)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, bigInt.String(), e.stringValue)
 		})
 	}
 }
 
 func Test_NewU128FromBigIntPanic(t *testing.T) {
 	t.Run("Exceeds U128", func(t *testing.T) {
-		// given:
 		value, ok := new(big.Int).SetString("340282366920938463463374607431768211456", 10) // MaxUint128 + 1
 		if !ok {
 			panic("not ok")
 		}
 
-		// then:
-		assertPanic(t, func() {
-			NewU128FromBigInt(value)
-		})
+		assert.Panics(t, func() { NewU128FromBigInt(value) })
 	})
 }
 
@@ -459,7 +450,6 @@ func Test_EncodeI128(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 
 			value, ok := new(big.Int).SetString(e.input, 10)
@@ -468,13 +458,10 @@ func Test_EncodeI128(t *testing.T) {
 			}
 			input := NewI128FromBigInt(*value)
 
-			// when:
 			input.Encode(buffer)
 
-			// then:
-			assertEqual(t, buffer.Bytes(), e.expect)
-			// and:
-			assertEqual(t, input.Bytes(), e.expect)
+			assert.Equal(t, buffer.Bytes(), e.expect)
+			assert.Equal(t, input.Bytes(), e.expect)
 		})
 	}
 }
@@ -499,17 +486,14 @@ func Test_DecodeI128(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeI128(buffer)
 			bigInt := result.ToBigInt()
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, bigInt.String(), e.stringValue)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, bigInt.String(), e.stringValue)
 		})
 	}
 }

@@ -3,6 +3,8 @@ package goscale
 import (
 	"bytes"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_EncodeBool(t *testing.T) {
@@ -21,8 +23,8 @@ func Test_EncodeBool(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -44,7 +46,7 @@ func Test_DecodeBool(t *testing.T) {
 
 			result := DecodeBool(buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -65,9 +67,7 @@ func Test_DecodeBoolPanics(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			assertPanic(t, func() {
-				DecodeBool(buffer)
-			})
+			assert.Panics(t, func() { DecodeBool(buffer) })
 		})
 	}
 }

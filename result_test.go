@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"math"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_EncodeResult(t *testing.T) {
@@ -38,16 +40,12 @@ func Test_EncodeResult(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 
-			// when:
 			e.input.Encode(buffer)
 
-			// then:
-			assertEqual(t, buffer.Bytes(), e.expect)
-			// and:
-			assertEqual(t, e.input.Bytes(), e.expect)
+			assert.Equal(t, buffer.Bytes(), e.expect)
+			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
 	}
 }
@@ -69,16 +67,13 @@ func Test_DecodeResultEmpty(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[Empty](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -112,16 +107,13 @@ func Test_DecodeResultBool(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[Bool](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -143,16 +135,13 @@ func Test_DecodeResultU8(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[U8](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -174,16 +163,13 @@ func Test_DecodeResultI8(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[I8](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -205,16 +191,13 @@ func Test_DecodeResultU16(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[U16](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -236,16 +219,13 @@ func Test_DecodeResultI16(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[I16](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -267,16 +247,13 @@ func Test_DecodeResultU32(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[U32](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -299,16 +276,13 @@ func Test_DecodeResultI32(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[I32](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -330,16 +304,13 @@ func Test_DecodeResultU64(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[U64](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -361,16 +332,13 @@ func Test_DecodeResultI64(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[I64](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -401,16 +369,13 @@ func Test_DecodeResultI128(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[I128](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -432,16 +397,13 @@ func Test_DecodeResultCompact(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[Compact](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -463,16 +425,13 @@ func Test_DecodeResultSeqU8(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeResult[Sequence[U8]](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
-			assertEqual(t, buffer.Len(), e.bufferLenLeft)
+			assert.Equal(t, result, e.expect)
+			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
 		})
 	}
 }
@@ -491,9 +450,7 @@ func Test_DecodeResultPanicInvalidFirstByte(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			assertPanic(t, func() {
-				DecodeResult[Bool](buffer)
-			})
+			assert.Panics(t, func() { DecodeResult[Bool](buffer) })
 		})
 	}
 }
