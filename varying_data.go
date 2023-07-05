@@ -18,7 +18,7 @@ func NewVaryingData(values ...Encodable) VaryingData {
 		panic("exceeds uint8 length")
 	}
 
-	var result []Encodable
+	result := make([]Encodable, 0, len(values))
 	result = append(result, values...)
 
 	return result
@@ -43,12 +43,13 @@ func DecodeVaryingData(decodeFuncs []func(buffer *bytes.Buffer) []Encodable, buf
 
 	decoded := decodeFuncs[index](buffer)
 
-	var args []Encodable
+	args := make([]Encodable, 0, len(decoded)+1)
 	args = append(args, index)
 	args = append(args, decoded...)
 
 	return NewVaryingData(args...)
 }
+
 func (vd VaryingData) Bytes() []byte {
 	return EncodedBytes(vd)
 }
