@@ -3,6 +3,8 @@ package goscale
 import (
 	"bytes"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_EncodeEmpty(t *testing.T) {
@@ -20,15 +22,12 @@ func Test_EncodeEmpty(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 
-			// when:
 			e.input.Encode(buffer)
 
-			// then:
-			assertEqual(t, buffer.Bytes(), e.expect)
-			assertEqual(t, e.input.Bytes(), []byte{})
+			assert.Equal(t, buffer.Bytes(), e.expect)
+			assert.Equal(t, e.input.Bytes(), []byte{})
 		})
 	}
 }

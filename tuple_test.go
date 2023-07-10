@@ -5,6 +5,8 @@ import (
 	"math"
 	"math/big"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type TupleBool struct {
@@ -35,7 +37,7 @@ func Test_EncodeTupleBool(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -68,7 +70,7 @@ func Test_EncodeTupleU8I8(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -101,7 +103,7 @@ func Test_EncodeTupleU16I16(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -134,7 +136,7 @@ func Test_EncodeTupleU32I32(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -167,7 +169,7 @@ func Test_EncodeTupleU64I64(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -203,7 +205,7 @@ func Test_EncodeTupleU128I128(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -239,7 +241,7 @@ func Test_EncodeTupleCompact(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -275,7 +277,7 @@ func Test_EncodeTupleStr(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -379,7 +381,7 @@ func Test_EncodeTupleSequence(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -410,7 +412,7 @@ func Test_EncodeTupleFixedSequence(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -445,7 +447,7 @@ func Test_EncodeTupleDictionary(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -481,7 +483,7 @@ func Test_EncodeTupleVaryingData(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -520,7 +522,7 @@ func Test_EncodeTupleOption(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -559,7 +561,7 @@ func Test_EncodeTupleResult(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -592,7 +594,7 @@ func Test_EncodeTupleEmpty(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, len(buffer.Bytes()), testExample.expectation)
+			assert.Equal(t, len(buffer.Bytes()), testExample.expectation)
 		})
 	}
 }
@@ -638,7 +640,7 @@ func Test_EncodeTupleAll(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -648,13 +650,12 @@ func Test_TupleEncodablePanics(t *testing.T) {
 		Tuple
 	}
 	tuple := testTuple{}
-
 	buffer := &bytes.Buffer{}
 
-	assertPanic(t, func() {
+	assert.Panics(t, func() {
 		tuple.Encode(buffer)
 	})
-	assertPanic(t, func() {
+	assert.Panics(t, func() {
 		tuple.Bytes()
 	})
 }

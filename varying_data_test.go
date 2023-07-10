@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"math"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_VaryingData_Encode(t *testing.T) {
@@ -33,26 +35,20 @@ func Test_VaryingData_Encode(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 
-			// when:
 			e.input.Encode(buffer)
 
-			// then:
-			assertEqual(t, buffer.Bytes(), e.expect)
-			// and:
-			assertEqual(t, e.input.Bytes(), e.expect)
+			assert.Equal(t, buffer.Bytes(), e.expect)
+			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
 	}
 }
 
 func Test_NewVaryingData_InvalidLength(t *testing.T) {
-	// given:
 	values := make([]Encodable, math.MaxUint8+1)
 
-	// then:
-	assertPanic(t, func() {
+	assert.Panics(t, func() {
 		NewVaryingData(values...)
 	})
 }
@@ -110,37 +106,30 @@ func Test_VaryingData_Decode(t *testing.T) {
 	}
 
 	for _, e := range examples {
-		// given:
 		buffer := &bytes.Buffer{}
 		buffer.Write(e.input)
 
-		// when:
 		result := DecodeVaryingData(e.decodeFuncs, buffer)
 
-		// then:
-		assertEqual(t, result, e.expect)
+		assert.Equal(t, result, e.expect)
 	}
 }
 
 func Test_VaryingData_Decode_Panic_ExceedsLength(t *testing.T) {
-	// given:
 	values := make([]func(buffer *bytes.Buffer) []Encodable, math.MaxUint8+1)
 
-	// then:
-	assertPanic(t, func() {
+	assert.Panics(t, func() {
 		DecodeVaryingData(values, &bytes.Buffer{})
 	})
 }
 
 func Test_VaryingData_Decode_Panic_Index_NotFound(t *testing.T) {
-	// given:
 	values := make([]func(buffer *bytes.Buffer) []Encodable, 1)
 
 	buffer := &bytes.Buffer{}
 	buffer.Write(U8(1).Bytes())
 
-	// then:
-	assertPanic(t, func() {
+	assert.Panics(t, func() {
 		DecodeVaryingData(values, buffer)
 	})
 }

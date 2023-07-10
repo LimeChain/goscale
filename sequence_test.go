@@ -3,6 +3,8 @@ package goscale
 import (
 	"bytes"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_EncodeString(t *testing.T) {
@@ -24,8 +26,8 @@ func Test_EncodeString(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -50,7 +52,7 @@ func Test_DecodeString(t *testing.T) {
 
 			result := DecodeStr(buffer)
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -74,8 +76,8 @@ func Test_EncodeU8Sequence(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -100,7 +102,7 @@ func Test_DecodeU8Sequence(t *testing.T) {
 
 			result := Sequence[U8](DecodeSliceU8(buffer))
 
-			assertEqual(t, result, testExample.expectation)
+			assert.Equal(t, result, testExample.expectation)
 		})
 	}
 }
@@ -124,8 +126,8 @@ func Test_EncodeBoolSequence(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -156,8 +158,8 @@ func Test_EncodeCompactSequence(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -181,8 +183,8 @@ func Test_EncodeI8Sequence(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -206,8 +208,8 @@ func Test_EncodeI16Sequence(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -231,8 +233,8 @@ func Test_EncodeU16Sequence(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -259,8 +261,8 @@ func Test_EncodeNestedSequence(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -288,7 +290,7 @@ func Test_EncodeOptionSequence(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -316,7 +318,7 @@ func Test_EncodeResultSequence(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -355,7 +357,7 @@ func Test_EncodeResultSequence(t *testing.T) {
 //
 //			testExample.input.Encode(buffer)
 //
-//			assertEqual(t, buffer.Bytes(), testExample.expectation)
+//			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 //		})
 //	}
 //}
@@ -395,8 +397,8 @@ func Test_EncodeStringSequence(t *testing.T) {
 
 			testExample.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), testExample.expectation)
-			assertEqual(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
 	}
 }
@@ -420,8 +422,8 @@ func Test_EncodeFixedSequence(t *testing.T) {
 
 			e.input.Encode(buffer)
 
-			assertEqual(t, buffer.Bytes(), e.expect)
-			assertEqual(t, e.input.Bytes(), e.expect)
+			assert.Equal(t, buffer.Bytes(), e.expect)
+			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
 	}
 }
@@ -441,15 +443,12 @@ func Test_DecodeFixedSequence(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeFixedSequence[U8](len(e.input), buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
+			assert.Equal(t, result, e.expect)
 		})
 	}
 }
@@ -469,15 +468,13 @@ func Test_DecodeSequenceU8(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
+
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeSequence[U8](buffer)
 
-			// then:
-			assertEqual(t, result, e.expect)
+			assert.Equal(t, result, e.expect)
 		})
 	}
 }
@@ -497,15 +494,12 @@ func Test_DecodeSequenceU8With(t *testing.T) {
 
 	for _, e := range examples {
 		t.Run(e.label, func(t *testing.T) {
-			// given:
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			// when:
 			result := DecodeSequenceWith(buffer, DecodeU8)
 
-			// then:
-			assertEqual(t, result, e.expect)
+			assert.Equal(t, result, e.expect)
 		})
 	}
 }

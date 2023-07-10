@@ -6,6 +6,8 @@ import (
 	"math/bits"
 )
 
+var ErrOverflow = errors.New("overflow")
+
 // TODO:
 // refactor this to be a separate package
 // that defines extended numeric types
@@ -377,7 +379,7 @@ func (a U64) CheckedAdd(b U64) (U64, error) {
 	c := a + b
 
 	if c < a {
-		return 0, errors.New("overflow")
+		return 0, ErrOverflow
 	}
 
 	return c, nil
