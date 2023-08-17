@@ -9,7 +9,6 @@ package goscale
 
 import (
 	"bytes"
-	"fmt"
 )
 
 type Bool bool
@@ -39,8 +38,4 @@ func DecodeBool(buffer *bytes.Buffer) Bool {
 	default:
 		panic("invalid bool representation")
 	}
-}
-
-func (value Bool) String() string {
-	return fmt.Sprint(bool(value))
 }
