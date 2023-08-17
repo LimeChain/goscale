@@ -270,30 +270,31 @@ func DecodeI128(buffer *bytes.Buffer) I128 {
 	}
 }
 
-func DecodeNumeric[N Numeric](buffer *bytes.Buffer) N {
-	switch reflect.TypeOf(*new(N)) {
-	case reflect.TypeOf(*new(U8)):
-		return N(DecodeU8(buffer))
-	case reflect.TypeOf(*new(I8)):
-		return N(DecodeI8(buffer))
-	case reflect.TypeOf(*new(U16)):
-		return N(DecodeU16(buffer))
-	case reflect.TypeOf(*new(I16)):
-		return N(DecodeI16(buffer))
-	case reflect.TypeOf(*new(U32)):
-		return N(DecodeU32(buffer))
-	case reflect.TypeOf(*new(I32)):
-		return N(DecodeI32(buffer))
-	case reflect.TypeOf(*new(U64)):
-		return N(DecodeU64(buffer))
-	case reflect.TypeOf(*new(I64)):
-		return N(DecodeI64(buffer))
-	// TODO: implement
-	// case reflect.TypeOf(*new(U128)):
-	// 	return N(DecodeU128(buffer))
-	// case reflect.TypeOf(*new(I128)):
-	// 	return N(DecodeI128(buffer))
-	default:
-		panic("unknown numeric type")
+func DecodeNumeric[T Numeric](buffer *bytes.Buffer) T {
+	var result interface{}
+
+	switch reflect.Zero(reflect.TypeOf(*new(T))).Interface().(type) {
+	case U8:
+		result = DecodeU8(buffer)
+	case I8:
+		result = DecodeI8(buffer)
+	case U16:
+		result = DecodeU16(buffer)
+	case I16:
+		result = DecodeI16(buffer)
+	case U32:
+		result = DecodeU32(buffer)
+	case I32:
+		result = DecodeI32(buffer)
+	case U64:
+		result = DecodeU64(buffer)
+	case I64:
+		result = DecodeI64(buffer)
+	case U128:
+		result = DecodeU128(buffer)
+	case I128:
+		result = DecodeI128(buffer)
 	}
+
+	return result.(T)
 }

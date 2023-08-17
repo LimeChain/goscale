@@ -1,14 +1,6 @@
 package goscale
 
-type UnsignedNumeric interface {
-	U8 | U16 | U32 | U64
-}
-
-type SignedNumeric interface {
-	I8 | I16 | I32 | I64
-}
-
 type Numeric interface {
 	Encodable
-	UnsignedNumeric | SignedNumeric
+	U8 | I8 | U16 | I16 | U32 | I32 | U64 | I64 // TODO | U128 | I128
 }
