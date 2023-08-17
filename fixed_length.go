@@ -10,7 +10,6 @@ package goscale
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"math/big"
 )
 
@@ -32,10 +31,6 @@ func DecodeU8(buffer *bytes.Buffer) U8 {
 	return U8(result[0])
 }
 
-func (value U8) String() string {
-	return fmt.Sprintf("%c", uint8(value))
-}
-
 type I8 int8
 
 func (value I8) Encode(buffer *bytes.Buffer) {
@@ -49,10 +44,6 @@ func (value I8) Bytes() []byte {
 func DecodeI8(buffer *bytes.Buffer) I8 {
 	decoder := Decoder{Reader: buffer}
 	return I8(decoder.DecodeByte())
-}
-
-func (value I8) String() string {
-	return fmt.Sprint(int8(value))
 }
 
 type U16 uint16
@@ -76,10 +67,6 @@ func DecodeU16(buffer *bytes.Buffer) U16 {
 	return U16(binary.LittleEndian.Uint16(result))
 }
 
-func (value U16) String() string {
-	return fmt.Sprint(uint16(value))
-}
-
 type I16 int16
 
 func (value I16) Encode(buffer *bytes.Buffer) {
@@ -92,10 +79,6 @@ func (value I16) Bytes() []byte {
 
 func DecodeI16(buffer *bytes.Buffer) I16 {
 	return I16(DecodeU16(buffer))
-}
-
-func (value I16) String() string {
-	return fmt.Sprint(int16(value))
 }
 
 type U32 uint32
@@ -119,10 +102,6 @@ func DecodeU32(buffer *bytes.Buffer) U32 {
 	return U32(binary.LittleEndian.Uint32(result))
 }
 
-func (value U32) String() string {
-	return fmt.Sprint(uint32(value))
-}
-
 type I32 int32
 
 func (value I32) Encode(buffer *bytes.Buffer) {
@@ -135,10 +114,6 @@ func (value I32) Bytes() []byte {
 
 func DecodeI32(buffer *bytes.Buffer) I32 {
 	return I32(DecodeU32(buffer))
-}
-
-func (value I32) String() string {
-	return fmt.Sprint(int32(value))
 }
 
 type U64 uint64
@@ -162,10 +137,6 @@ func DecodeU64(buffer *bytes.Buffer) U64 {
 	return U64(binary.LittleEndian.Uint64(result))
 }
 
-func (value U64) String() string {
-	return fmt.Sprint(uint64(value))
-}
-
 type I64 int64
 
 func (value I64) Encode(buffer *bytes.Buffer) {
@@ -178,10 +149,6 @@ func (value I64) Bytes() []byte {
 
 func DecodeI64(buffer *bytes.Buffer) I64 {
 	return I64(DecodeU64(buffer))
-}
-
-func (value I64) String() string {
-	return fmt.Sprint(int64(value))
 }
 
 type U128 [2]U64
