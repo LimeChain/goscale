@@ -20,8 +20,7 @@ var ErrOverflow = errors.New("overflow")
 // package goscale
 // type U8 U8Ext
 
-// TODO: I8, I16, I32, ...
-
+// TODO: I8, I16, I32, I64
 func (a U8) Add(b U8) U8 {
 	return a + b
 }
@@ -217,13 +216,11 @@ func (a U8) SaturatingAdd(b U8) U8 {
 }
 
 func (a U8) SaturatingSub(b U8) U8 {
-	c := a - b
-
-	if c > a {
-		return U8(0)
+	if a > b {
+		return a - b
 	}
 
-	return c
+	return U8(0)
 }
 
 func (a U8) SaturatingMul(b U8) U8 {
@@ -259,13 +256,11 @@ func (a U16) SaturatingAdd(b U16) U16 {
 }
 
 func (a U16) SaturatingSub(b U16) U16 {
-	c := a - b
-
-	if c > a {
-		return U16(0)
+	if a > b {
+		return a - b
 	}
 
-	return c
+	return U16(0)
 }
 
 func (a U16) SaturatingMul(b U16) U16 {
@@ -301,13 +296,11 @@ func (a U32) SaturatingAdd(b U32) U32 {
 }
 
 func (a U32) SaturatingSub(b U32) U32 {
-	c := a - b
-
-	if c > a {
-		return U32(0)
+	if a > b {
+		return a - b
 	}
 
-	return c
+	return U32(0)
 }
 
 func (a U32) SaturatingMul(b U32) U32 {
@@ -343,13 +336,11 @@ func (a U64) SaturatingAdd(b U64) U64 {
 }
 
 func (a U64) SaturatingSub(b U64) U64 {
-	c := a - b
-
-	if c > a {
-		return U64(0)
+	if a > b {
+		return a - b
 	}
 
-	return c
+	return U64(0)
 }
 
 func (a U64) SaturatingMul(b U64) U64 {
