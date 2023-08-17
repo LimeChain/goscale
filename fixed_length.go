@@ -11,6 +11,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"math/big"
+	"reflect"
 )
 
 type U8 uint8
@@ -266,5 +267,33 @@ func DecodeI128(buffer *bytes.Buffer) I128 {
 	return I128{
 		DecodeU64(buffer),
 		DecodeU64(buffer),
+	}
+}
+
+func DecodeNumeric[N Numeric](buffer *bytes.Buffer) N {
+	switch reflect.TypeOf(*new(N)) {
+	case reflect.TypeOf(*new(U8)):
+		return N(DecodeU8(buffer))
+	case reflect.TypeOf(*new(I8)):
+		return N(DecodeI8(buffer))
+	case reflect.TypeOf(*new(U16)):
+		return N(DecodeU16(buffer))
+	case reflect.TypeOf(*new(I16)):
+		return N(DecodeI16(buffer))
+	case reflect.TypeOf(*new(U32)):
+		return N(DecodeU32(buffer))
+	case reflect.TypeOf(*new(I32)):
+		return N(DecodeI32(buffer))
+	case reflect.TypeOf(*new(U64)):
+		return N(DecodeU64(buffer))
+	case reflect.TypeOf(*new(I64)):
+		return N(DecodeI64(buffer))
+	// TODO: implement
+	// case reflect.TypeOf(*new(U128)):
+	// 	return N(DecodeU128(buffer))
+	// case reflect.TypeOf(*new(I128)):
+	// 	return N(DecodeI128(buffer))
+	default:
+		panic("unknown numeric type")
 	}
 }
