@@ -7,7 +7,7 @@ import (
 
 type U8 uint8
 
-func (a U8) ToNumeric() Numeric {
+func (a U8) Interface() Numeric {
 	return a
 }
 

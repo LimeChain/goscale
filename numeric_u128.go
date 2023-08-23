@@ -8,12 +8,40 @@ import (
 
 type U128 [2]U64
 
-func (a U128) ToNumeric() Numeric {
-	return a
-}
-
 func NewU128(l, h uint64) Numeric {
 	return U128{U64(l), U64(h)}
+}
+
+func NewU128FromUint64(v uint64) U128 {
+	return NewU128FromBigInt(new(big.Int).SetUint64(v))
+}
+
+func NewU128FromBigInt(v *big.Int) U128 {
+	b := make([]byte, 16)
+	v.FillBytes(b)
+
+	reverseSlice(b)
+
+	return U128{
+		U64(binary.LittleEndian.Uint64(b[:8])),
+		U64(binary.LittleEndian.Uint64(b[8:])),
+	}
+}
+
+func (u U128) ToBigInt() *big.Int {
+	return toBigInt(u)
+}
+
+func toBigInt(u U128) *big.Int {
+	bytes := make([]byte, 16)
+	binary.BigEndian.PutUint64(bytes[:8], uint64(u[1]))
+	binary.BigEndian.PutUint64(bytes[8:], uint64(u[0]))
+
+	return big.NewInt(0).SetBytes(bytes)
+}
+
+func (a U128) Interface() Numeric {
+	return a
 }
 
 func (a U128) Add(b Numeric) Numeric {
@@ -176,34 +204,6 @@ func (a U128) TrailingZeros() Numeric {
 	return U8(bits.TrailingZeros64(uint64(a[0])))
 }
 
-func NewU128FromUint64(v uint64) U128 {
-	return NewU128FromBigInt(new(big.Int).SetUint64(v))
-}
-
-func NewU128FromBigInt(v *big.Int) U128 {
-	b := make([]byte, 16)
-	v.FillBytes(b)
-
-	reverseSlice(b)
-
-	return U128{
-		U64(binary.LittleEndian.Uint64(b[:8])),
-		U64(binary.LittleEndian.Uint64(b[8:])),
-	}
-}
-
-func (u U128) ToBigInt() *big.Int {
-	return toBigInt(u)
-}
-
-func toBigInt(u U128) *big.Int {
-	bytes := make([]byte, 16)
-	binary.BigEndian.PutUint64(bytes[:8], uint64(u[1]))
-	binary.BigEndian.PutUint64(bytes[8:], uint64(u[0]))
-
-	return big.NewInt(0).SetBytes(bytes)
-}
-
 func (a U128) SaturatingAdd(b Numeric) Numeric {
 	sum, carry := bits.Add64(uint64(a[0]), uint64(b.(U128)[0]), 0)
 
@@ -220,4 +220,8 @@ func (a U128) SaturatingSub(b Numeric) Numeric {
 	}
 
 	return a.Sub(b).(U128)
+}
+
+func (a U128) SaturatingMul(b Numeric) Numeric {
+	return a.Mul(b).(U128)
 }

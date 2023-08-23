@@ -7,7 +7,7 @@ import (
 
 type I64 int64
 
-func (a I64) ToNumeric() Numeric {
+func (a I64) Interface() Numeric {
 	return a
 }
 
@@ -106,4 +106,8 @@ func (a I64) SaturatingSub(b Numeric) Numeric {
 		return I64(math.MinInt64)
 	}
 	return a.Sub(b)
+}
+
+func (a I64) SaturatingMul(b Numeric) Numeric {
+	return I64(0)
 }

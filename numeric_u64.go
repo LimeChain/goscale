@@ -7,7 +7,7 @@ import (
 
 type U64 uint64
 
-func (a U64) ToNumeric() Numeric {
+func (a U64) Interface() Numeric {
 	return a
 }
 
@@ -124,4 +124,12 @@ func (a U64) SaturatingMul(b Numeric) Numeric {
 	// }
 
 	// return U64(product.Uint64())
+}
+
+func (a U64) CheckedAdd(b Numeric) (Numeric, error) {
+	c := a + b.(U64)
+	if c < a {
+		return U64(0), ErrOverflow
+	}
+	return c, nil
 }

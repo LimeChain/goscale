@@ -7,7 +7,7 @@ import (
 
 type I8 int8
 
-func (a I8) ToNumeric() Numeric {
+func (a I8) Interface() Numeric {
 	return a
 }
 
@@ -104,4 +104,20 @@ func (a I8) SaturatingSub(b Numeric) Numeric {
 		return I8(math.MinInt8)
 	}
 	return a.Sub(b)
+}
+
+func (a I8) SaturatingMul(b Numeric) Numeric {
+	if a == 0 || b.(I8) == 0 {
+		return U8(0)
+	}
+
+	product := int16(a) * int16(b.(I8))
+
+	if product > math.MaxInt8 {
+		return I8(math.MaxInt8)
+	} else if product < math.MinInt8 {
+		return I8(math.MinInt8)
+	}
+
+	return I8(product)
 }

@@ -7,7 +7,7 @@ import (
 
 type I16 int16
 
-func (a I16) ToNumeric() Numeric {
+func (a I16) Interface() Numeric {
 	return a
 }
 
@@ -104,4 +104,20 @@ func (a I16) SaturatingSub(b Numeric) Numeric {
 		return I16(math.MinInt16)
 	}
 	return a.Sub(b)
+}
+
+func (a I16) SaturatingMul(b Numeric) Numeric {
+	if a == 0 || b.(I16) == 0 {
+		return I16(0)
+	}
+
+	product := int32(a) * int32(b.(I16))
+
+	if product > math.MaxInt16 {
+		return I16(math.MaxInt16)
+	} else if product < math.MinInt16 {
+		return I16(math.MinInt16)
+	}
+
+	return I16(product)
 }

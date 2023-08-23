@@ -7,7 +7,7 @@ import (
 
 type U32 uint32
 
-func (a U32) ToNumeric() Numeric {
+func (a U32) Interface() Numeric {
 	return a
 }
 

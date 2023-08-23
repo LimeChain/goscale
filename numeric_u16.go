@@ -7,7 +7,7 @@ import (
 
 type U16 uint16
 
-func (a U16) ToNumeric() Numeric {
+func (a U16) Interface() Numeric {
 	return a
 }
 
