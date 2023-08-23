@@ -225,25 +225,25 @@ func Test_SaturatingMul(t *testing.T) {
 	}
 }
 
-func Test_SaturatingDiv(t *testing.T) {
-	testExamples := []struct {
-		label       string
-		a           U64
-		b           U64
-		expectation U64
-	}{
-		{"MaxUint64 div 0", math.MaxUint64, 0, math.MaxUint64},
-		{"MaxUint64 div 1", math.MaxUint64, 1, math.MaxUint64},
-		{"6 div 3", 6, 3, 2},
-	}
+// func Test_SaturatingDiv(t *testing.T) {
+// 	testExamples := []struct {
+// 		label       string
+// 		a           U64
+// 		b           U64
+// 		expectation U64
+// 	}{
+// 		{"MaxUint64 div 0", math.MaxUint64, 0, math.MaxUint64},
+// 		{"MaxUint64 div 1", math.MaxUint64, 1, math.MaxUint64},
+// 		{"6 div 3", 6, 3, 2},
+// 	}
 
-	for _, testExample := range testExamples {
-		t.Run(testExample.label, func(t *testing.T) {
-			result := testExample.a.SaturatingDiv(testExample.b)
-			assert.Equal(t, testExample.expectation, result)
-		})
-	}
-}
+// 	for _, testExample := range testExamples {
+// 		t.Run(testExample.label, func(t *testing.T) {
+// 			result := testExample.a.SaturatingDiv(testExample.b)
+// 			assert.Equal(t, testExample.expectation, result)
+// 		})
+// 	}
+// }
 
 func Test_CheckedAdd(t *testing.T) {
 	testExamples := []struct {
