@@ -171,10 +171,10 @@ func DecodeI128(buffer *bytes.Buffer) I128 {
 	}
 }
 
-func DecodeNumeric[T Numeric](buffer *bytes.Buffer) T {
+func DecodeNumeric[N Numeric](buffer *bytes.Buffer) N {
 	var result interface{}
 
-	switch reflect.Zero(reflect.TypeOf(*new(T))).Interface().(type) {
+	switch reflect.Zero(reflect.TypeOf(*new(N))).Interface().(type) {
 	case U8:
 		result = DecodeU8(buffer)
 	case I8:
@@ -197,5 +197,5 @@ func DecodeNumeric[T Numeric](buffer *bytes.Buffer) T {
 		result = DecodeI128(buffer)
 	}
 
-	return result.(T)
+	return result.(N)
 }

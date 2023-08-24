@@ -70,12 +70,10 @@ type Numeric interface {
 	// add more methods as needed
 }
 
-// TODO: finish the U128, I128 implementation
-
 // TODO: check when converting from bigger to smaller types (e.g. U64 -> U8)
 
-// TODO: rename NewNumeric to New when this is extracted into
-// a separate package like numeric or num (num.New, num.U8, num.I16, etc)
+// TODO: rename NewNumeric to New when this is extracted
+// into a separate package (num.New, num.U8, num.I16, etc)
 func NewNumeric[N Numeric](n any) N {
 	switch reflect.Zero(reflect.TypeOf(*new(N))).Interface().(type) {
 	case U8:
@@ -420,13 +418,60 @@ func NewNumeric[N Numeric](n any) N {
 			panic("unknown primitive type for I64")
 		}
 
+	case U128:
+		switch n := n.(type) {
+		case uint:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case int:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case uint8:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case int8:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case uint16:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case int16:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case uint32:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case int32:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case uint64:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case int64:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case U8:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case I8:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case U16:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case I16:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case U32:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case I32:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case U64:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case I64:
+			return NewU128FromUint64(uint64(n)).Interface().(N)
+		case U128:
+			return n.Interface().(N)
+		case I128:
+			return U128(n).Interface().(N)
+
+		default:
+			panic("unknown primitive type for U128")
+		}
+
 	default:
 		panic("unknown numeric type")
 	}
 }
 
 // TODO: implement the rest of the cases for To[N]
-// maybe add it to the Numeric interface, instead of
+// Maybe add it to the Numeric interface, instead of
 // having it as a separate function
 
 func To[N Numeric](n Numeric) N {
@@ -441,6 +486,8 @@ func To[N Numeric](n Numeric) N {
 			return U16(n.(U32)).Interface().(N)
 		case reflect.TypeOf(*new(U64)):
 			return U16(n.(U64)).Interface().(N)
+		case reflect.TypeOf(*new(U128)):
+			return U16(n.(U128)[0]).Interface().(N)
 		default:
 			panic("unknown numeric type for U16")
 		}
@@ -463,6 +510,10 @@ func To[N Numeric](n Numeric) N {
 			return U64(n.(U64)).Interface().(N)
 		case reflect.TypeOf(*new(I64)):
 			return U64(n.(I64)).Interface().(N)
+		case reflect.TypeOf(*new(U128)):
+			return U64(n.(U128)[0]).Interface().(N)
+		case reflect.TypeOf(*new(I128)):
+			return U64(n.(I128)[0]).Interface().(N)
 		default:
 			panic("unknown numeric type for U64")
 		}

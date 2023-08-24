@@ -2,7 +2,6 @@ package goscale
 
 import (
 	"encoding/binary"
-	"math"
 	"math/big"
 	"math/bits"
 )
@@ -67,138 +66,62 @@ func (a I128) Interface() Numeric {
 	return a
 }
 
+// TODO: implement
+
 func (a I128) Add(other Numeric) Numeric {
-	var result I128
-
-	result[1] = a[1] + other.(I128)[1]
-	if result[1] < a[1] {
-		result[0]++
-	}
-	result[0] += a[0] + other.(I128)[0]
-
-	return result
+	return NewI128FromBigInt(*big.NewInt(0))
 }
 
 func (a I128) Sub(other Numeric) Numeric {
-	var diff I128
-
-	diff[1] = a[1] - other.(I128)[1]
-	if diff[1] > a[1] {
-		diff[0]--
-	}
-	diff[0] -= a[0] - other.(I128)[0]
-
-	return diff
+	return NewI128FromBigInt(*big.NewInt(0))
 }
 
 func (a I128) Mul(other Numeric) Numeric {
-	var product I128
-
-	p1, p2 := bits.Mul64(uint64(a[0]), uint64(other.(I128)[0]))
-
-	product[0], product[1] = U64(p1), U64(p2)
-
-	return product
+	return NewI128FromBigInt(*big.NewInt(0))
 }
 
 func (a I128) Div(other Numeric) Numeric {
-	var quotient I128
-
-	quotient[0] = a[0] / other.(I128)[0]
-
-	return quotient
+	return NewI128FromBigInt(*big.NewInt(0))
 }
 
 func (a I128) Mod(other Numeric) Numeric {
-	var remainder I128
-
-	remainder[0] = a[0] % other.(I128)[0]
-
-	return remainder
+	return NewI128FromBigInt(*big.NewInt(0))
 }
 
 func (a I128) Eq(other Numeric) bool {
-	return a[0] == other.(I128)[0] && a[1] == other.(I128)[1]
+	return false
 }
 
 func (a I128) Ne(other Numeric) bool {
-	return a[0] != other.(I128)[0] || a[1] != other.(I128)[1]
+	return false
 }
 
 func (a I128) Lt(other Numeric) bool {
-	if a[1] < other.(I128)[1] {
-		return true
-	}
-
-	if a[1] == other.(I128)[1] {
-		return a[0] < other.(I128)[0]
-	}
-
 	return false
 }
 
 func (a I128) Lte(other Numeric) bool {
-	if a[1] < other.(I128)[1] {
-		return true
-	}
-
-	if a[1] == other.(I128)[1] {
-		return a[0] <= other.(I128)[0]
-	}
-
 	return false
 }
 
 func (a I128) Gt(other Numeric) bool {
-	if a[1] > other.(I128)[1] {
-		return true
-	}
-
-	if a[1] == other.(I128)[1] {
-		return a[0] > other.(I128)[0]
-	}
-
 	return false
 }
 
 func (a I128) Gte(other Numeric) bool {
-	if a[1] > other.(I128)[1] {
-		return true
-	}
-
-	if a[1] == other.(I128)[1] {
-		return a[0] >= other.(I128)[0]
-	}
-
 	return false
 }
 
 func (a I128) Max(other Numeric) Numeric {
-	if a.Gte(other) {
-		return a
-	}
-
-	return other
+	return NewI128FromBigInt(*big.NewInt(0))
 }
 
 func (a I128) Min(other Numeric) Numeric {
-	if a.Lte(other) {
-		return a
-	}
-
-	return other
+	return NewI128FromBigInt(*big.NewInt(0))
 }
 
 func (a I128) Clamp(minValue, maxValue Numeric) Numeric {
-	if a.Lte(minValue) {
-		return minValue
-	}
-
-	if a.Gte(maxValue) {
-		return maxValue
-	}
-
-	return a
+	return NewI128FromBigInt(*big.NewInt(0))
 }
 
 func (a I128) TrailingZeros() Numeric {
@@ -206,26 +129,13 @@ func (a I128) TrailingZeros() Numeric {
 }
 
 func (a I128) SaturatingAdd(b Numeric) Numeric {
-	// check for overflow
-	if a.Gt(NewI128FromBigInt(*big.NewInt(math.MaxInt64))) && b.(I128).Gt(NewI128FromBigInt(*big.NewInt(math.MaxInt64))) {
-		return NewI128FromBigInt(*big.NewInt(math.MaxInt64))
-	}
-
-	return a.Add(b)
+	return NewI128FromBigInt(*big.NewInt(0))
 }
 
 func (a I128) SaturatingSub(b Numeric) Numeric {
-	if a.Lt(b) {
-		return NewNumeric[U128](0)
-	}
-	return a.Sub(b)
+	return NewI128FromBigInt(*big.NewInt(0))
 }
 
 func (a I128) SaturatingMul(b Numeric) Numeric {
-	// check for overflow
-	if a.Gt(NewI128FromBigInt(*big.NewInt(math.MaxInt64))) && b.(I128).Gt(NewI128FromBigInt(*big.NewInt(math.MaxInt64))) {
-		return NewI128FromBigInt(*big.NewInt(math.MaxInt64))
-	}
-
-	return a.Mul(b)
+	return NewI128FromBigInt(*big.NewInt(0))
 }

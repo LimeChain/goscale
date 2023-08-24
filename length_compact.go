@@ -20,7 +20,7 @@ func (c Compact) Encode(buffer *bytes.Buffer) {
 }
 
 func (c Compact) ToBigInt() *big.Int {
-	return toBigInt(U128(c))
+	return U128(c).ToBigInt()
 }
 
 func (c Compact) Bytes() []byte {
