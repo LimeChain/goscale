@@ -103,6 +103,10 @@ func ToCompact(v interface{}) Compact {
 		return Compact(NewU128FromUint64(v))
 	case U64:
 		return Compact(NewU128FromUint64(uint64(v)))
+	case U128:
+		return Compact(v)
+	case I128:
+		return Compact(v)
 	default:
 		panic("invalid numeric type in ToCompact()")
 	}
