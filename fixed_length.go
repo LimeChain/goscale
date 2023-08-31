@@ -14,8 +14,9 @@ import (
 )
 
 func (value U8) Encode(buffer *bytes.Buffer) {
+	// do not use value.Bytes() here: https://github.com/LimeChain/goscale/issues/77
 	encoder := Encoder{Writer: buffer}
-	encoder.Write(value.Bytes())
+	encoder.EncodeByte(byte(value))
 }
 
 func (value U8) Bytes() []byte {
