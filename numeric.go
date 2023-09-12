@@ -15,10 +15,6 @@ import (
 
 var ErrOverflow = errors.New("overflow")
 
-const MinInt64 = 1 << 63
-const MaxInt64 = ^uint64(0) >> 1
-const MaxUint64 = ^uint64(0)
-
 // Go's primitive numeric types don't have a common interface.
 // To be able to write generic code that works with any numeric
 // type, including some custom types (U128/I128), we need to
@@ -39,7 +35,8 @@ type Numeric interface {
 	SaturatingSub(other Numeric) Numeric
 	SaturatingMul(other Numeric) Numeric
 
-	// TODO: finish implementing these
+	// TODO: https://github.com/LimeChain/goscale/issues/82
+
 	// SaturatingDiv(other Numeric) Numeric
 	// SaturatingMod(other Numeric) Numeric
 
@@ -808,7 +805,7 @@ func To[N Numeric](n Numeric) N {
 	}
 }
 
-func fromAnyNumberTo128[N Numeric](n any) N {
+func fromAnyNumberTo128Bits[N Numeric](n any) N {
 	switch n := n.(type) {
 	case int:
 		return bigIntToGeneric[N](new(big.Int).SetInt64(int64(n)))
@@ -846,6 +843,10 @@ func fromAnyNumberTo128[N Numeric](n any) N {
 		return bigIntToGeneric[N](new(big.Int).SetInt64(int64(n)))
 	case U64:
 		return bigIntToGeneric[N](new(big.Int).SetUint64(uint64(n)))
+	case U128:
+		return bigIntToGeneric[N](n.ToBigInt())
+	case I128:
+		return bigIntToGeneric[N](n.ToBigInt())
 	case *big.Int:
 		return bigIntToGeneric[N](n)
 	case string:

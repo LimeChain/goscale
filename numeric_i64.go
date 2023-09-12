@@ -2,7 +2,6 @@ package goscale
 
 import (
 	"math"
-	"math/big"
 	"math/bits"
 )
 
@@ -85,38 +84,45 @@ func (a I64) TrailingZeros() Numeric {
 }
 
 func (a I64) SaturatingAdd(b Numeric) Numeric {
+	sum, _ := bits.Add64(uint64(a), uint64(b.(I64)), 0)
 	// check for overflow
-	if a > 0 && b.(I64) > 0 && a > (math.MaxInt64-b.(I64)) {
+	if a >= 0 && b.(I64) >= 0 && int64(sum) < int64(a) {
 		return I64(math.MaxInt64)
 	}
 	// check for underflow
-	if a < 0 && b.(I64) < 0 && a < (math.MinInt64-b.(I64)) {
+	if a < 0 && b.(I64) < 0 && int64(sum) >= int64(a) {
 		return I64(math.MinInt64)
 	}
-	return a + b.(I64)
+	return I64(sum)
 }
 
 func (a I64) SaturatingSub(b Numeric) Numeric {
-	diff := a - b.(I64)
-	if diff > b.(I64) {
+	diff, borrow := bits.Sub64(uint64(a), uint64(b.(I64)), 0)
+	// check for underflow
+	if a >= 0 && b.(I64) < 0 && (borrow == 1 || int64(diff) < int64(a)) {
+		return I64(math.MaxInt64)
+	}
+	// check for overflow
+	if a < 0 && b.(I64) >= 0 && (borrow == 1 || int64(diff) >= int64(a)) {
 		return I64(math.MinInt64)
 	}
-	return diff
+	return I64(diff)
 }
 
 func (a I64) SaturatingMul(b Numeric) Numeric {
-	if a == 0 || b.(I64) == 0 {
+	if uint64(a) == 0 || uint64(b.(I64)) == 0 {
 		return I64(0)
 	}
 
-	result := big.NewInt(0).Mul(big.NewInt(int64(a)), big.NewInt(int64(b.(I64))))
-	// check for overflow
-	if result.Cmp(big.NewInt(math.MaxInt64)) > 0 {
+	hi, lo := bits.Mul64(uint64(a), uint64(b.(I64)))
+	// if hi is not zero, there is an overflow
+	if hi != 0 || (a > 0 && b.(I64) > 0 && int64(lo) < 0) || (a < 0 && b.(I64) < 0 && int64(lo) > 0) {
+		if (a < 0 && b.(I64) >= 0) || (a >= 0 && b.(I64) < 0) {
+			// negative overflow
+			return I64(math.MinInt64)
+		}
+		// positive overflow
 		return I64(math.MaxInt64)
 	}
-	// check for underflow
-	if result.Cmp(big.NewInt(math.MinInt64)) < 0 {
-		return I64(math.MinInt64)
-	}
-	return I64(result.Int64())
+	return I64(int64(lo))
 }

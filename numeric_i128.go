@@ -6,56 +6,44 @@ import (
 	"math/bits"
 )
 
-// using little endian byte order
+// little endian byte order
+// [0] least significant bits
+// [1] most significant bits
 type I128 [2]U64
 
 func NewI128(n any) I128 {
-	return fromAnyNumberTo128[I128](n)
+	return fromAnyNumberTo128Bits[I128](n)
 }
 
 func bigIntToI128(n *big.Int) I128 {
 	bytes := make([]byte, 16)
 	n.FillBytes(bytes)
-
 	reverseSlice(bytes)
 
-	var result [2]U64
-	result[0] = U64(binary.LittleEndian.Uint64(bytes[:8]))
-	result[1] = U64(binary.LittleEndian.Uint64(bytes[8:]))
+	var result = I128{
+		U64(binary.LittleEndian.Uint64(bytes[:8])),
+		U64(binary.LittleEndian.Uint64(bytes[8:])),
+	}
 
 	if n.Sign() < 0 {
-		result[0] = ^result[0]
-		result[1] = ^result[1]
-
-		result[0]++
-		if result[0] == 0 {
-			result[1]++
-		}
+		result = negateI128(result)
 	}
 
-	return I128{
-		result[0],
-		result[1],
-	}
+	return result
 }
 
 func (n I128) ToBigInt() *big.Int {
-	isNegative := n[1]&U64(MinInt64) != 0
-	if isNegative {
-		if n[0] == 0 {
-			n[1]--
-		}
-		n[0]--
+	isNegative := n.isNegative()
 
-		n[0] = ^n[0]
-		n[1] = ^n[1]
+	if isNegative {
+		n = negateI128(n)
 	}
 
 	bytes := make([]byte, 16)
 	binary.BigEndian.PutUint64(bytes[:8], uint64(n[1]))
 	binary.BigEndian.PutUint64(bytes[8:], uint64(n[0]))
-
 	result := big.NewInt(0).SetBytes(bytes)
+
 	if isNegative {
 		result.Neg(result)
 	}
@@ -63,19 +51,19 @@ func (n I128) ToBigInt() *big.Int {
 	return result
 }
 
-// ffffffffffffffff ffffffffffffff7f
+// ff ff ff ff ff ff ff ff | 7f ff ff ff ff ff ff ff
 func MaxI128() I128 {
 	return I128{
-		U64(MaxUint64),
-		U64(MaxInt64), // most significant bit set to 0
+		U64(^uint64(0)),
+		U64(^uint64(0) >> 1),
 	}
 }
 
-// 0000000000000000 0000000000000080
+// 00 00 00 00 00 00 00 00 | 80 00 00 00 00 00 00 00
 func MinI128() I128 {
 	return I128{
 		U64(0),
-		U64(MinInt64), // most significant bit set to 1
+		U64(1 << 63),
 	}
 }
 
@@ -84,30 +72,18 @@ func (n I128) Interface() Numeric {
 }
 
 func (a I128) Add(b Numeric) Numeric {
-	// return bigIntToI128(
-	// 	new(big.Int).Add(a.ToBigInt(), b.(I128).ToBigInt()),
-	// )
-
 	sumLow, carry := bits.Add64(uint64(a[0]), uint64(b.(I128)[0]), 0)
 	sumHigh, _ := bits.Add64(uint64(a[1]), uint64(b.(I128)[1]), carry)
 	return I128{U64(sumLow), U64(sumHigh)}
 }
 
 func (a I128) Sub(b Numeric) Numeric {
-	// return bigIntToI128(
-	// 	new(big.Int).Sub(a.ToBigInt(), b.(I128).ToBigInt()),
-	// )
-
 	diffLow, borrow := bits.Sub64(uint64(a[0]), uint64(b.(I128)[0]), 0)
 	diffHigh, _ := bits.Sub64(uint64(a[1]), uint64(b.(I128)[1]), borrow)
 	return I128{U64(diffLow), U64(diffHigh)}
 }
 
 func (a I128) Mul(b Numeric) Numeric {
-	// return bigIntToI128(
-	// 	new(big.Int).Mul(a.ToBigInt(), b.(I128).ToBigInt()),
-	// )
-
 	negA := a[1]>>(64-1) == 1
 	negB := b.(I128)[1]>>(64-1) == 1
 
@@ -126,8 +102,8 @@ func (a I128) Mul(b Numeric) Numeric {
 
 	result := I128{U64(low), U64(high)}
 
-	// determine the sign of the result and adjust if necessary
-	if negA != negB { // If only one of them is negative
+	// if one of the operands is negative the result is also negative
+	if negA != negB {
 		return negateI128(result)
 	}
 	return result
@@ -200,7 +176,6 @@ func (a I128) TrailingZeros() Numeric {
 func (a I128) SaturatingAdd(b Numeric) Numeric {
 	sumLow, carry := bits.Add64(uint64(a[0]), uint64(b.(I128)[0]), 0)
 	sumHigh, _ := bits.Add64(uint64(a[1]), uint64(b.(I128)[1]), carry)
-
 	// check for overflow
 	if a[1]&(1<<63) == 0 && b.(I128)[1]&(1<<63) == 0 && sumHigh&(1<<63) != 0 {
 		return MaxI128()
@@ -215,7 +190,6 @@ func (a I128) SaturatingAdd(b Numeric) Numeric {
 func (a I128) SaturatingSub(b Numeric) Numeric {
 	diffLow, borrow := bits.Sub64(uint64(a[0]), uint64(b.(I128)[0]), 0)
 	diffHigh, _ := bits.Sub64(uint64(a[1]), uint64(b.(I128)[1]), borrow)
-
 	// check for overflow
 	if a[1]&(1<<63) == 0 && b.(I128)[1]&(1<<63) != 0 && diffHigh&(1<<63) != 0 {
 		return MaxI128()
@@ -229,24 +203,24 @@ func (a I128) SaturatingSub(b Numeric) Numeric {
 
 func (a I128) SaturatingMul(b Numeric) Numeric {
 	result := new(big.Int).Mul(a.ToBigInt(), b.(I128).ToBigInt())
-
-	// Define the maximum and minimum representable I128 values
+	// define the maximum and minimum representable I128 values
 	maxI128 := new(big.Int).Sub(new(big.Int).Lsh(big.NewInt(1), 127), big.NewInt(1))
 	minI128 := new(big.Int).Neg(new(big.Int).Lsh(big.NewInt(1), 127))
-
-	// Clamp to the representable range
 	if result.Cmp(maxI128) > 0 {
 		return bigIntToI128(maxI128)
 	} else if result.Cmp(minI128) < 0 {
 		return bigIntToI128(minI128)
 	}
-
 	return bigIntToI128(result)
 }
 
-func negateI128(i I128) I128 {
-	// using two's complement: flip all bits and add 1
-	negLow, carry := bits.Add64(^uint64(i[0]), 1, 0)
-	negHigh, _ := bits.Add64(^uint64(i[1]), 0, carry)
+func (n I128) isNegative() bool {
+	return n[1]&U64(1<<63) != 0
+}
+
+func negateI128(n I128) I128 {
+	// two's complement representation
+	negLow, carry := bits.Add64(^uint64(n[0]), 1, 0)
+	negHigh, _ := bits.Add64(^uint64(n[1]), 0, carry)
 	return I128{U64(negLow), U64(negHigh)}
 }

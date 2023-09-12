@@ -2,7 +2,6 @@ package goscale
 
 import (
 	"math"
-	"math/big"
 	"math/bits"
 )
 
@@ -93,10 +92,11 @@ func (a U64) SaturatingAdd(b Numeric) Numeric {
 }
 
 func (a U64) SaturatingSub(b Numeric) Numeric {
-	if a < b.(U64) {
-		return NewNumeric[U64](uint64(0))
+	diff, borrow := bits.Sub64(uint64(a), uint64(b.(U64)), 0)
+	if borrow != 0 {
+		return U64(0)
 	}
-	return a.Sub(b)
+	return U64(diff)
 }
 
 func (a U64) SaturatingMul(b Numeric) Numeric {
@@ -104,18 +104,17 @@ func (a U64) SaturatingMul(b Numeric) Numeric {
 		return U64(0)
 	}
 
-	result := new(big.Int).Mul(new(big.Int).SetUint64(uint64(a)), new(big.Int).SetUint64(uint64(b.(U64))))
-	// check for overflow
-	if result.Cmp(new(big.Int).SetUint64(math.MaxUint64)) > 0 {
+	hi, lo := bits.Mul64(uint64(a), uint64(b.(U64)))
+	if hi != 0 {
 		return U64(math.MaxUint64)
 	}
-	return U64(result.Uint64())
+	return U64(lo)
 }
 
 func (a U64) CheckedAdd(b Numeric) (Numeric, error) {
-	c := a + b.(U64)
-	if c < a {
+	sum, carry := bits.Add64(uint64(a), uint64(b.(U64)), 0)
+	if carry != 0 {
 		return U64(0), ErrOverflow
 	}
-	return c, nil
+	return U64(sum), nil
 }

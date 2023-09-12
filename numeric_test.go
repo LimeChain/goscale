@@ -2,6 +2,7 @@ package goscale
 
 import (
 	"math"
+	"math/big"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -68,6 +69,21 @@ func Test_Sub(t *testing.T) {
 		{"2-1", NewI128(2), NewI128(1), NewI128(1)},
 		{"-2-(-1)", NewI128(-2), NewI128(-1), NewI128(-1)},
 		{"-170141183460469231731687303715884105728-1", MinI128(), NewI128(1), MaxI128()},
+		{"499999889463855-10000000000", NewU128(499999889463855), NewU128(10000000000), NewU128(499989889463855)},
+		{"499999889463855-10000000000", NewI128(499999889463855), NewI128(10000000000), NewI128(499989889463855)},
+		{
+			"340282366920938463463374607431657675311-10000000000",
+			NewU128("340282366920938463463374607431657675311"),
+			NewU128(10000000000),
+			NewU128("340282366920938463463374607421657675311"),
+		},
+		{
+			"340282366920938463463374607431657675311-10000000000",
+			NewI128("340282366920938463463374607431657675311"),
+			NewI128(10000000000),
+			NewI128("340282366920938463463374607421657675311"),
+		},
+		{"9889463854-10000000000", NewI128(9889463854), NewI128(10000000000), NewI128("340282366920938463463374607431657675310")},
 	}
 
 	for _, testExample := range testExamples {
@@ -471,7 +487,7 @@ func Test_SaturatingSub(t *testing.T) {
 		{"0-1", U64(0), U64(1), U64(0)},
 		{"0-MaxU64", U64(0), U64(math.MaxUint64), U64(0)},
 		{"0-1", I64(0), I64(1), I64(-1)},
-		{"MinU64-1", I64(math.MinInt64), I64(1), I64(math.MinInt64)},
+		{"MinI64-1", I64(math.MinInt64), I64(1), I64(math.MinInt64)},
 		{"0-1", NewU128(0), NewU128(1), NewU128(0)},
 		{"0-MaxU128", NewU128(0), MaxU128(), NewU128(0)},
 		{"0-1", NewI128(0), NewI128(1), NewI128(-1)},
@@ -848,4 +864,50 @@ func Test_Gte(t *testing.T) {
 			assert.Equal(t, testExample.expectation, result)
 		})
 	}
+}
+
+func Test_U128ToBigInt(t *testing.T) {
+	bnMaxU128Value, _ := new(big.Int).SetString("340282366920938463463374607431768211455", 10)
+
+	testExamples := []struct {
+		label       string
+		input       U128
+		expectation *big.Int
+	}{
+		{"340282366920938463463374607431768211455", MaxU128(), bnMaxU128Value},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result := testExample.input.ToBigInt()
+			assert.Equal(t, testExample.expectation, result)
+		})
+	}
+}
+
+func Test_I128ToBigInt(t *testing.T) {
+	bnMaxI128Value, _ := new(big.Int).SetString("170141183460469231731687303715884105727", 10)
+	bnMinI128Value, _ := new(big.Int).SetString("-170141183460469231731687303715884105728", 10)
+
+	testExamples := []struct {
+		label       string
+		input       I128
+		expectation *big.Int
+	}{
+		{"170141183460469231731687303715884105727", MaxI128(), bnMaxI128Value},
+		{"-170141183460469231731687303715884105728", MinI128(), bnMinI128Value},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result := testExample.input.ToBigInt()
+			assert.Equal(t, testExample.expectation, result)
+		})
+	}
+}
+
+func Test_fromAnyNumberTo128Bits(t *testing.T) {
+	assert.Equal(t, fromAnyNumberTo128Bits[U128](uint(255)), NewU128(255))
+	assert.Equal(t, fromAnyNumberTo128Bits[U128](uint8(math.MaxUint8)), NewU128(math.MaxUint8))
+	assert.Equal(t, fromAnyNumberTo128Bits[U128](uint16(math.MaxUint16)), NewU128(math.MaxUint16))
 }

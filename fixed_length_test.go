@@ -421,9 +421,8 @@ func Test_DecodeU128(t *testing.T) {
 }
 
 func Test_NewU128FromBigIntPanic(t *testing.T) {
-	t.Skip()
 	t.Run("Exceeds U128", func(t *testing.T) {
-		value, ok := new(big.Int).SetString("340282366920938463463374607431768211456", 10) // MaxUint128 + 1
+		value, ok := new(big.Int).SetString("340282366920938463463374607431768211456", 10) // MaxU128 + 1
 		if !ok {
 			panic("not ok")
 		}

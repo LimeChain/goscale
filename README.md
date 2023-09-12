@@ -2,7 +2,8 @@
 
 [![codecov](https://codecov.io/gh/LimeChain/goscale/branch/master/graph/badge.svg?token=3OQPC6VNMB)](https://codecov.io/gh/LimeChain/goscale)
 
-The SCALE types in Go are represented by a set of custom-defined types that implement the `Encodable` interface. Each type also has a corresponding `Decode` function. Note that the type to which data should be decoded is inferred from the context and is not self-contained in the SCALE-encoded data.
+The SCALE types in Go are represented by a set of custom-defined types that implement the `Encodable` interface. 
+Each type also has a corresponding decode function using the convention `Decode<TypeName>`. Note that the type to which data should be decoded is inferred from the context and is not self-contained in the SCALE-encoded data.
 
 One exception is the `Tuple` type. It doesn't have methods attached. Instead, there are `EncodeTuple` and `DecodeTuple` functions that can be invoked with any custom struct that embeds the `Tuple` interface.
 

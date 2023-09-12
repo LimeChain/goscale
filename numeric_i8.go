@@ -88,7 +88,7 @@ func (a I8) SaturatingAdd(b Numeric) Numeric {
 	// check for overflow and underflow
 	if sum > int16(math.MaxInt8) {
 		return I8(math.MaxInt8)
-	} else if sum < math.MinInt8 {
+	} else if sum < int16(math.MinInt8) {
 		return I8(math.MinInt8)
 	}
 	return I8(sum)
@@ -109,14 +109,14 @@ func (a I8) SaturatingSub(b Numeric) Numeric {
 
 func (a I8) SaturatingMul(b Numeric) Numeric {
 	if a == 0 || b.(I8) == 0 {
-		return U8(0)
+		return I8(0)
 	}
 
 	product := int16(a) * int16(b.(I8))
 	// check for overflow and underflow
 	if product > int16(math.MaxInt8) {
 		return I8(math.MaxInt8)
-	} else if product < math.MinInt8 {
+	} else if product < int16(math.MinInt8) {
 		return I8(math.MinInt8)
 	}
 	return I8(product)

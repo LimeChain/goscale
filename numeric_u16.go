@@ -95,7 +95,7 @@ func (a U16) SaturatingAdd(b Numeric) Numeric {
 func (a U16) SaturatingSub(b Numeric) Numeric {
 	// check for underflow
 	if a < b.(U16) {
-		return NewNumeric[U16](uint16(0))
+		return U16(0)
 	}
 	return a.Sub(b)
 }

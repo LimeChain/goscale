@@ -93,7 +93,7 @@ func (a U32) SaturatingAdd(b Numeric) Numeric {
 
 func (a U32) SaturatingSub(b Numeric) Numeric {
 	if a < b.(U32) {
-		return NewNumeric[U32](uint32(0))
+		return U32(0)
 	}
 	return a.Sub(b)
 }

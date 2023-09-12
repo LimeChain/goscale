@@ -6,17 +6,20 @@ import (
 	"math/bits"
 )
 
-// using little endian byte order
+// little endian byte order
+// [0] least significant bits
+// [1] most significant bits
 type U128 [2]U64
 
 func NewU128(n any) U128 {
-	return fromAnyNumberTo128[U128](n)
+	return fromAnyNumberTo128Bits[U128](n)
 }
 
 func bigIntToU128(n *big.Int) U128 {
 	bytes := make([]byte, 16)
 	n.FillBytes(bytes)
 	reverseSlice(bytes)
+
 	return U128{
 		U64(binary.LittleEndian.Uint64(bytes[:8])),
 		U64(binary.LittleEndian.Uint64(bytes[8:])),
@@ -30,15 +33,15 @@ func (n U128) ToBigInt() *big.Int {
 	return big.NewInt(0).SetBytes(bytes)
 }
 
-// ffffffffffffffff ffffffffffffffff
+// ff ff ff ff ff ff ff ff | ff ff ff ff ff ff ff ff
 func MaxU128() U128 {
 	return U128{
-		U64(MaxUint64),
-		U64(MaxUint64),
+		U64(^uint64(0)),
+		U64(^uint64(0)),
 	}
 }
 
-// 0000000000000000 0000000000000000
+// 00 00 00 00 00 00 00 00 | 00 00 00 00 00 00 00 00
 func MinU128() U128 {
 	return U128{
 		U64(0),
@@ -51,20 +54,12 @@ func (n U128) Interface() Numeric {
 }
 
 func (a U128) Add(b Numeric) Numeric {
-	// return bigIntToU128(
-	// 	new(big.Int).Add(a.ToBigInt(), b.(U128).ToBigInt()),
-	// )
-
 	sumLow, carry := bits.Add64(uint64(a[0]), uint64(b.(U128)[0]), 0)
 	sumHigh, _ := bits.Add64(uint64(a[1]), uint64(b.(U128)[1]), carry)
 	return U128{U64(sumLow), U64(sumHigh)}
 }
 
 func (a U128) Sub(b Numeric) Numeric {
-	// return bigIntToU128(
-	// 	new(big.Int).Sub(a.ToBigInt(), b.(U128).ToBigInt()),
-	// )
-
 	diffLow, borrow := bits.Sub64(uint64(a[0]), uint64(b.(U128)[0]), 0)
 	diffHigh, _ := bits.Sub64(uint64(a[1]), uint64(b.(U128)[1]), borrow)
 	return U128{U64(diffLow), U64(diffHigh)}
@@ -153,7 +148,6 @@ func (a U128) SaturatingAdd(b Numeric) Numeric {
 func (a U128) SaturatingSub(b Numeric) Numeric {
 	low, borrow := bits.Sub64(uint64(a[0]), uint64(b.(U128)[0]), 0)
 	high, _ := bits.Sub64(uint64(a[1]), uint64(b.(U128)[1]), borrow)
-
 	// check for underflow
 	if borrow == 1 || high > uint64(a[1]) {
 		return U128{0, 0}
@@ -163,7 +157,6 @@ func (a U128) SaturatingSub(b Numeric) Numeric {
 
 func (a U128) SaturatingMul(b Numeric) Numeric {
 	result := new(big.Int).Mul(a.ToBigInt(), b.(U128).ToBigInt())
-
 	// check for overflow
 	maxValue := new(big.Int)
 	maxValue.Lsh(big.NewInt(1), 128)
