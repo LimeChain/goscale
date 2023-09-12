@@ -2,17 +2,14 @@ package goscale
 
 import (
 	"math"
+	"math/big"
 	"math/bits"
 )
 
 type U64 uint64
 
-func (a U64) Interface() Numeric {
-	return a
-}
-
-func NewU64(n uint64) Numeric {
-	return U64(n)
+func (n U64) Interface() Numeric {
+	return n
 }
 
 func (a U64) Add(b Numeric) Numeric {
@@ -107,23 +104,12 @@ func (a U64) SaturatingMul(b Numeric) Numeric {
 		return U64(0)
 	}
 
-	c := a * b.(U64)
-	if c/a != b {
+	result := new(big.Int).Mul(new(big.Int).SetUint64(uint64(a)), new(big.Int).SetUint64(uint64(b.(U64))))
+	// check for overflow
+	if result.Cmp(new(big.Int).SetUint64(math.MaxUint64)) > 0 {
 		return U64(math.MaxUint64)
 	}
-	return c
-
-	// bigA := new(big.Int).SetUint64(uint64(a))
-	// bigB := new(big.Int).SetUint64(uint64(b.(U64)))
-
-	// product := new(big.Int).Mul(bigA, bigB)
-
-	// // check for overflow
-	// if product.BitLen() > 64 {
-	// 	return U64(math.MaxUint64)
-	// }
-
-	// return U64(product.Uint64())
+	return U64(result.Uint64())
 }
 
 func (a U64) CheckedAdd(b Numeric) (Numeric, error) {

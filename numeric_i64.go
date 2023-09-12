@@ -2,17 +2,14 @@ package goscale
 
 import (
 	"math"
+	"math/big"
 	"math/bits"
 )
 
 type I64 int64
 
-func (a I64) Interface() Numeric {
-	return a
-}
-
-func NewI64(n int64) Numeric {
-	return I64(n)
+func (n I64) Interface() Numeric {
+	return n
 }
 
 func (a I64) Add(b Numeric) Numeric {
@@ -92,22 +89,34 @@ func (a I64) SaturatingAdd(b Numeric) Numeric {
 	if a > 0 && b.(I64) > 0 && a > (math.MaxInt64-b.(I64)) {
 		return I64(math.MaxInt64)
 	}
-
 	// check for underflow
 	if a < 0 && b.(I64) < 0 && a < (math.MinInt64-b.(I64)) {
 		return I64(math.MinInt64)
 	}
-
-	return a.Add(b)
+	return a + b.(I64)
 }
 
 func (a I64) SaturatingSub(b Numeric) Numeric {
-	if a.Lt(b) {
+	diff := a - b.(I64)
+	if diff > b.(I64) {
 		return I64(math.MinInt64)
 	}
-	return a.Sub(b)
+	return diff
 }
 
 func (a I64) SaturatingMul(b Numeric) Numeric {
-	return I64(0)
+	if a == 0 || b.(I64) == 0 {
+		return I64(0)
+	}
+
+	result := big.NewInt(0).Mul(big.NewInt(int64(a)), big.NewInt(int64(b.(I64))))
+	// check for overflow
+	if result.Cmp(big.NewInt(math.MaxInt64)) > 0 {
+		return I64(math.MaxInt64)
+	}
+	// check for underflow
+	if result.Cmp(big.NewInt(math.MinInt64)) < 0 {
+		return I64(math.MinInt64)
+	}
+	return I64(result.Int64())
 }

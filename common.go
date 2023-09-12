@@ -68,41 +68,41 @@ func reverseSlice(a []byte) {
 func ToCompact(v interface{}) Compact {
 	switch v := v.(type) {
 	case int:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case uint:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case int8:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case I8:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case uint8:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case U8:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case int16:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case I16:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case uint16:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case U16:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case int32:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case I32:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case uint32:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case U32:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case int64:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case I64:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case uint64:
-		return Compact(NewU128FromUint64(v))
+		return Compact(NewU128(v))
 	case U64:
-		return Compact(NewU128FromUint64(uint64(v)))
+		return Compact(NewU128(v))
 	case U128:
 		return Compact(v)
 	case I128:

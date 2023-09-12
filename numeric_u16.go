@@ -7,12 +7,8 @@ import (
 
 type U16 uint16
 
-func (a U16) Interface() Numeric {
-	return a
-}
-
-func NewU16(n uint16) Numeric {
-	return U16(n)
+func (n U16) Interface() Numeric {
+	return n
 }
 
 func (a U16) Add(b Numeric) Numeric {
@@ -89,6 +85,7 @@ func (a U16) TrailingZeros() Numeric {
 
 func (a U16) SaturatingAdd(b Numeric) Numeric {
 	sum := uint32(a) + uint32(b.(U16))
+	// check for overflow
 	if sum > math.MaxUint16 {
 		return U16(math.MaxUint16)
 	}
@@ -96,6 +93,7 @@ func (a U16) SaturatingAdd(b Numeric) Numeric {
 }
 
 func (a U16) SaturatingSub(b Numeric) Numeric {
+	// check for underflow
 	if a < b.(U16) {
 		return NewNumeric[U16](uint16(0))
 	}
@@ -106,11 +104,10 @@ func (a U16) SaturatingMul(b Numeric) Numeric {
 	if a == 0 || b.(U16) == 0 {
 		return U16(0)
 	}
-
+	// check for overflow
 	product := uint32(a) * uint32(b.(U16))
 	if product > math.MaxUint16 {
 		return U16(math.MaxUint16)
 	}
-
 	return U16(product)
 }

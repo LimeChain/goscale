@@ -7,12 +7,8 @@ import (
 
 type U8 uint8
 
-func (a U8) Interface() Numeric {
-	return a
-}
-
-func NewU8(n uint8) Numeric {
-	return U8(n)
+func (n U8) Interface() Numeric {
+	return n
 }
 
 func (a U8) Add(b Numeric) Numeric {
@@ -88,18 +84,21 @@ func (a U8) TrailingZeros() Numeric {
 }
 
 func (a U8) SaturatingAdd(b Numeric) Numeric {
-	sum := U16(a) + U16(b.(U8))
-	if sum > math.MaxUint8 {
+	sum := uint16(a) + uint16(b.(U8))
+	// check for overflow
+	if sum > uint16(math.MaxUint8) {
 		return U8(math.MaxUint8)
 	}
 	return U8(sum)
 }
 
 func (a U8) SaturatingSub(b Numeric) Numeric {
-	if a < b.(U8) {
-		return NewNumeric[U8](uint8(0))
+	diff := uint16(a) - uint16(b.(U8))
+	// check for underflow
+	if diff > uint16(math.MaxUint8) {
+		return U8(0)
 	}
-	return a.Sub(b)
+	return U8(diff)
 }
 
 func (a U8) SaturatingMul(b Numeric) Numeric {
@@ -108,9 +107,9 @@ func (a U8) SaturatingMul(b Numeric) Numeric {
 	}
 
 	product := uint16(a) * uint16(b.(U8))
-	if product > math.MaxUint8 {
+	// check for overflow
+	if product > uint16(math.MaxUint8) {
 		return U8(math.MaxUint8)
 	}
-
 	return U8(product)
 }

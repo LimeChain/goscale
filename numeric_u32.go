@@ -7,12 +7,8 @@ import (
 
 type U32 uint32
 
-func (a U32) Interface() Numeric {
-	return a
-}
-
-func NewU32(n uint32) Numeric {
-	return U32(n)
+func (n U32) Interface() Numeric {
+	return n
 }
 
 func (a U32) Add(b Numeric) Numeric {
