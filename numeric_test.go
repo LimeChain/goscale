@@ -907,7 +907,15 @@ func Test_I128ToBigInt(t *testing.T) {
 }
 
 func Test_fromAnyNumberTo128Bits(t *testing.T) {
-	assert.Equal(t, fromAnyNumberTo128Bits[U128](uint(255)), NewU128(255))
-	assert.Equal(t, fromAnyNumberTo128Bits[U128](uint8(math.MaxUint8)), NewU128(math.MaxUint8))
-	assert.Equal(t, fromAnyNumberTo128Bits[U128](uint16(math.MaxUint16)), NewU128(math.MaxUint16))
+	assert.Equal(t, to128BitsNumber[U128](uint(1)), NewU128(1))
+	assert.Equal(t, to128BitsNumber[I128](int(-1)), NewI128(-1))
+
+	assert.Equal(t, to128BitsNumber[U128](uint8(math.MaxUint8)), NewU128(math.MaxUint8))
+	assert.Equal(t, to128BitsNumber[I128](int8(math.MinInt8)), NewI128(math.MinInt8))
+
+	assert.Equal(t, to128BitsNumber[U128](uint16(math.MaxUint16)), NewU128(math.MaxUint16))
+	assert.Equal(t, to128BitsNumber[I128](int16(math.MinInt16)), NewI128(math.MinInt16))
+
+	assert.Equal(t, to128BitsNumber[U128](uint32(math.MaxUint32)), NewU128(math.MaxUint32))
+	assert.Equal(t, to128BitsNumber[I128](int32(math.MinInt32)), NewI128(math.MinInt32))
 }

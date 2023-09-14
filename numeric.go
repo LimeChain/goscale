@@ -805,7 +805,7 @@ func To[N Numeric](n Numeric) N {
 	}
 }
 
-func fromAnyNumberTo128Bits[N Numeric](n any) N {
+func to128BitsNumber[N Numeric](n any) N {
 	switch n := n.(type) {
 	case int:
 		return bigIntToGeneric[N](new(big.Int).SetInt64(int64(n)))

@@ -12,7 +12,7 @@ import (
 type U128 [2]U64
 
 func NewU128(n any) U128 {
-	return fromAnyNumberTo128Bits[U128](n)
+	return to128BitsNumber[U128](n)
 }
 
 func bigIntToU128(n *big.Int) U128 {
