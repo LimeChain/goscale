@@ -789,7 +789,7 @@ func To[N Numeric](n Numeric) N {
 		case U128:
 			return n.Interface().(N)
 		case I128:
-			return U128(n).Interface().(N)
+			return NewU128(n).Interface().(N)
 		default:
 			panic("unknown numeric type for U128")
 		}
@@ -797,23 +797,23 @@ func To[N Numeric](n Numeric) N {
 	case I128:
 		switch n := n.(type) {
 		case U8:
-			return NewI128(int64(n)).Interface().(N)
+			return NewI128(uint64(n)).Interface().(N)
 		case I8:
 			return NewI128(int64(n)).Interface().(N)
 		case U16:
-			return NewI128(int64(n)).Interface().(N)
+			return NewI128(uint64(n)).Interface().(N)
 		case I16:
 			return NewI128(int64(n)).Interface().(N)
 		case U32:
-			return NewI128(int64(n)).Interface().(N)
+			return NewI128(uint64(n)).Interface().(N)
 		case I32:
 			return NewI128(int64(n)).Interface().(N)
 		case U64:
-			return NewI128(int64(n)).Interface().(N)
+			return NewI128(uint64(n)).Interface().(N)
 		case I64:
 			return NewI128(int64(n)).Interface().(N)
 		case U128:
-			return To[I128](n).Interface().(N)
+			return NewI128(n).Interface().(N)
 		case I128:
 			return n.Interface().(N)
 		default:
