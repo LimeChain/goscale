@@ -9,6 +9,9 @@ import (
 )
 
 func Test_Add(t *testing.T) {
+	bn1, _ := NewU128FromString("340282366920938463463374607431768211454")
+	bn2, _ := NewI128FromString("170141183460469231731687303715884105726")
+
 	testExamples := []struct {
 		label       string
 		a           Numeric
@@ -23,8 +26,8 @@ func Test_Add(t *testing.T) {
 		{"2147483646+1", I32(2147483646), I32(1), I32(math.MaxInt32)},
 		{"18446744073709551614+1", U64(18446744073709551614), U64(1), U64(math.MaxUint64)},
 		{"9223372036854775806+1", I64(9223372036854775806), I64(1), I64(math.MaxInt64)},
-		{"340282366920938463463374607431768211454+1", NewU128("340282366920938463463374607431768211454"), NewU128(1), MaxU128()},
-		{"170141183460469231731687303715884105726+1", NewI128("170141183460469231731687303715884105726"), NewI128(1), MaxI128()},
+		{"340282366920938463463374607431768211454+1", bn1, NewU128(1), MaxU128()},
+		{"170141183460469231731687303715884105726+1", bn2, NewI128(1), MaxI128()},
 		{"255+1", U8(math.MaxUint8), U8(1), U8(0)},
 		{"65535+1", U16(math.MaxUint16), U16(1), U16(0)},
 		{"4294967295+1", U32(math.MaxUint32), U32(1), U32(0)},
@@ -42,6 +45,12 @@ func Test_Add(t *testing.T) {
 }
 
 func Test_Sub(t *testing.T) {
+	u1, _ := NewU128FromString("340282366920938463463374607431657675311")
+	u2, _ := NewU128FromString("340282366920938463463374607421657675311")
+	u3, _ := NewI128FromString("340282366920938463463374607431657675311")
+	u4, _ := NewI128FromString("340282366920938463463374607421657675311")
+	u5, _ := NewI128FromString("340282366920938463463374607431657675310")
+
 	testExamples := []struct {
 		label       string
 		a           Numeric
@@ -71,19 +80,9 @@ func Test_Sub(t *testing.T) {
 		{"-170141183460469231731687303715884105728-1", MinI128(), NewI128(1), MaxI128()},
 		{"499999889463855-10000000000", NewU128(499999889463855), NewU128(10000000000), NewU128(499989889463855)},
 		{"499999889463855-10000000000", NewI128(499999889463855), NewI128(10000000000), NewI128(499989889463855)},
-		{
-			"340282366920938463463374607431657675311-10000000000",
-			NewU128("340282366920938463463374607431657675311"),
-			NewU128(10000000000),
-			NewU128("340282366920938463463374607421657675311"),
-		},
-		{
-			"340282366920938463463374607431657675311-10000000000",
-			NewI128("340282366920938463463374607431657675311"),
-			NewI128(10000000000),
-			NewI128("340282366920938463463374607421657675311"),
-		},
-		{"9889463854-10000000000", NewI128(9889463854), NewI128(10000000000), NewI128("340282366920938463463374607431657675310")},
+		{"340282366920938463463374607431657675311-10000000000", u1, NewU128(10000000000), u2},
+		{"340282366920938463463374607431657675311-10000000000", u3, NewI128(10000000000), u4},
+		{"9889463854-10000000000", NewI128(9889463854), NewI128(10000000000), u5},
 	}
 
 	for _, testExample := range testExamples {
@@ -906,16 +905,50 @@ func Test_I128ToBigInt(t *testing.T) {
 	}
 }
 
-func Test_fromAnyNumberTo128Bits(t *testing.T) {
-	assert.Equal(t, to128BitsNumber[U128](uint(1)), NewU128(1))
-	assert.Equal(t, to128BitsNumber[I128](int(-1)), NewI128(-1))
+func Test_anyIntegerToU128(t *testing.T) {
+	// maxU128, _ := NewU128FromString("18446744073709551615")
 
-	assert.Equal(t, to128BitsNumber[U128](uint8(math.MaxUint8)), NewU128(math.MaxUint8))
-	assert.Equal(t, to128BitsNumber[I128](int8(math.MinInt8)), NewI128(math.MinInt8))
+	testExamples := []struct {
+		label       string
+		input       any
+		expectation U128
+	}{
+		{"uint(1)=>NewU128(1)", uint(1), NewU128(1)},
+		{"uint8(math.MaxUint8)=>NewU128(math.MaxUint8)", uint8(math.MaxUint8), NewU128(math.MaxUint8)},
+		{"uint16(math.MaxUint16)=>NewU128(math.MaxUint16)", uint16(math.MaxUint16), NewU128(math.MaxUint16)},
+		{"uint32(math.MaxUint32)=>NewU128(math.MaxUint32)", uint32(math.MaxUint32), NewU128(math.MaxUint32)},
+		{"uint64(math.MaxUint64)=>NewU128(uint64(math.MaxUint64))", uint64(math.MaxUint64), NewU128(uint64(math.MaxUint64))},
+		{"big.NewInt(123456789)=>U128(123456789)", big.NewInt(123456789), NewU128(123456789)},
+		// {"NewU128(18446744073709551615)=>MaxU128()", maxU128, MaxU128()},
+	}
 
-	assert.Equal(t, to128BitsNumber[U128](uint16(math.MaxUint16)), NewU128(math.MaxUint16))
-	assert.Equal(t, to128BitsNumber[I128](int16(math.MinInt16)), NewI128(math.MinInt16))
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result := anyIntegerTo128Bits[U128](testExample.input)
+			assert.Equal(t, testExample.expectation, result)
+		})
+	}
+}
 
-	assert.Equal(t, to128BitsNumber[U128](uint32(math.MaxUint32)), NewU128(math.MaxUint32))
-	assert.Equal(t, to128BitsNumber[I128](int32(math.MinInt32)), NewI128(math.MinInt32))
+func Test_anyIntegerToI128(t *testing.T) {
+	testExamples := []struct {
+		label       string
+		input       any
+		expectation I128
+	}{
+		{"int(-1))=>NewI128(-1)", int(-1), NewI128(-1)},
+		{"int8(math.MinInt8)=>NewI128(math.MinInt8)", int8(math.MinInt8), NewI128(math.MinInt8)},
+		{"int16(math.MinInt16)=>NewI128(math.MinInt16)", int16(math.MinInt16), NewI128(math.MinInt16)},
+		{"int32(math.MinInt32)=>NewI128(math.MinInt32)", int32(math.MinInt32), NewI128(math.MinInt32)},
+		{"int64(math.MinInt64)=>NewI128(math.MinInt64)", int64(math.MinInt64), NewI128(math.MinInt64)},
+		{"big.NewInt(-123456789)=>NewI128(-123456789)", big.NewInt(-123456789), NewI128(-123456789)},
+		{"NewI128(-1)=>NewI128(-1)", NewI128(-1), NewI128(-1)},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result := anyIntegerTo128Bits[I128](testExample.input)
+			assert.Equal(t, testExample.expectation, result)
+		})
+	}
 }

@@ -15,11 +15,33 @@ import (
 
 var ErrOverflow = errors.New("overflow")
 
-// Go's primitive numeric types don't have a common interface.
-// To be able to write generic code that works with any numeric
-// type, including some custom types (U128/I128), we need to
-// define a common interface.
+// Signed integer constraint, for type safety checks
+type SignedPrimitiveInteger interface {
+	int | int8 | int16 | int32 | int64 | I8 | I16 | I32 | I64
+}
 
+// Unsigned integer constraint, for type safety checks
+type UnsignedPrimitiveInteger interface {
+	uint | uint8 | uint16 | uint32 | uint64 | U8 | U16 | U32 | U64
+}
+
+type Integer128 interface {
+	U128 | I128
+}
+
+// Signed/Unsigned integer constraint, for type safety checks
+type Integer interface {
+	SignedPrimitiveInteger | UnsignedPrimitiveInteger | Integer128 | *big.Int
+}
+
+type IntegerOrString interface {
+	Integer | string
+}
+
+// Go's primitive numeric types don't have a common interface.
+// Numeric is an interface that all integer types implement
+// which enables writing generic code that works with any type,
+// including some custom types (e.g. U8, I8, U16, I16, U32, I32, U64, I64, U128, I128)
 type Numeric interface {
 	Encodable
 
@@ -67,9 +89,7 @@ type Numeric interface {
 	Clamp(minValue, maxValue Numeric) Numeric
 }
 
-// TODO: check when converting from bigger to smaller types (e.g. U64 -> U8)
-
-// returns any Numeric type as a generic type N
+// Returns any Numeric type as a generic type N
 func NewNumeric[N Numeric](n any) N {
 	switch reflect.Zero(reflect.TypeOf(*new(N))).Interface().(type) {
 	case U8:
@@ -537,7 +557,7 @@ func NewNumeric[N Numeric](n any) N {
 	}
 }
 
-// converts from any Numeric type to any other Numeric type
+// Converts any Numeric type to any other Numeric type
 func To[N Numeric](n Numeric) N {
 	switch reflect.Zero(reflect.TypeOf(*new(N))).Interface().(type) {
 	case U8:
@@ -805,7 +825,8 @@ func To[N Numeric](n Numeric) N {
 	}
 }
 
-func to128BitsNumber[N Numeric](n any) N {
+// Converts any integer value to 128 bits representation
+func anyIntegerTo128Bits[N Integer128](n any) N {
 	switch n := n.(type) {
 	case int:
 		return bigIntToGeneric[N](new(big.Int).SetInt64(int64(n)))
@@ -849,18 +870,20 @@ func to128BitsNumber[N Numeric](n any) N {
 		return bigIntToGeneric[N](n.ToBigInt())
 	case *big.Int:
 		return bigIntToGeneric[N](n)
-	case string:
-		bn, ok := new(big.Int).SetString(n, 10)
-		if !ok {
-			panic("could not convert string to big.Int")
-		}
-		return bigIntToGeneric[N](bn)
 	default:
-		panic("unknown type in fromAnyNumberTo")
+		panic("unknown type in anyIntegerTo128Bits")
 	}
 }
 
-func bigIntToGeneric[N Numeric](bn *big.Int) N {
+func stringTo128Bits[N Integer128](s string) (N, error) {
+	bn, ok := new(big.Int).SetString(s, 10)
+	if !ok {
+		return bigIntToGeneric[N](big.NewInt(0)), errors.New("can not convert string to big.Int")
+	}
+	return bigIntToGeneric[N](bn), nil
+}
+
+func bigIntToGeneric[N Integer128](bn *big.Int) N {
 	switch reflect.Zero(reflect.TypeOf(*new(N))).Interface().(type) {
 	case I128:
 		return bigIntToI128(bn).Interface().(N)

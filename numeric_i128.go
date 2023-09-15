@@ -11,8 +11,12 @@ import (
 // [1] most significant bits
 type I128 [2]U64
 
-func NewI128(n any) I128 {
-	return to128BitsNumber[I128](n)
+func NewI128[N Integer](n N) I128 {
+	return anyIntegerTo128Bits[I128](n)
+}
+
+func NewI128FromString(n string) (I128, error) {
+	return stringTo128Bits[I128](n)
 }
 
 func bigIntToI128(n *big.Int) I128 {
