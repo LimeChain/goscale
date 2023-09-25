@@ -11,14 +11,13 @@ import (
 	"bytes"
 	"encoding/binary"
 	"math/big"
-	"reflect"
 )
 
 type U8 uint8
 
 func (value U8) Encode(buffer *bytes.Buffer) {
 	encoder := Encoder{Writer: buffer}
-	encoder.Write(value.Bytes())
+	encoder.EncodeByte(byte(value))
 }
 
 func (value U8) Bytes() []byte {
@@ -183,6 +182,74 @@ func (u U128) ToBigInt() *big.Int {
 	return toBigInt(u)
 }
 
+//func (u U128) Add(o U128) U128 {
+//	sumLow, carry := bits.Add64(uint64(u[0]), uint64(o[0]), 0)
+//	sumHigh, _ := bits.Add64(uint64(u[1]), uint64(o[1]), carry)
+//	return U128{U64(sumLow), U64(sumHigh)}
+//}
+
+//func (u U128) Sub(o U128) U128 {
+//	diffLow, borrow := bits.Sub64(uint64(u[0]), uint64(o[0]), 0)
+//	diffHigh, _ := bits.Sub64(uint64(u[1]), uint64(o[1]), borrow)
+//	return U128{U64(diffLow), U64(diffHigh)}
+//}
+
+//func (u U128) Mul(o U128) U128 {
+//	high, low := bits.Mul64(uint64(u[0]), uint64(o[0]))
+//	high += uint64(u[1])*uint64(o[0]) + uint64(o[0])*uint64(o[1])
+//	return U128{U64(low), U64(high)}
+//}
+
+//func (u U128) Div(b U128) U128 {
+//	return NewU128FromBigInt(
+//		new(big.Int).Div(u.ToBigInt(), b.ToBigInt()),
+//	)
+//}
+
+func (u U128) Eq(b U128) bool {
+	return u[0] == b[0] && u[1] == b[1]
+}
+
+func (u U128) Ne(b U128) bool {
+	return !u.Eq(b)
+}
+
+func (u U128) Lt(b U128) bool {
+	return u.ToBigInt().Cmp(b.ToBigInt()) < 0
+}
+
+func (u U128) Lte(b U128) bool {
+	return u.ToBigInt().Cmp(b.ToBigInt()) <= 0
+}
+
+func (u U128) Gt(b U128) bool {
+	return u.ToBigInt().Cmp(b.ToBigInt()) > 0
+}
+
+func (u U128) Gte(b U128) bool {
+	return u.ToBigInt().Cmp(b.ToBigInt()) >= 0
+}
+
+func (u U128) Max(b U128) U128 {
+	if u.Gt(b) {
+		return u
+	}
+	return b
+}
+
+func (u U128) Min(b U128) U128 {
+	if u.Lt(b) {
+		return u
+	}
+	return b
+}
+
+func (u U128) ToNum() *Num[U128] {
+	return &Num[U128]{
+		value: u.ToBigInt(),
+	}
+}
+
 func toBigInt(u U128) *big.Int {
 	bytes := make([]byte, 16)
 	binary.BigEndian.PutUint64(bytes[:8], uint64(u[1]))
@@ -268,33 +335,4 @@ func DecodeI128(buffer *bytes.Buffer) I128 {
 		DecodeU64(buffer),
 		DecodeU64(buffer),
 	}
-}
-
-func DecodeNumeric[T Numeric](buffer *bytes.Buffer) T {
-	var result interface{}
-
-	switch reflect.Zero(reflect.TypeOf(*new(T))).Interface().(type) {
-	case U8:
-		result = DecodeU8(buffer)
-	case I8:
-		result = DecodeI8(buffer)
-	case U16:
-		result = DecodeU16(buffer)
-	case I16:
-		result = DecodeI16(buffer)
-	case U32:
-		result = DecodeU32(buffer)
-	case I32:
-		result = DecodeI32(buffer)
-	case U64:
-		result = DecodeU64(buffer)
-	case I64:
-		result = DecodeI64(buffer)
-	case U128:
-		result = DecodeU128(buffer)
-	case I128:
-		result = DecodeI128(buffer)
-	}
-
-	return result.(T)
 }
