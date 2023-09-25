@@ -7,12 +7,8 @@ import (
 
 type U64 uint64
 
-func (a U64) Interface() Numeric {
-	return a
-}
-
-func NewU64(n uint64) Numeric {
-	return U64(n)
+func (n U64) Interface() Numeric {
+	return n
 }
 
 func (a U64) Add(b Numeric) Numeric {
@@ -96,10 +92,11 @@ func (a U64) SaturatingAdd(b Numeric) Numeric {
 }
 
 func (a U64) SaturatingSub(b Numeric) Numeric {
-	if a < b.(U64) {
-		return NewNumeric[U64](uint64(0))
+	diff, borrow := bits.Sub64(uint64(a), uint64(b.(U64)), 0)
+	if borrow != 0 {
+		return U64(0)
 	}
-	return a.Sub(b)
+	return U64(diff)
 }
 
 func (a U64) SaturatingMul(b Numeric) Numeric {
@@ -107,29 +104,17 @@ func (a U64) SaturatingMul(b Numeric) Numeric {
 		return U64(0)
 	}
 
-	c := a * b.(U64)
-	if c/a != b {
+	hi, lo := bits.Mul64(uint64(a), uint64(b.(U64)))
+	if hi != 0 {
 		return U64(math.MaxUint64)
 	}
-	return c
-
-	// bigA := new(big.Int).SetUint64(uint64(a))
-	// bigB := new(big.Int).SetUint64(uint64(b.(U64)))
-
-	// product := new(big.Int).Mul(bigA, bigB)
-
-	// // check for overflow
-	// if product.BitLen() > 64 {
-	// 	return U64(math.MaxUint64)
-	// }
-
-	// return U64(product.Uint64())
+	return U64(lo)
 }
 
 func (a U64) CheckedAdd(b Numeric) (Numeric, error) {
-	c := a + b.(U64)
-	if c < a {
+	sum, carry := bits.Add64(uint64(a), uint64(b.(U64)), 0)
+	if carry != 0 {
 		return U64(0), ErrOverflow
 	}
-	return c, nil
+	return U64(sum), nil
 }

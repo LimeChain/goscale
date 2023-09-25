@@ -7,12 +7,8 @@ import (
 
 type I64 int64
 
-func (a I64) Interface() Numeric {
-	return a
-}
-
-func NewI64(n int64) Numeric {
-	return I64(n)
+func (n I64) Interface() Numeric {
+	return n
 }
 
 func (a I64) Add(b Numeric) Numeric {
@@ -88,26 +84,45 @@ func (a I64) TrailingZeros() Numeric {
 }
 
 func (a I64) SaturatingAdd(b Numeric) Numeric {
+	sum, _ := bits.Add64(uint64(a), uint64(b.(I64)), 0)
 	// check for overflow
-	if a > 0 && b.(I64) > 0 && a > (math.MaxInt64-b.(I64)) {
+	if a >= 0 && b.(I64) >= 0 && int64(sum) < int64(a) {
 		return I64(math.MaxInt64)
 	}
-
 	// check for underflow
-	if a < 0 && b.(I64) < 0 && a < (math.MinInt64-b.(I64)) {
+	if a < 0 && b.(I64) < 0 && int64(sum) >= int64(a) {
 		return I64(math.MinInt64)
 	}
-
-	return a.Add(b)
+	return I64(sum)
 }
 
 func (a I64) SaturatingSub(b Numeric) Numeric {
-	if a.Lt(b) {
+	diff, borrow := bits.Sub64(uint64(a), uint64(b.(I64)), 0)
+	// check for underflow
+	if a >= 0 && b.(I64) < 0 && (borrow == 1 || int64(diff) < int64(a)) {
+		return I64(math.MaxInt64)
+	}
+	// check for overflow
+	if a < 0 && b.(I64) >= 0 && (borrow == 1 || int64(diff) >= int64(a)) {
 		return I64(math.MinInt64)
 	}
-	return a.Sub(b)
+	return I64(diff)
 }
 
 func (a I64) SaturatingMul(b Numeric) Numeric {
-	return I64(0)
+	if uint64(a) == 0 || uint64(b.(I64)) == 0 {
+		return I64(0)
+	}
+
+	hi, lo := bits.Mul64(uint64(a), uint64(b.(I64)))
+	// if hi is not zero, there is an overflow
+	if hi != 0 || (a > 0 && b.(I64) > 0 && int64(lo) < 0) || (a < 0 && b.(I64) < 0 && int64(lo) > 0) {
+		if (a < 0 && b.(I64) >= 0) || (a >= 0 && b.(I64) < 0) {
+			// negative overflow
+			return I64(math.MinInt64)
+		}
+		// positive overflow
+		return I64(math.MaxInt64)
+	}
+	return I64(int64(lo))
 }

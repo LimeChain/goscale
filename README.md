@@ -1,16 +1,19 @@
 # SCALE codec implementation in Go compatible with a Tinygo based toolchain
 
-
 [![codecov](https://codecov.io/gh/LimeChain/goscale/branch/master/graph/badge.svg?token=3OQPC6VNMB)](https://codecov.io/gh/LimeChain/goscale)
 
-The SCALE types in Go are represented by a set of custom-defined types that implement the `Encodable` interface. There is also a `Decode` function for each type. Note that the type to which data should be decoded is inferred by the context, it is not self-contained in the SCALE encoded data. 
+The SCALE types in Go are represented by a set of custom-defined types that implement the `Encodable` interface. 
+Each type also has a corresponding decode function using the convention `Decode<TypeName>`. Note that the type to which data should be decoded is inferred from the context and is not self-contained in the SCALE-encoded data.
 
-One exception is the `Tuple` type, which does not have methods attached, but instead, there are `EncodeTuple / DecodeTuple` functions that can be called with any custom struct that embeds the `Tuple` interface.
+One exception is the `Tuple` type. It doesn't have methods attached. Instead, there are `EncodeTuple` and `DecodeTuple` functions that can be invoked with any custom struct that embeds the `Tuple` interface.
 
-**Implementation Notes**
-* *`custom defined types` and usage of `generics` help to minimize the reflection usage.*
-* *there is a `FixedSequence` type (with the same representation as the `Sequence` type), but it makes possible encoding of arrays (which are fixed-size sequences) that can not be represented by the `Sequence` type. Note that there are no type checks on the size*
+Some quirks deserve mention. For example, the `FixedSequence` type, which has the same representation as the `Sequence` type, facilitates the encoding of arrays. As arrays are fixed-size sequences, they cannot be encoded as the `Sequence` type. Note that there are no type checks on the size.
 
+Additionally, there's a `Numeric` interface that's implemented by all primitive (wrapper) types, as well as the custom `U128` and `I128` types. This allows for the writing of more generic code that works with any numeric type, since Go's primitive numeric types don't share a common interface. Although this could be extracted into a separate package, to define encoding/decoding methods, the type must reside within the same package. Introducing this separation would necessitate the definition of new types and their respective encoding/decoding methods, leading to frequent type conversions – not an ideal scenario, e.g., `goscale.U8(numeric.U8(1))`.
+
+The use of custom-defined types and generics reduces reliance on reflection, which isn't fully supported by Tinygo.
+
+---
 
 ## [Boolean](https://github.com/LimeChain/goscale/blob/master/boolean.go)
 
@@ -57,16 +60,16 @@ One exception is the `Tuple` type, which does not have methods attached, but ins
 
 ## [Dictionary](https://github.com/LimeChain/goscale/blob/master/dictionary.go)
 
-| SCALE/Rust         | Go                       |
-| ------------------ | ------------------------ |
+| SCALE/Rust         | Go                         |
+| ------------------ | -------------------------- |
 |                    | `goscale.Dictionary[K, V]` |
 
 
 ## [Empty](https://github.com/LimeChain/goscale/blob/master/empty.go)
 
-| SCALE/Rust         | Go                       |
-| ------------------ | ------------------------ |
-|                    |                          |
+| SCALE/Rust         | Go              |
+| ------------------ | --------------- |
+|                    | `goscale.Empty` |
 
 
 ## [VaryingData](https://github.com/LimeChain/goscale/blob/master/varying_data.go)

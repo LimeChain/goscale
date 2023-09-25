@@ -78,19 +78,19 @@ func DecodeCompact(buffer *bytes.Buffer) Compact {
 	mode := b & 3
 	switch mode {
 	case 0:
-		return Compact(NewU128FromBigInt(big.NewInt(0).SetUint64(uint64(b >> 2))))
+		return Compact(NewU128(big.NewInt(0).SetUint64(uint64(b >> 2))))
 	case 1:
 		r := uint64(decoder.DecodeByte())
 		r <<= 6
 		r += uint64(b >> 2)
-		return Compact(NewU128FromBigInt(big.NewInt(0).SetUint64(r)))
+		return Compact(NewU128(big.NewInt(0).SetUint64(r)))
 	case 2:
 		buf := result[:4]
 		buf[0] = b
 		decoder.Read(result[1:4])
 		r := binary.LittleEndian.Uint32(buf)
 		r >>= 2
-		return Compact(NewU128FromBigInt(big.NewInt(0).SetUint64(uint64(r))))
+		return Compact(NewU128(big.NewInt(0).SetUint64(uint64(r))))
 	case 3:
 		n := b >> 2
 		if n > 63 {
@@ -98,7 +98,7 @@ func DecodeCompact(buffer *bytes.Buffer) Compact {
 		}
 		decoder.Read(result[:n+4])
 		reverseSlice(result)
-		return Compact(NewU128FromBigInt(big.NewInt(0).SetBytes(result)))
+		return Compact(NewU128(big.NewInt(0).SetBytes(result)))
 	default:
 		panic("code should be unreachable")
 	}

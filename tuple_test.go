@@ -191,7 +191,7 @@ func Test_EncodeTupleU128I128(t *testing.T) {
 	}{
 		{
 			label: "TupleU128I128",
-			input: TupleU128I128{F0: NewU128FromBigInt(u), F1: NewI128FromBigInt(*i)},
+			input: TupleU128I128{F0: NewU128(u), F1: bigIntToI128(i)},
 			expectation: []byte{
 				0x9c, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, // F0
 				0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80, // F1
@@ -225,8 +225,8 @@ func Test_EncodeTupleCompact(t *testing.T) {
 		{
 			label: "TupleCompact",
 			input: TupleCompact{
-				G0: Compact(NewU128FromBigInt(big.NewInt(0).SetInt64(1073741824))),
-				G1: Compact(NewU128FromBigInt(big.NewInt(0).SetUint64(1073741823))),
+				G0: Compact(NewU128(big.NewInt(0).SetInt64(1073741824))),
+				G1: Compact(NewU128(big.NewInt(0).SetUint64(1073741823))),
 			},
 			expectation: []byte{
 				0x03, 0x00, 0x00, 0x00, 0x40, // G0

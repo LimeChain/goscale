@@ -7,12 +7,8 @@ import (
 
 type I16 int16
 
-func (a I16) Interface() Numeric {
-	return a
-}
-
-func NewI16(n int16) Numeric {
-	return I16(n)
+func (n I16) Interface() Numeric {
+	return n
 }
 
 func (a I16) Add(b Numeric) Numeric {
@@ -89,21 +85,26 @@ func (a I16) TrailingZeros() Numeric {
 
 func (a I16) SaturatingAdd(b Numeric) Numeric {
 	sum := int32(a) + int32(b.(I16))
-
+	// check for overflow and underflow
 	if sum > math.MaxInt16 {
 		return I16(math.MaxInt16)
 	} else if sum < math.MinInt16 {
 		return I16(math.MinInt16)
 	}
-
 	return I16(sum)
 }
 
 func (a I16) SaturatingSub(b Numeric) Numeric {
-	if a.Lt(b) {
+	diff := int32(a) - int32(b.(I16))
+	// check for overflow
+	if diff > int32(math.MaxInt16) {
+		return I16(math.MaxInt16)
+	}
+	// check for underflow
+	if diff < int32(math.MinInt16) {
 		return I16(math.MinInt16)
 	}
-	return a.Sub(b)
+	return I16(diff)
 }
 
 func (a I16) SaturatingMul(b Numeric) Numeric {
@@ -112,12 +113,11 @@ func (a I16) SaturatingMul(b Numeric) Numeric {
 	}
 
 	product := int32(a) * int32(b.(I16))
-
+	// check for overflow and underflow
 	if product > math.MaxInt16 {
 		return I16(math.MaxInt16)
 	} else if product < math.MinInt16 {
 		return I16(math.MinInt16)
 	}
-
 	return I16(product)
 }

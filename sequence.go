@@ -123,19 +123,6 @@ func StrToSliceU8(s Str) []U8 {
 	return result
 }
 
-// TODO: need to update Tinygo
-// type SequentialU8 interface {
-// 	Sequence[U8] | FixedSequence[U8]
-// }
-
-// func SequentialU8ToBytes[S SequentialU8](bytes S) []byte {
-// 	result := make([]byte, len(bytes))
-// 	for i, v := range bytes {
-// 		result[i] = byte(v) // TODO: https://github.com/LimeChain/goscale/issues/38
-// 	}
-// 	return result
-// }
-
 func SequenceU8ToBytes(bytes Sequence[U8]) []byte {
 	result := make([]byte, len(bytes))
 	for i, v := range bytes {

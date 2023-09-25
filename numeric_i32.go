@@ -7,12 +7,8 @@ import (
 
 type I32 int32
 
-func (a I32) Interface() Numeric {
-	return a
-}
-
-func NewI32(n int32) Numeric {
-	return I32(n)
+func (n I32) Interface() Numeric {
+	return n
 }
 
 func (a I32) Add(b Numeric) Numeric {
@@ -89,21 +85,26 @@ func (a I32) TrailingZeros() Numeric {
 
 func (a I32) SaturatingAdd(b Numeric) Numeric {
 	sum := int64(a) + int64(b.(I32))
-
+	// check for overflow and underflow
 	if sum > math.MaxInt32 {
 		return I32(math.MaxInt32)
 	} else if sum < math.MinInt32 {
 		return I32(math.MinInt32)
 	}
-
 	return I32(sum)
 }
 
 func (a I32) SaturatingSub(b Numeric) Numeric {
-	if a.Lt(b) {
+	diff := int64(a) - int64(b.(I32))
+	// check for overflow
+	if diff > int64(math.MaxInt32) {
+		return I32(math.MaxInt32)
+	}
+	// check for underflow
+	if diff < int64(math.MinInt32) {
 		return I32(math.MinInt32)
 	}
-	return a.Sub(b)
+	return I32(diff)
 }
 
 func (a I32) SaturatingMul(b Numeric) Numeric {
@@ -112,12 +113,11 @@ func (a I32) SaturatingMul(b Numeric) Numeric {
 	}
 
 	product := int64(a) * int64(b.(I32))
-
+	// check for overflow and underflow
 	if product > math.MaxInt32 {
 		return I32(math.MaxInt32)
 	} else if product < math.MinInt32 {
 		return I32(math.MinInt32)
 	}
-
 	return I32(product)
 }

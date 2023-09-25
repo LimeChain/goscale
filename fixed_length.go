@@ -136,9 +136,9 @@ func DecodeI64(buffer *bytes.Buffer) I64 {
 	return I64(DecodeU64(buffer))
 }
 
-func (u U128) Encode(buffer *bytes.Buffer) {
-	u[0].Encode(buffer)
-	u[1].Encode(buffer)
+func (value U128) Encode(buffer *bytes.Buffer) {
+	value[0].Encode(buffer)
+	value[1].Encode(buffer)
 }
 
 func (u U128) Bytes() []byte {
