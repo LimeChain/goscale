@@ -38,6 +38,14 @@ func Test_NewOption(t *testing.T) {
 	}
 }
 
+func Test_NewOption_Panics(t *testing.T) {
+	assert.PanicsWithValue(t,
+		"invalid value type for Option[T]",
+		func() {
+			NewOption[U32](U64(5))
+		})
+}
+
 type testEncodable struct {
 }
 
@@ -46,10 +54,6 @@ func (testEncodable) Encode(*bytes.Buffer) {
 
 func (testEncodable) Bytes() []byte {
 	return []byte{}
-}
-
-func (testEncodable) String() string {
-	return ""
 }
 
 func Test_EncodeOptionBoolGeneric(t *testing.T) {

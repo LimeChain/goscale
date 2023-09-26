@@ -21,10 +21,6 @@ func (e Empty) Bytes() []byte {
 	return []byte{}
 }
 
-func (e Empty) String() string {
-	return ""
-}
-
 func DecodeEmpty() Empty {
 	return Empty{}
 }
