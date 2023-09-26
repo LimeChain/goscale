@@ -129,10 +129,6 @@ func (n I128) Gte(other I128) bool {
 	return n.ToBigInt().Cmp(other.ToBigInt()) >= 0
 }
 
-func (n I128) TrailingZeros() uint {
-	return n.ToBigInt().TrailingZeroBits()
-}
-
 func bigIntToI128(n *big.Int) I128 {
 	bytes := make([]byte, 16)
 	n.FillBytes(bytes)

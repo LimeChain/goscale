@@ -113,6 +113,25 @@ func Test_Clamp(t *testing.T) {
 	}
 }
 
+func Test_TrailingZeros128(t *testing.T) {
+	testExamples := []struct {
+		label  string
+		n      U128
+		expect uint
+	}{
+		{"TrailingZeros(1)", NewU128(1), 0},
+		{"TrailingZeros(2)", NewU128(2), 1},
+		{"TrailingZeros(3)", NewU128(3), 0},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result := TrailingZeros128(testExample.n)
+			assert.Equal(t, testExample.expect, result)
+		})
+	}
+}
+
 func Test_SaturatingAddU32(t *testing.T) {
 	testExamples := []struct {
 		label  string

@@ -171,26 +171,6 @@ func Test_I128_Div(t *testing.T) {
 	}
 }
 
-func Test_I128_TrailingZeros(t *testing.T) {
-	testExamples := []struct {
-		label  string
-		a      I128
-		expect uint
-	}{
-
-		{"TrailingZeros(1)", NewI128(1), 0},
-		{"TrailingZeros(2)", NewI128(2), 1},
-		{"TrailingZeros(3)", NewI128(3), 0},
-	}
-
-	for _, testExample := range testExamples {
-		t.Run(testExample.label, func(t *testing.T) {
-			result := testExample.a.TrailingZeros()
-			assert.Equal(t, testExample.expect, result)
-		})
-	}
-}
-
 func Test_I128_Eq(t *testing.T) {
 	testExamples := []struct {
 		label  string

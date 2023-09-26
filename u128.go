@@ -101,10 +101,6 @@ func (n U128) Gte(other U128) bool {
 	return n.ToBigInt().Cmp(other.ToBigInt()) >= 0
 }
 
-func (n U128) TrailingZeros() uint {
-	return n.ToBigInt().TrailingZeroBits()
-}
-
 //func (n U128) SaturatingAdd(other U128) U128 {
 //	sumLow, carry := bits.Add64(uint64(n[0]), uint64(other[0]), 0)
 //	sumHigh, overflow := bits.Add64(uint64(n[1]), uint64(other[1]), carry)

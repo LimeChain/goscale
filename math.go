@@ -82,6 +82,10 @@ func MinU128() U128 {
 	}
 }
 
+func TrailingZeros128(n U128) uint {
+	return n.ToBigInt().TrailingZeroBits()
+}
+
 func SaturatingAddU32(a, b U32) U32 {
 	sum := uint64(a) + uint64(b)
 	if sum > math.MaxUint32 {
