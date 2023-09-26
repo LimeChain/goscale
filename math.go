@@ -8,7 +8,7 @@ import (
 
 var (
 	errOverflow  = errors.New("overflow")
-	errunderflow = errors.New("underflow")
+	errUnderflow = errors.New("underflow")
 )
 
 func Clamp(value, min, max int) int {
