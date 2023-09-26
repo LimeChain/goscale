@@ -36,6 +36,7 @@ func Test_Max128(t *testing.T) {
 		expect U128
 	}{
 		{"Max(1, 2)", NewU128(1), NewU128(2), NewU128(2)},
+		{"Max(2, 1)", NewU128(2), NewU128(1), NewU128(2)},
 		{"Max(1, MaxU128)", NewU128(1), MaxU128(), MaxU128()},
 		{"Max(MaxU128, MaxU128)", MaxU128(), MaxU128(), MaxU128()},
 	}

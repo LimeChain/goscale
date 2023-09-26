@@ -55,3 +55,16 @@ func Test_anyIntegerToI128(t *testing.T) {
 		})
 	}
 }
+
+func Test_anyIntegerToI128_Panics(t *testing.T) {
+	assert.PanicsWithValue(t,
+		"unknown type in anyIntegerTo128Bits",
+		func() {
+			anyIntegerTo128Bits[I128]("test")
+		})
+}
+
+func Test_stringTo128Bits_InvalidValue(t *testing.T) {
+	_, err := stringTo128Bits[I128]("test")
+	assert.Error(t, err, "can not convert string to big.Int")
+}

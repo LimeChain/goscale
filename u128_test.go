@@ -185,6 +185,25 @@ func Test_U128_Eq(t *testing.T) {
 	}
 }
 
+func Test_U128_Ne(t *testing.T) {
+	testExamples := []struct {
+		label  string
+		a      U128
+		b      U128
+		expect bool
+	}{
+		{"1!=1", NewU128(1), NewU128(1), false},
+		{"1!=2", NewU128(1), NewU128(2), true},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result := testExample.a.Ne(testExample.b)
+			assert.Equal(t, testExample.expect, result)
+		})
+	}
+}
+
 func Test_U128_Lt(t *testing.T) {
 	testExamples := []struct {
 		label  string
