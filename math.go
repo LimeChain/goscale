@@ -22,7 +22,7 @@ func Clamp(value, min, max int) int {
 	return value
 }
 
-func MaxU64(a, b U64) U64 {
+func Max64(a, b U64) U64 {
 	if a > b {
 		return a
 	}

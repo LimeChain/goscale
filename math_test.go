@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_MaxU64(t *testing.T) {
+func Test_Max64(t *testing.T) {
 	testExamples := []struct {
 		label  string
 		a      U64
@@ -22,7 +22,7 @@ func Test_MaxU64(t *testing.T) {
 
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
-			result := MaxU64(testExample.a, testExample.b)
+			result := Max64(testExample.a, testExample.b)
 			assert.Equal(t, testExample.expect, result)
 		})
 	}
