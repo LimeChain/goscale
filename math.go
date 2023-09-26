@@ -52,7 +52,7 @@ func MaxU128() U128 {
 	}
 }
 
-func MinU64(a, b U64) U64 {
+func Min64(a, b U64) U64 {
 	if a < b {
 		return a
 	}

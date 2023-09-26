@@ -49,7 +49,7 @@ func Test_Max128(t *testing.T) {
 	}
 }
 
-func Test_MinU64(t *testing.T) {
+func Test_Min64(t *testing.T) {
 	testExamples := []struct {
 		label  string
 		a      U64
@@ -63,7 +63,7 @@ func Test_MinU64(t *testing.T) {
 
 	for _, testExample := range testExamples {
 		t.Run(testExample.label, func(t *testing.T) {
-			result := MinU64(testExample.a, testExample.b)
+			result := Min64(testExample.a, testExample.b)
 			assert.Equal(t, testExample.expect, result)
 		})
 	}
