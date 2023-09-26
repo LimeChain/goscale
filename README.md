@@ -9,9 +9,7 @@ One exception is the `Tuple` type. It doesn't have methods attached. Instead, th
 
 Some quirks deserve mention. For example, the `FixedSequence` type, which has the same representation as the `Sequence` type, facilitates the encoding of arrays. As arrays are fixed-size sequences, they cannot be encoded as the `Sequence` type. Note that there are no type checks on the size.
 
-Additionally, there's a `Numeric` interface that's implemented by all primitive (wrapper) types, as well as the custom `U128` and `I128` types. This allows for the writing of more generic code that works with any numeric type, since Go's primitive numeric types don't share a common interface. Although this could be extracted into a separate package, to define encoding/decoding methods, the type must reside within the same package. Introducing this separation would necessitate the definition of new types and their respective encoding/decoding methods, leading to frequent type conversions – not an ideal scenario, e.g., `goscale.U8(numeric.U8(1))`.
-
-The use of custom-defined types and generics reduces reliance on reflection, which isn't fully supported by Tinygo.
+The use of custom-defined types and generics reduces reliance on reflection, which isn't fully supported by TinyGo.
 
 ---
 
@@ -60,16 +58,16 @@ The use of custom-defined types and generics reduces reliance on reflection, whi
 
 ## [Dictionary](https://github.com/LimeChain/goscale/blob/master/dictionary.go)
 
-| SCALE/Rust         | Go                         |
-| ------------------ | -------------------------- |
-|                    | `goscale.Dictionary[K, V]` |
+| SCALE/Rust | Go                         |
+|------------|----------------------------|
+|            | `goscale.Dictionary[K, V]` |
 
 
 ## [Empty](https://github.com/LimeChain/goscale/blob/master/empty.go)
 
-| SCALE/Rust         | Go              |
-| ------------------ | --------------- |
-|                    | `goscale.Empty` |
+| SCALE/Rust | Go              |
+|------------|-----------------|
+|            | `goscale.Empty` |
 
 
 ## [VaryingData](https://github.com/LimeChain/goscale/blob/master/varying_data.go)
@@ -82,29 +80,29 @@ The use of custom-defined types and generics reduces reliance on reflection, whi
 
 ## [Option](https://github.com/LimeChain/goscale/blob/master/option.go)
 
-| SCALE/Rust         | Go                       |
-| ------------------ | ------------------------ |
-| `Option<bool>`     | `Option[goscale.Bool]`   |
-| `Option<i8>`       | `Option[goscale.I8]`     |
-| `Option<u8>`       | `Option[goscale.U8]`     |
-| `Option<i16>`      | `Option[goscale.I16]`    |
-| `Option<u16>`      | `Option[goscale.U16]`    |
-| `Option<i32>`      | `Option[goscale.I32]`    |
-| `Option<u32>`      | `Option[goscale.U32]`    |
-| `Option<i64>`      | `Option[goscale.I64]`    |
-| `Option<u64>`      | `Option[goscale.U64]`    |
-| `Option<i128>`     | `Option[goscale.I128]`   |
-| `Option<u128>`     | `Option[goscale.U128]`   |
-| `Option<bytes>`    | `Option[Sequence[U8]]`   |
-| `OptionBool`       | `OptionBool`             |
-| `None`             | `nil`                    |
+| SCALE/Rust      | Go                     |
+|-----------------|------------------------|
+| `Option<bool>`  | `Option[goscale.Bool]` |
+| `Option<i8>`    | `Option[goscale.I8]`   |
+| `Option<u8>`    | `Option[goscale.U8]`   |
+| `Option<i16>`   | `Option[goscale.I16]`  |
+| `Option<u16>`   | `Option[goscale.U16]`  |
+| `Option<i32>`   | `Option[goscale.I32]`  |
+| `Option<u32>`   | `Option[goscale.U32]`  |
+| `Option<i64>`   | `Option[goscale.I64]`  |
+| `Option<u64>`   | `Option[goscale.U64]`  |
+| `Option<i128>`  | `Option[goscale.I128]` |
+| `Option<u128>`  | `Option[goscale.U128]` |
+| `Option<bytes>` | `Option[Sequence[U8]]` |
+| `OptionBool`    | `OptionBool`           |
+| `None`          | `nil`                  |
 
 
 ## [Result](https://github.com/LimeChain/goscale/blob/master/result.go)
 
-| SCALE/Rust         | Go                       |
-| ------------------ | ------------------------ |
-|                    |                          |
+| SCALE/Rust | Go |
+|------------|----|
+|            |    |
 
 
 ## [Tuple](https://github.com/LimeChain/goscale/blob/master/tuple.go)
