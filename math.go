@@ -102,12 +102,32 @@ func SaturatingAddU64(a, b U64) U64 {
 	return U64(sum)
 }
 
+func SaturatingAddU128(a, b U128) U128 {
+	sumLow, carry := bits.Add64(uint64(a[0]), uint64(b[0]), 0)
+	sumHigh, overflow := bits.Add64(uint64(a[1]), uint64(b[1]), carry)
+	// check for overflow
+	if overflow == 1 || (carry == 1 && sumHigh <= uint64(a[1]) && sumHigh <= uint64(b[1])) {
+		return MaxU128()
+	}
+	return U128{U64(sumLow), U64(sumHigh)}
+}
+
 func SaturatingSubU64(a, b U64) U64 {
 	diff, borrow := bits.Sub64(uint64(a), uint64(b), 0)
 	if borrow != 0 {
 		return U64(0)
 	}
 	return U64(diff)
+}
+
+func SaturatingSubU128(a, b U128) U128 {
+	low, borrow := bits.Sub64(uint64(a[0]), uint64(b[0]), 0)
+	high, _ := bits.Sub64(uint64(a[1]), uint64(b[1]), borrow)
+	// check for underflow
+	if borrow == 1 || high > uint64(a[1]) {
+		return U128{0, 0}
+	}
+	return U128{U64(low), U64(high)}
 }
 
 func SaturatingMulU64(a, b U64) U64 {

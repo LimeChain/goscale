@@ -101,26 +101,6 @@ func (n U128) Gte(other U128) bool {
 	return n.ToBigInt().Cmp(other.ToBigInt()) >= 0
 }
 
-//func (n U128) SaturatingAdd(other U128) U128 {
-//	sumLow, carry := bits.Add64(uint64(n[0]), uint64(other[0]), 0)
-//	sumHigh, overflow := bits.Add64(uint64(n[1]), uint64(other[1]), carry)
-//	// check for overflow
-//	if overflow == 1 || (carry == 1 && sumHigh <= uint64(n[1]) && sumHigh <= uint64(other[1])) {
-//		return MaxU128()
-//	}
-//	return U128{U64(sumLow), U64(sumHigh)}
-//}
-//
-//func (n U128) SaturatingSub(other U128) U128 {
-//	low, borrow := bits.Sub64(uint64(n[0]), uint64(other[0]), 0)
-//	high, _ := bits.Sub64(uint64(n[1]), uint64(other[1]), borrow)
-//	// check for underflow
-//	if borrow == 1 || high > uint64(n[1]) {
-//		return U128{0, 0}
-//	}
-//	return U128{U64(low), U64(high)}
-//}
-//
 //func (n U128) SaturatingMul(other U128) U128 {
 //	result := new(big.Int).Mul(n.ToBigInt(), other.ToBigInt())
 //	// check for overflow
