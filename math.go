@@ -125,7 +125,7 @@ func SaturatingSubU128(a, b U128) U128 {
 	high, _ := bits.Sub64(uint64(a[1]), uint64(b[1]), borrow)
 	// check for underflow
 	if borrow == 1 || high > uint64(a[1]) {
-		return U128{0, 0}
+		return U128{}
 	}
 	return U128{U64(low), U64(high)}
 }
@@ -156,4 +156,24 @@ func CheckedAddU64(a, b U64) (U64, error) {
 		return 0, errOverflow
 	}
 	return U64(sum), nil
+}
+
+func CheckedAddU128(a, b U128) (U128, error) {
+	sumLow, carry := bits.Add64(uint64(a[0]), uint64(b[0]), 0)
+	sumHigh, overflow := bits.Add64(uint64(a[1]), uint64(b[1]), carry)
+	// check for overflow
+	if overflow == 1 || (carry == 1 && sumHigh <= uint64(a[1]) && sumHigh <= uint64(b[1])) {
+		return U128{}, errOverflow
+	}
+	return U128{U64(sumLow), U64(sumHigh)}, nil
+}
+
+func CheckedSubU128(a, b U128) (U128, error) {
+	low, borrow := bits.Sub64(uint64(a[0]), uint64(b[0]), 0)
+	high, _ := bits.Sub64(uint64(a[1]), uint64(b[1]), borrow)
+	// check for underflow
+	if borrow == 1 || high > uint64(a[1]) {
+		return U128{0, 0}, errUnderflow
+	}
+	return U128{U64(low), U64(high)}, nil
 }

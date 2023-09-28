@@ -308,3 +308,57 @@ func Test_CheckedAddU64(t *testing.T) {
 		})
 	}
 }
+
+func Test_CheckedAddU128(t *testing.T) {
+	testExamples := []struct {
+		label        string
+		a            U128
+		b            U128
+		expect       U128
+		hasExpectErr bool
+	}{
+		{"2 + 1", NewU128(2), NewU128(1), NewU128(3), false},
+		{"MaxU128+1", MaxU128(), NewU128(1), NewU128(0), true},
+		{"MaxU128+MaxU128", MaxU128(), MaxU128(), NewU128(0), true},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result, err := CheckedAddU128(testExample.a, testExample.b)
+			assert.Equal(t, testExample.expect, result)
+
+			if testExample.hasExpectErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func Test_CheckedSubU128(t *testing.T) {
+	testExamples := []struct {
+		label        string
+		a            U128
+		b            U128
+		expect       U128
+		hasExpectErr bool
+	}{
+		{"2-1", NewU128(2), NewU128(1), NewU128(1), false},
+		{"0-1", NewU128(0), NewU128(1), NewU128(0), true},
+		{"0-MaxU128", NewU128(0), MaxU128(), NewU128(0), true},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result, err := CheckedSubU128(testExample.a, testExample.b)
+			assert.Equal(t, testExample.expect, result)
+
+			if testExample.hasExpectErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
