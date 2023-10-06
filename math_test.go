@@ -49,6 +49,26 @@ func Test_Max128(t *testing.T) {
 	}
 }
 
+func Test_Min32(t *testing.T) {
+	testExamples := []struct {
+		label  string
+		a      U32
+		b      U32
+		expect U32
+	}{
+		{"Min(1, 2)", 1, 2, 1},
+		{"Min(1, MaxU32)", 1, math.MaxUint32, 1},
+		{"Min(MaxU32, MaxU32)", math.MaxUint32, math.MaxUint32, math.MaxUint32},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result := Min32(testExample.a, testExample.b)
+			assert.Equal(t, testExample.expect, result)
+		})
+	}
+}
+
 func Test_Min64(t *testing.T) {
 	testExamples := []struct {
 		label  string
