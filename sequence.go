@@ -29,30 +29,40 @@ func (seq Sequence[Encodable]) Bytes() []byte {
 	return EncodedBytes(seq)
 }
 
-func DecodeSequence[T Encodable](buffer *bytes.Buffer) Sequence[T] {
-	size := DecodeCompact(buffer)
+func DecodeSequence[T Encodable](buffer *bytes.Buffer) (Sequence[T], error) {
+	size, err := DecodeCompact(buffer)
+	if err != nil {
+		return Sequence[T]{}, err
+	}
 	v := size.ToBigInt()
 	values := make([]T, v.Int64())
 
 	for i := 0; i < len(values); i++ {
 		values[i] = decodeByType(*new(T), buffer).(T)
 	}
-	return values
+	return values, nil
 }
 
-func DecodeSequenceWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffer *bytes.Buffer) T) Sequence[T] {
-	size := DecodeCompact(buffer)
+func DecodeSequenceWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffer *bytes.Buffer) T) (Sequence[T], error) {
+	size, err := DecodeCompact(buffer)
+	if err != nil {
+		return Sequence[T]{}, err
+	}
 	v := size.ToBigInt()
 	values := make([]T, v.Int64())
 
 	for i := 0; i < len(values); i++ {
 		values[i] = decodeFunc(buffer)
 	}
-	return values
+	return values, nil
 }
 
-func DecodeSliceU8(buffer *bytes.Buffer) []U8 {
-	return DecodeSequence[U8](buffer)
+func DecodeSliceU8(buffer *bytes.Buffer) ([]U8, error) {
+	sequence, err := DecodeSequence[U8](buffer)
+	if err != nil {
+		return make([]U8, 0), nil
+	}
+	return sequence, nil
 }
 
 type FixedSequence[T Encodable] []T // TODO: https://github.com/LimeChain/goscale/issues/37
@@ -103,8 +113,12 @@ func (value Str) Bytes() []byte {
 	return Sequence[U8](StrToSliceU8(value)).Bytes()
 }
 
-func DecodeStr(buffer *bytes.Buffer) Str {
-	return SliceU8ToStr(DecodeSliceU8(buffer))
+func DecodeStr(buffer *bytes.Buffer) (Str, error) {
+	decodeSlice, err := DecodeSliceU8(buffer)
+	if err != nil {
+		return "", err
+	}
+	return SliceU8ToStr(decodeSlice), nil
 }
 
 func SliceU8ToStr(values []U8) Str {

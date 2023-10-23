@@ -9,9 +9,14 @@ package goscale
 
 import (
 	"bytes"
+	"errors"
 )
 
 type Bool bool
+
+var (
+	errInvalidBoolRepresentation = errors.New("invalid bool representation")
+)
 
 func (value Bool) Encode(buffer *bytes.Buffer) {
 	encoder := Encoder{Writer: buffer}
@@ -27,15 +32,15 @@ func (value Bool) Bytes() []byte {
 	return buf
 }
 
-func DecodeBool(buffer *bytes.Buffer) Bool {
+func DecodeBool(buffer *bytes.Buffer) (Bool, error) {
 	decoder := Decoder{Reader: buffer}
 	result := decoder.DecodeByte()
 	switch result {
 	case 0:
-		return false
+		return false, nil
 	case 1:
-		return true
+		return true, nil
 	default:
-		panic("invalid bool representation")
+		return false, errInvalidBoolRepresentation
 	}
 }

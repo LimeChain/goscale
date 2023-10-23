@@ -42,7 +42,7 @@ func Test_DecodeU32(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result := DecodeU32(buffer)
+			result, _ := DecodeU32(buffer)
 
 			assert.Equal(t, result, testExample.expectation)
 		})

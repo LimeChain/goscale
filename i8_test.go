@@ -49,7 +49,7 @@ func Test_DecodeI8(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result := DecodeI8(buffer)
+			result, _ := DecodeI8(buffer)
 
 			assert.Equal(t, result, testExample.expectation)
 		})

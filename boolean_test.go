@@ -44,7 +44,7 @@ func Test_DecodeBool(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result := DecodeBool(buffer)
+			result, _ := DecodeBool(buffer)
 
 			assert.Equal(t, result, testExample.expectation)
 		})
@@ -67,7 +67,8 @@ func Test_DecodeBoolPanics(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			assert.Panics(t, func() { DecodeBool(buffer) })
+			_, err := DecodeBool(buffer)
+			assert.ErrorIs(t, errInvalidBoolRepresentation, err)
 		})
 	}
 }

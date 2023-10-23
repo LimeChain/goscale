@@ -21,6 +21,6 @@ func (e Empty) Bytes() []byte {
 	return []byte{}
 }
 
-func DecodeEmpty() Empty {
-	return Empty{}
+func DecodeEmpty() (Empty, error) {
+	return Empty{}, nil
 }

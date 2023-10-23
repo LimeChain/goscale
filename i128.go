@@ -29,11 +29,11 @@ func (n I128) Bytes() []byte {
 	return append(n[0].Bytes(), n[1].Bytes()...)
 }
 
-func DecodeI128(buffer *bytes.Buffer) I128 {
+func DecodeI128(buffer *bytes.Buffer) (I128, error) {
 	return I128{
 		DecodeU64(buffer),
 		DecodeU64(buffer),
-	}
+	}, nil
 }
 
 func (n I128) ToBigInt() *big.Int {

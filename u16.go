@@ -19,9 +19,12 @@ func (value U16) Bytes() []byte {
 	return result
 }
 
-func DecodeU16(buffer *bytes.Buffer) U16 {
+func DecodeU16(buffer *bytes.Buffer) (U16, error) {
 	decoder := Decoder{Reader: buffer}
 	result := make([]byte, 2)
-	decoder.Read(result)
-	return U16(binary.LittleEndian.Uint16(result))
+	err := decoder.Read(result)
+	if err != nil {
+		return 0, err
+	}
+	return U16(binary.LittleEndian.Uint16(result)), nil
 }

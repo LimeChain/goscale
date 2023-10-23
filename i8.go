@@ -12,7 +12,7 @@ func (value I8) Bytes() []byte {
 	return U8(value).Bytes()
 }
 
-func DecodeI8(buffer *bytes.Buffer) I8 {
+func DecodeI8(buffer *bytes.Buffer) (I8, error) {
 	decoder := Decoder{Reader: buffer}
-	return I8(decoder.DecodeByte())
+	return I8(decoder.DecodeByte()), nil
 }

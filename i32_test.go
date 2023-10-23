@@ -46,7 +46,7 @@ func Test_DecodeI32(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result := DecodeI32(buffer)
+			result, _ := DecodeI32(buffer)
 
 			assert.Equal(t, result, testExample.expectation)
 		})

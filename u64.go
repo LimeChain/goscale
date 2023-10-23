@@ -19,9 +19,12 @@ func (value U64) Bytes() []byte {
 	return result
 }
 
-func DecodeU64(buffer *bytes.Buffer) U64 {
+func DecodeU64(buffer *bytes.Buffer) (U64, error) {
 	decoder := Decoder{Reader: buffer}
 	result := make([]byte, 8)
-	decoder.Read(result)
-	return U64(binary.LittleEndian.Uint64(result))
+	err := decoder.Read(result)
+	if err != nil {
+		return 0, err
+	}
+	return U64(binary.LittleEndian.Uint64(result)), nil
 }

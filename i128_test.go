@@ -67,7 +67,7 @@ func Test_DecodeI128(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeI128(buffer)
+			result, _ := DecodeI128(buffer)
 			bigInt := result.ToBigInt()
 
 			assert.Equal(t, result, e.expect)

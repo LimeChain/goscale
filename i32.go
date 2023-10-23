@@ -12,6 +12,6 @@ func (value I32) Bytes() []byte {
 	return U32(value).Bytes()
 }
 
-func DecodeI32(buffer *bytes.Buffer) I32 {
-	return I32(DecodeU32(buffer))
+func DecodeI32(buffer *bytes.Buffer) (I32, error) {
+	return I32(DecodeU32(buffer)), nil
 }

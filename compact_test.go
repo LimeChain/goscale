@@ -82,7 +82,7 @@ func Test_Decode_Compact(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeCompact(buffer)
+			result, _ := DecodeCompact(buffer)
 
 			assert.Equal(t, result, e.expect)
 		})
