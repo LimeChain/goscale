@@ -80,20 +80,30 @@ func (c Compact) Bytes() []byte {
 func DecodeCompact(buffer *bytes.Buffer) (Compact, error) {
 	decoder := Decoder{Reader: buffer}
 	result := make([]byte, 16)
-	b := decoder.DecodeByte()
+	b, errDecode := decoder.DecodeByte()
+	if errDecode != nil {
+		return Compact{}, errDecode
+	}
 	mode := b & 3
 	switch mode {
 	case 0:
 		return Compact(NewU128(big.NewInt(0).SetUint64(uint64(b >> 2)))), nil
 	case 1:
-		r := uint64(decoder.DecodeByte())
+		db, err := decoder.DecodeByte()
+		if err != nil {
+			return Compact{}, err
+		}
+		r := uint64(db)
 		r <<= 6
 		r += uint64(b >> 2)
 		return Compact(NewU128(big.NewInt(0).SetUint64(r))), nil
 	case 2:
 		buf := result[:4]
 		buf[0] = b
-		decoder.Read(result[1:4])
+		err := decoder.Read(result[1:4])
+		if err != nil {
+			return Compact{}, err
+		}
 		r := binary.LittleEndian.Uint32(buf)
 		r >>= 2
 		return Compact(NewU128(big.NewInt(0).SetUint64(uint64(r)))), nil
@@ -102,10 +112,13 @@ func DecodeCompact(buffer *bytes.Buffer) (Compact, error) {
 		if n > 63 {
 			return Compact(NewU128(0)), errNotSupported
 		}
-		decoder.Read(result[:n+4])
+		err := decoder.Read(result[:n+4])
+		if err != nil {
+			return Compact{}, err
+		}
 		reverseSlice(result)
 		return Compact(NewU128(big.NewInt(0).SetBytes(result))), nil
 	default:
-		return Compact(NewU128(0)), errCouldNotDecodeCompact
+		return Compact{}, errCouldNotDecodeCompact
 	}
 }

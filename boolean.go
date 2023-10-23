@@ -34,7 +34,10 @@ func (value Bool) Bytes() []byte {
 
 func DecodeBool(buffer *bytes.Buffer) (Bool, error) {
 	decoder := Decoder{Reader: buffer}
-	result := decoder.DecodeByte()
+	result, err := decoder.DecodeByte()
+	if err != nil {
+		return false, err
+	}
 	switch result {
 	case 0:
 		return false, nil

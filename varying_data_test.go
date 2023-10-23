@@ -128,21 +128,20 @@ func Test_VaryingData_Decode(t *testing.T) {
 	}
 }
 
-func Test_VaryingData_Decode_Panic_ExceedsLength(t *testing.T) {
+func Test_VaryingData_Decode_Error_ExceedsLength(t *testing.T) {
 	values := make([]func(buffer *bytes.Buffer) []Encodable, math.MaxUint8+1)
 
-	assert.Panics(t, func() {
-		DecodeVaryingData(values, &bytes.Buffer{})
-	})
+	_, err := DecodeVaryingData(values, &bytes.Buffer{})
+	assert.ErrorIs(t, err, errExceedsU8Length)
 }
 
-func Test_VaryingData_Decode_Panic_Index_NotFound(t *testing.T) {
+func Test_VaryingData_Decode_Error_Index_NotFound(t *testing.T) {
 	values := make([]func(buffer *bytes.Buffer) []Encodable, 1)
 
 	buffer := &bytes.Buffer{}
 	buffer.Write(U8(1).Bytes())
 
-	assert.Panics(t, func() {
-		DecodeVaryingData(values, buffer)
-	})
+	_, err := DecodeVaryingData(values, buffer)
+
+	assert.ErrorIs(t, err, errDecodingFuncNotFound)
 }

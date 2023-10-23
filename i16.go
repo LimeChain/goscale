@@ -13,5 +13,9 @@ func (value I16) Bytes() []byte {
 }
 
 func DecodeI16(buffer *bytes.Buffer) (I16, error) {
-	return I16(DecodeU16(buffer)), nil
+	dec16, err := DecodeU16(buffer)
+	if err != nil {
+		return 0, err
+	}
+	return I16(dec16), nil
 }

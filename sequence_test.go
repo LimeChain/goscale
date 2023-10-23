@@ -50,7 +50,7 @@ func Test_DecodeString(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result := DecodeStr(buffer)
+			result, _ := DecodeStr(buffer)
 
 			assert.Equal(t, result, testExample.expectation)
 		})
@@ -100,7 +100,9 @@ func Test_DecodeU8Sequence(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result := Sequence[U8](DecodeSliceU8(buffer))
+			dec, _ := DecodeSliceU8(buffer)
+
+			result := Sequence[U8](dec)
 
 			assert.Equal(t, result, testExample.expectation)
 		})
@@ -446,7 +448,7 @@ func Test_DecodeFixedSequence(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeFixedSequence[U8](len(e.input), buffer)
+			result, _ := DecodeFixedSequence[U8](len(e.input), buffer)
 
 			assert.Equal(t, result, e.expect)
 		})
@@ -472,7 +474,7 @@ func Test_DecodeSequenceU8(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeSequence[U8](buffer)
+			result, _ := DecodeSequence[U8](buffer)
 
 			assert.Equal(t, result, e.expect)
 		})
@@ -497,7 +499,7 @@ func Test_DecodeSequenceU8With(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeSequenceWith(buffer, DecodeU8)
+			result, _ := DecodeSequenceWith(buffer, DecodeU8)
 
 			assert.Equal(t, result, e.expect)
 		})

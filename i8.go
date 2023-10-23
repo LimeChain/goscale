@@ -14,5 +14,9 @@ func (value I8) Bytes() []byte {
 
 func DecodeI8(buffer *bytes.Buffer) (I8, error) {
 	decoder := Decoder{Reader: buffer}
-	return I8(decoder.DecodeByte()), nil
+	db, err := decoder.DecodeByte()
+	if err != nil {
+		return 0, err
+	}
+	return I8(db), nil
 }

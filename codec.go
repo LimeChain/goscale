@@ -48,8 +48,11 @@ func (enc Encoder) EncodeByte(b byte) {
 	enc.Write(buf[:1])
 }
 
-func (dec Decoder) DecodeByte() byte {
+func (dec Decoder) DecodeByte() (byte, error) {
 	buf := make([]byte, 1)
-	dec.Read(buf[:1])
-	return buf[0]
+	err := dec.Read(buf[:1])
+	if err != nil {
+		return 0, err
+	}
+	return buf[0], nil
 }
