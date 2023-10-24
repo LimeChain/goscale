@@ -55,7 +55,8 @@ func Test_DecodeDictionaryStrBool(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result, _ := DecodeDictionary[Str, Bool](buffer)
+			result, err := DecodeDictionary[Str, Bool](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, testExample.expectation)
 		})
@@ -115,7 +116,8 @@ func Test_DecodeDictionaryU8Str(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result, _ := DecodeDictionary[U8, Str](buffer)
+			result, err := DecodeDictionary[U8, Str](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, testExample.expectation)
 		})

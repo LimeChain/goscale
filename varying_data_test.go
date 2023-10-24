@@ -65,11 +65,13 @@ func Test_VaryingData_Decode(t *testing.T) {
 			input: []byte{0x0, 0x2a},
 			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
 				func(buffer *bytes.Buffer) []Encodable {
-					resultDecode, _ := DecodeU8(buffer)
+					resultDecode, err := DecodeU8(buffer)
+					assert.NoError(t, err)
 					return []Encodable{resultDecode}
 				},
 				func(buffer *bytes.Buffer) []Encodable {
-					resultDecode, _ := DecodeBool(buffer)
+					resultDecode, err := DecodeBool(buffer)
+					assert.NoError(t, err)
 					return []Encodable{resultDecode}
 				},
 			},
@@ -80,7 +82,8 @@ func Test_VaryingData_Decode(t *testing.T) {
 			input: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
 			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
 				func(buffer *bytes.Buffer) []Encodable {
-					resultDecode, _ := DecodeU128(buffer)
+					resultDecode, err := DecodeU128(buffer)
+					assert.NoError(t, err)
 					return []Encodable{resultDecode}
 				},
 			},
@@ -91,9 +94,12 @@ func Test_VaryingData_Decode(t *testing.T) {
 			input: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x4, 0x2a},
 			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
 				func(buffer *bytes.Buffer) []Encodable {
-					resultDecodeU64, _ := DecodeU64(buffer)
-					resultDecodeU32, _ := DecodeU32(buffer)
-					resultDecodeSeqU8, _ := DecodeSequence[U8](buffer)
+					resultDecodeU64, err := DecodeU64(buffer)
+					assert.NoError(t, err)
+					resultDecodeU32, err := DecodeU32(buffer)
+					assert.NoError(t, err)
+					resultDecodeSeqU8, err := DecodeSequence[U8](buffer)
+					assert.NoError(t, err)
 					return []Encodable{resultDecodeU64, resultDecodeU32, resultDecodeSeqU8}
 				},
 			},
@@ -104,13 +110,20 @@ func Test_VaryingData_Decode(t *testing.T) {
 			input: []byte{0x0, 0x80, 0xff, 0xff, 0x00, 0x80, 0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a, 0x14, 0x0, 0x0, 0x0, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
 			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
 				func(buffer *bytes.Buffer) []Encodable {
-					resultDecodeI8, _ := DecodeI8(buffer)
-					resultDecodeU16, _ := DecodeU16(buffer)
-					resultDecodeI16, _ := DecodeI16(buffer)
-					resultDecodeCompactOne, _ := DecodeCompact(buffer)
-					resultDecodeCompactTwo, _ := DecodeCompact(buffer)
-					resultDecodeI32, _ := DecodeI32(buffer)
-					resultDecodeI64, _ := DecodeI64(buffer)
+					resultDecodeI8, err := DecodeI8(buffer)
+					assert.NoError(t, err)
+					resultDecodeU16, err := DecodeU16(buffer)
+					assert.NoError(t, err)
+					resultDecodeI16, err := DecodeI16(buffer)
+					assert.NoError(t, err)
+					resultDecodeCompactOne, err := DecodeCompact(buffer)
+					assert.NoError(t, err)
+					resultDecodeCompactTwo, err := DecodeCompact(buffer)
+					assert.NoError(t, err)
+					resultDecodeI32, err := DecodeI32(buffer)
+					assert.NoError(t, err)
+					resultDecodeI64, err := DecodeI64(buffer)
+					assert.NoError(t, err)
 					return []Encodable{resultDecodeI8, resultDecodeU16, resultDecodeI16, resultDecodeCompactOne, resultDecodeCompactTwo, resultDecodeI32, resultDecodeI64}
 				},
 			},
@@ -122,7 +135,8 @@ func Test_VaryingData_Decode(t *testing.T) {
 		buffer := &bytes.Buffer{}
 		buffer.Write(e.input)
 
-		result, _ := DecodeVaryingData(e.decodeFuncs, buffer)
+		result, err := DecodeVaryingData(e.decodeFuncs, buffer)
+		assert.NoError(t, err)
 
 		assert.Equal(t, result, e.expect)
 	}

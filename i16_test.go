@@ -45,7 +45,8 @@ func Test_DecodeI16(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result, _ := DecodeI16(buffer)
+			result, err := DecodeI16(buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, testExample.expectation)
 		})

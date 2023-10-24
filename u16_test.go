@@ -43,7 +43,8 @@ func Test_DecodeU16(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result, _ := DecodeU16(buffer)
+			result, err := DecodeU16(buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, testExample.expectation)
 		})

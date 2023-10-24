@@ -2,7 +2,7 @@ package goscale
 
 import (
 	"bytes"
-	"errors"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -45,7 +45,8 @@ func Test_DecodeBool(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result, _ := DecodeBool(buffer)
+			result, err := DecodeBool(buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, testExample.expectation)
 		})
@@ -85,7 +86,7 @@ func Test_DecodeBoolPanics(t *testing.T) {
 			buffer.Write(testExample.input)
 
 			_, err := DecodeBool(buffer)
-			assert.ErrorContains(t, err, errors.New("EOF").Error())
+			assert.ErrorIs(t, err, io.EOF)
 		})
 	}
 }
