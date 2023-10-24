@@ -69,7 +69,7 @@ func DecodeOption[T Encodable](buffer *bytes.Buffer) (Option[T], error) {
 	return option, nil
 }
 
-func DecodeOptionWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffer *bytes.Buffer) T) (Option[T], error) {
+func DecodeOptionWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffer *bytes.Buffer) (T, error)) (Option[T], error) {
 	option := Option[T]{HasValue: false}
 
 	b, err := DecodeBool(buffer)
@@ -78,7 +78,11 @@ func DecodeOptionWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffer 
 	}
 	if b {
 		option.HasValue = true
-		option.Value = decodeFunc(buffer)
+		val, err := decodeFunc(buffer)
+		if err != nil {
+			return Option[T]{}, err
+		}
+		option.Value = val
 	}
 
 	return option, nil
