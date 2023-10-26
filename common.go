@@ -2,6 +2,11 @@ package goscale
 
 import (
 	"bytes"
+	"errors"
+)
+
+var (
+	errTypeNotFound = errors.New("type not found")
 )
 
 type Encodable interface {
@@ -19,7 +24,7 @@ func EncodedBytes(e Encodable) []byte {
 	return buffer.Bytes()
 }
 
-func decodeByType(i interface{}, buffer *bytes.Buffer) Encodable {
+func decodeByType(i interface{}, buffer *bytes.Buffer) (Encodable, error) {
 	switch i.(type) {
 	case Bool:
 		return DecodeBool(buffer)
@@ -46,7 +51,11 @@ func decodeByType(i interface{}, buffer *bytes.Buffer) Encodable {
 	case Compact:
 		return DecodeCompact(buffer)
 	case Sequence[U8]:
-		return Sequence[U8](DecodeSliceU8(buffer))
+		dec, err := DecodeSliceU8(buffer)
+		if err != nil {
+			return Empty{}, err
+		}
+		return Sequence[U8](dec), nil
 	case Str:
 		return DecodeStr(buffer)
 	case Empty:
@@ -55,7 +64,7 @@ func decodeByType(i interface{}, buffer *bytes.Buffer) Encodable {
 	// case Result[Encodable]:
 	// return DecodeResult(buffer)
 	default:
-		panic("type not found")
+		return Empty{}, errTypeNotFound
 	}
 }
 

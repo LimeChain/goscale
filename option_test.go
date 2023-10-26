@@ -2,6 +2,8 @@ package goscale
 
 import (
 	"bytes"
+	"errors"
+	"io"
 	"math"
 	"testing"
 
@@ -423,7 +425,8 @@ func Test_DecodeOptionNil(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[Encodable](buffer)
+			result, err := DecodeOption[Encodable](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -457,7 +460,8 @@ func Test_DecodeOptionFromBool(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[Bool](buffer)
+			result, err := DecodeOption[Bool](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -497,7 +501,8 @@ func Test_DecodeOptionBool(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOptionBool(buffer)
+			result, err := DecodeOptionBool(buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -505,7 +510,7 @@ func Test_DecodeOptionBool(t *testing.T) {
 	}
 }
 
-func Test_DecodeOptionBoolPanics(t *testing.T) {
+func Test_DecodeOptionBool_InvalidOptionBoolError(t *testing.T) {
 	var examples = []struct {
 		label string
 		input []byte
@@ -525,9 +530,8 @@ func Test_DecodeOptionBoolPanics(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			assert.Panics(t, func() {
-				DecodeOptionBool(buffer)
-			})
+			_, err := DecodeOptionBool(buffer)
+			assert.ErrorIs(t, err, errInvalidOptionBoolRepresentation)
 		})
 	}
 }
@@ -552,7 +556,8 @@ func Test_DecodeOptionU8(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[U8](buffer)
+			result, err := DecodeOption[U8](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -580,7 +585,8 @@ func Test_DecodeOptionI8(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[I8](buffer)
+			result, err := DecodeOption[I8](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -608,7 +614,8 @@ func Test_DecodeOptionU16(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[U16](buffer)
+			result, err := DecodeOption[U16](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -636,7 +643,8 @@ func Test_DecodeOptionI16(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[I16](buffer)
+			result, err := DecodeOption[I16](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -664,7 +672,8 @@ func Test_DecodeOptionU32(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[U32](buffer)
+			result, err := DecodeOption[U32](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -692,7 +701,8 @@ func Test_DecodeOptionI32(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[I32](buffer)
+			result, err := DecodeOption[I32](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -720,7 +730,8 @@ func Test_DecodeOptionU64(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[U64](buffer)
+			result, err := DecodeOption[U64](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -748,7 +759,8 @@ func Test_DecodeOptionI64(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[I64](buffer)
+			result, err := DecodeOption[I64](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -783,7 +795,8 @@ func Test_DecodeOptionI128(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[I128](buffer)
+			result, err := DecodeOption[I128](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -811,7 +824,8 @@ func Test_DecodeOptionU128(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[U128](buffer)
+			result, err := DecodeOption[U128](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -839,7 +853,8 @@ func Test_DecodeOptionCompact(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[Compact](buffer)
+			result, err := DecodeOption[Compact](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -868,7 +883,8 @@ func Test_DecodeOptionSequenceU8(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeOption[Sequence[U8]](buffer)
+			result, err := DecodeOption[Sequence[U8]](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -889,9 +905,8 @@ func Test_DecodeOptionPanicsMissingBoolBytes(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			assert.Panics(t, func() {
-				DecodeOption[Bool](buffer)
-			})
+			_, err := DecodeOption[Bool](buffer)
+			assert.ErrorIs(t, err, io.EOF)
 		})
 	}
 }
@@ -909,14 +924,14 @@ func Test_DecodeOptionPanicsInvalidFirstBoolByte(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			assert.Panics(t, func() {
-				DecodeOption[Bool](buffer)
-			})
+			_, err := DecodeOption[Bool](buffer)
+
+			assert.ErrorIs(t, err, errInvalidBoolRepresentation)
 		})
 	}
 }
 
-func Test_DecodeOptionPanicsEmptySlice(t *testing.T) {
+func Test_DecodeOptionErrorEmptySlice(t *testing.T) {
 	var examples = []struct {
 		label string
 		input []byte
@@ -929,14 +944,13 @@ func Test_DecodeOptionPanicsEmptySlice(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			assert.Panics(t, func() {
-				DecodeOption[Bool](buffer)
-			})
+			_, err := DecodeOption[Bool](buffer)
+			assert.ErrorIs(t, err, io.EOF)
 		})
 	}
 }
 
-func Test_DecodeOptionPanicsNil(t *testing.T) {
+func Test_DecodeOptionErrorNil(t *testing.T) {
 	var examples = []struct {
 		label string
 		input []byte
@@ -949,14 +963,13 @@ func Test_DecodeOptionPanicsNil(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			assert.Panics(t, func() {
-				DecodeOption[Bool](buffer)
-			})
+			_, err := DecodeOption[Bool](buffer)
+			assert.ErrorIs(t, err, io.EOF)
 		})
 	}
 }
 
-func Test_DecodeOptionPanicsDifferentType(t *testing.T) {
+func Test_DecodeOptionErrorDifferentType(t *testing.T) {
 	var examples = []struct {
 		label string
 		input []byte
@@ -969,14 +982,14 @@ func Test_DecodeOptionPanicsDifferentType(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			assert.Panics(t, func() {
-				DecodeOption[testEncodable](buffer)
-			})
+			_, err := DecodeOption[testEncodable](buffer)
+
+			assert.ErrorIs(t, errTypeNotFound, err)
 		})
 	}
 }
 
-func Test_DecodeOptionPanicsU8MissingBytes(t *testing.T) {
+func Test_DecodeOptionErrorU8MissingBytes(t *testing.T) {
 	var examples = []struct {
 		label string
 		input []byte
@@ -989,9 +1002,11 @@ func Test_DecodeOptionPanicsU8MissingBytes(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			assert.Panics(t, func() {
-				DecodeOption[U16](buffer)
-			})
+			_, err := DecodeOption[U16](buffer)
+
+			expectedErr := errors.New("can not read the required number of bytes 2, only 1 available")
+
+			assert.ErrorContains(t, expectedErr, err.Error())
 		})
 	}
 }

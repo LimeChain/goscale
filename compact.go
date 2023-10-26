@@ -9,7 +9,13 @@ package goscale
 import (
 	"bytes"
 	"encoding/binary"
+	"errors"
 	"math/big"
+)
+
+var (
+	errCouldNotDecodeCompact = errors.New("could not decode compact")
+	errNotSupported          = errors.New("not supported: n>63 encountered when decoding a compact-encoded uint")
 )
 
 type Compact U128
@@ -71,35 +77,48 @@ func (c Compact) Bytes() []byte {
 	return append([]byte{(topSixBits << 2) + 3}, b...)
 }
 
-func DecodeCompact(buffer *bytes.Buffer) Compact {
+func DecodeCompact(buffer *bytes.Buffer) (Compact, error) {
 	decoder := Decoder{Reader: buffer}
 	result := make([]byte, 16)
-	b := decoder.DecodeByte()
+	b, errDecode := decoder.DecodeByte()
+	if errDecode != nil {
+		return Compact{}, errDecode
+	}
 	mode := b & 3
 	switch mode {
 	case 0:
-		return Compact(NewU128(big.NewInt(0).SetUint64(uint64(b >> 2))))
+		return Compact(NewU128(big.NewInt(0).SetUint64(uint64(b >> 2)))), nil
 	case 1:
-		r := uint64(decoder.DecodeByte())
+		db, err := decoder.DecodeByte()
+		if err != nil {
+			return Compact{}, err
+		}
+		r := uint64(db)
 		r <<= 6
 		r += uint64(b >> 2)
-		return Compact(NewU128(big.NewInt(0).SetUint64(r)))
+		return Compact(NewU128(big.NewInt(0).SetUint64(r))), nil
 	case 2:
 		buf := result[:4]
 		buf[0] = b
-		decoder.Read(result[1:4])
+		err := decoder.Read(result[1:4])
+		if err != nil {
+			return Compact{}, err
+		}
 		r := binary.LittleEndian.Uint32(buf)
 		r >>= 2
-		return Compact(NewU128(big.NewInt(0).SetUint64(uint64(r))))
+		return Compact(NewU128(big.NewInt(0).SetUint64(uint64(r)))), nil
 	case 3:
 		n := b >> 2
 		if n > 63 {
-			panic("not supported: n>63 encountered when decoding a compact-encoded uint")
+			return Compact(NewU128(0)), errNotSupported
 		}
-		decoder.Read(result[:n+4])
+		err := decoder.Read(result[:n+4])
+		if err != nil {
+			return Compact{}, err
+		}
 		reverseSlice(result)
-		return Compact(NewU128(big.NewInt(0).SetBytes(result)))
+		return Compact(NewU128(big.NewInt(0).SetBytes(result))), nil
 	default:
-		panic("code should be unreachable")
+		return Compact{}, errCouldNotDecodeCompact
 	}
 }

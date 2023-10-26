@@ -42,7 +42,8 @@ func Test_DecodeI64(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result := DecodeI64(buffer)
+			result, err := DecodeI64(buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, testExample.expectation)
 		})

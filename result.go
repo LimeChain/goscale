@@ -27,12 +27,18 @@ func (r Result[T]) Bytes() []byte {
 	return buffer.Bytes()
 }
 
-func DecodeResult[T Encodable](buffer *bytes.Buffer) Result[T] {
-	hasError := DecodeBool(buffer)
-	value := decodeByType(*new(T), buffer)
+func DecodeResult[T Encodable](buffer *bytes.Buffer) (Result[T], error) {
+	hasError, err := DecodeBool(buffer)
+	if err != nil {
+		return Result[T]{}, err
+	}
+	value, errDec := decodeByType(*new(T), buffer)
+	if errDec != nil {
+		return Result[T]{}, errDec
+	}
 
 	return Result[T]{
 		HasError: hasError,
 		Value:    value.(T),
-	}
+	}, nil
 }

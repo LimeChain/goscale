@@ -2,6 +2,7 @@ package goscale
 
 import (
 	"bytes"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -44,7 +45,8 @@ func Test_DecodeBool(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			result := DecodeBool(buffer)
+			result, err := DecodeBool(buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, testExample.expectation)
 		})
@@ -58,6 +60,12 @@ func Test_DecodeBoolPanics(t *testing.T) {
 	}{
 		{label: "(0xff)", input: []byte{0xff}},
 		{label: "(0x3)", input: []byte{0x3}},
+	}
+
+	var testExamplesEmpty = []struct {
+		label string
+		input []byte
+	}{
 		{label: "([])", input: []byte{}},
 		{label: "(nil)", input: nil},
 	}
@@ -67,7 +75,18 @@ func Test_DecodeBoolPanics(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			assert.Panics(t, func() { DecodeBool(buffer) })
+			_, err := DecodeBool(buffer)
+			assert.ErrorIs(t, errInvalidBoolRepresentation, err)
+		})
+	}
+
+	for _, testExample := range testExamplesEmpty {
+		t.Run(testExample.label, func(t *testing.T) {
+			buffer := &bytes.Buffer{}
+			buffer.Write(testExample.input)
+
+			_, err := DecodeBool(buffer)
+			assert.ErrorIs(t, err, io.EOF)
 		})
 	}
 }

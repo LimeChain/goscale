@@ -29,15 +29,18 @@ func (n U128) Bytes() []byte {
 	return append(n[0].Bytes(), n[1].Bytes()...)
 }
 
-func DecodeU128(buffer *bytes.Buffer) U128 {
+func DecodeU128(buffer *bytes.Buffer) (U128, error) {
 	decoder := Decoder{Reader: buffer}
 	buf := make([]byte, 16)
-	decoder.Read(buf)
+	err := decoder.Read(buf)
+	if err != nil {
+		return [2]U64{}, err
+	}
 
 	return U128{
 		U64(binary.LittleEndian.Uint64(buf[:8])),
 		U64(binary.LittleEndian.Uint64(buf[8:])),
-	}
+	}, nil
 }
 
 func (n U128) ToBigInt() *big.Int {

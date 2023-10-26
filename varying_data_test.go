@@ -65,10 +65,14 @@ func Test_VaryingData_Decode(t *testing.T) {
 			input: []byte{0x0, 0x2a},
 			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
 				func(buffer *bytes.Buffer) []Encodable {
-					return []Encodable{DecodeU8(buffer)}
+					resultDecode, err := DecodeU8(buffer)
+					assert.NoError(t, err)
+					return []Encodable{resultDecode}
 				},
 				func(buffer *bytes.Buffer) []Encodable {
-					return []Encodable{DecodeBool(buffer)}
+					resultDecode, err := DecodeBool(buffer)
+					assert.NoError(t, err)
+					return []Encodable{resultDecode}
 				},
 			},
 			expect: NewVaryingData(U8(0), U8(42)),
@@ -78,7 +82,9 @@ func Test_VaryingData_Decode(t *testing.T) {
 			input: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
 			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
 				func(buffer *bytes.Buffer) []Encodable {
-					return []Encodable{DecodeU128(buffer)}
+					resultDecode, err := DecodeU128(buffer)
+					assert.NoError(t, err)
+					return []Encodable{resultDecode}
 				},
 			},
 			expect: NewVaryingData(U8(0), U128{math.MaxUint64, math.MaxUint64}),
@@ -88,7 +94,13 @@ func Test_VaryingData_Decode(t *testing.T) {
 			input: []byte{0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x4, 0x2a},
 			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
 				func(buffer *bytes.Buffer) []Encodable {
-					return []Encodable{DecodeU64(buffer), DecodeU32(buffer), DecodeSequence[U8](buffer)}
+					resultDecodeU64, err := DecodeU64(buffer)
+					assert.NoError(t, err)
+					resultDecodeU32, err := DecodeU32(buffer)
+					assert.NoError(t, err)
+					resultDecodeSeqU8, err := DecodeSequence[U8](buffer)
+					assert.NoError(t, err)
+					return []Encodable{resultDecodeU64, resultDecodeU32, resultDecodeSeqU8}
 				},
 			},
 			expect: NewVaryingData(U8(0), U64(math.MaxUint64), U32(math.MaxUint32), Sequence[U8]{42}),
@@ -98,7 +110,21 @@ func Test_VaryingData_Decode(t *testing.T) {
 			input: []byte{0x0, 0x80, 0xff, 0xff, 0x00, 0x80, 0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a, 0x14, 0x0, 0x0, 0x0, 0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80},
 			decodeFuncs: []func(buffer *bytes.Buffer) []Encodable{
 				func(buffer *bytes.Buffer) []Encodable {
-					return []Encodable{DecodeI8(buffer), DecodeU16(buffer), DecodeI16(buffer), DecodeCompact(buffer), DecodeCompact(buffer), DecodeI32(buffer), DecodeI64(buffer)}
+					resultDecodeI8, err := DecodeI8(buffer)
+					assert.NoError(t, err)
+					resultDecodeU16, err := DecodeU16(buffer)
+					assert.NoError(t, err)
+					resultDecodeI16, err := DecodeI16(buffer)
+					assert.NoError(t, err)
+					resultDecodeCompactOne, err := DecodeCompact(buffer)
+					assert.NoError(t, err)
+					resultDecodeCompactTwo, err := DecodeCompact(buffer)
+					assert.NoError(t, err)
+					resultDecodeI32, err := DecodeI32(buffer)
+					assert.NoError(t, err)
+					resultDecodeI64, err := DecodeI64(buffer)
+					assert.NoError(t, err)
+					return []Encodable{resultDecodeI8, resultDecodeU16, resultDecodeI16, resultDecodeCompactOne, resultDecodeCompactTwo, resultDecodeI32, resultDecodeI64}
 				},
 			},
 			expect: NewVaryingData(U8(0), I8(math.MinInt8), U16(math.MaxUint16), I16(math.MinInt16), ToCompact(100000000000000), ToCompact(5), I32(math.MinInt32), I64(math.MinInt64)),
@@ -109,27 +135,27 @@ func Test_VaryingData_Decode(t *testing.T) {
 		buffer := &bytes.Buffer{}
 		buffer.Write(e.input)
 
-		result := DecodeVaryingData(e.decodeFuncs, buffer)
+		result, err := DecodeVaryingData(e.decodeFuncs, buffer)
+		assert.NoError(t, err)
 
 		assert.Equal(t, result, e.expect)
 	}
 }
 
-func Test_VaryingData_Decode_Panic_ExceedsLength(t *testing.T) {
+func Test_VaryingData_Decode_Error_ExceedsLength(t *testing.T) {
 	values := make([]func(buffer *bytes.Buffer) []Encodable, math.MaxUint8+1)
 
-	assert.Panics(t, func() {
-		DecodeVaryingData(values, &bytes.Buffer{})
-	})
+	_, err := DecodeVaryingData(values, &bytes.Buffer{})
+	assert.ErrorIs(t, err, errExceedsU8Length)
 }
 
-func Test_VaryingData_Decode_Panic_Index_NotFound(t *testing.T) {
+func Test_VaryingData_Decode_Error_Index_NotFound(t *testing.T) {
 	values := make([]func(buffer *bytes.Buffer) []Encodable, 1)
 
 	buffer := &bytes.Buffer{}
 	buffer.Write(U8(1).Bytes())
 
-	assert.Panics(t, func() {
-		DecodeVaryingData(values, buffer)
-	})
+	_, err := DecodeVaryingData(values, buffer)
+
+	assert.ErrorIs(t, err, errDecodingFuncNotFound)
 }

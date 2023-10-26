@@ -8,7 +8,13 @@ package goscale
 
 import (
 	"bytes"
+	"errors"
 	"math"
+)
+
+var (
+	errDecodingFuncNotFound = errors.New("varying data: decode func not found")
+	errExceedsU8Length      = errors.New("exceeds uint8 length")
 )
 
 type VaryingData []Encodable
@@ -30,15 +36,18 @@ func (vd VaryingData) Encode(buffer *bytes.Buffer) {
 	}
 }
 
-func DecodeVaryingData(decodeFuncs []func(buffer *bytes.Buffer) []Encodable, buffer *bytes.Buffer) VaryingData {
+func DecodeVaryingData(decodeFuncs []func(buffer *bytes.Buffer) []Encodable, buffer *bytes.Buffer) (VaryingData, error) {
 	funcsLen := len(decodeFuncs)
 	if funcsLen > math.MaxUint8 {
-		panic("exceeds uint8 length")
+		return VaryingData{}, errExceedsU8Length
 	}
 
-	index := DecodeU8(buffer)
+	index, err := DecodeU8(buffer)
+	if err != nil {
+		return VaryingData{}, err
+	}
 	if int(index) > funcsLen-1 {
-		panic("varying data: decode func not found")
+		return VaryingData{}, errDecodingFuncNotFound
 	}
 
 	decoded := decodeFuncs[index](buffer)
@@ -47,7 +56,7 @@ func DecodeVaryingData(decodeFuncs []func(buffer *bytes.Buffer) []Encodable, buf
 	args = append(args, index)
 	args = append(args, decoded...)
 
-	return NewVaryingData(args...)
+	return NewVaryingData(args...), nil
 }
 
 func (vd VaryingData) Bytes() []byte {

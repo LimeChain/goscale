@@ -9,6 +9,11 @@ package goscale
 
 import (
 	"bytes"
+	"errors"
+)
+
+var (
+	errInvalidOptionBoolRepresentation = errors.New("invalid OptionBool representation")
 )
 
 type Option[T Encodable] struct {
@@ -43,31 +48,44 @@ func (o Option[T]) Bytes() []byte {
 	return buffer.Bytes()
 }
 
-func DecodeOption[T Encodable](buffer *bytes.Buffer) Option[T] {
-	b := DecodeBool(buffer)
+func DecodeOption[T Encodable](buffer *bytes.Buffer) (Option[T], error) {
+	b, err := DecodeBool(buffer)
+	if err != nil {
+		return Option[T]{}, err
+	}
 
 	option := Option[T]{
 		HasValue: b,
 	}
 
 	if b {
-		value := decodeByType(*new(T), buffer)
+		value, errDec := decodeByType(*new(T), buffer)
+		if errDec != nil {
+			return Option[T]{}, errDec
+		}
 		option.Value = value.(T)
 	}
 
-	return option
+	return option, nil
 }
 
-func DecodeOptionWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffer *bytes.Buffer) T) Option[T] {
+func DecodeOptionWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffer *bytes.Buffer) (T, error)) (Option[T], error) {
 	option := Option[T]{HasValue: false}
 
-	b := DecodeBool(buffer)
+	b, err := DecodeBool(buffer)
+	if err != nil {
+		return Option[T]{}, err
+	}
 	if b {
 		option.HasValue = true
-		option.Value = decodeFunc(buffer)
+		val, err := decodeFunc(buffer)
+		if err != nil {
+			return Option[T]{}, err
+		}
+		option.Value = val
 	}
 
-	return option
+	return option, nil
 }
 
 type OptionBool Option[Bool]
@@ -92,9 +110,12 @@ func (o OptionBool) Bytes() []byte {
 	return buffer.Bytes()
 }
 
-func DecodeOptionBool(buffer *bytes.Buffer) OptionBool {
+func DecodeOptionBool(buffer *bytes.Buffer) (OptionBool, error) {
 	decoder := Decoder{Reader: buffer}
-	b := decoder.DecodeByte()
+	b, err := decoder.DecodeByte()
+	if err != nil {
+		return OptionBool{}, err
+	}
 
 	result := OptionBool{}
 
@@ -108,8 +129,8 @@ func DecodeOptionBool(buffer *bytes.Buffer) OptionBool {
 		result.HasValue = true
 		result.Value = false
 	default:
-		panic("invalid OptionBool representation")
+		return OptionBool{}, errInvalidOptionBoolRepresentation
 	}
 
-	return result
+	return result, nil
 }

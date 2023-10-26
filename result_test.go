@@ -70,7 +70,8 @@ func Test_DecodeResultEmpty(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[Empty](buffer)
+			result, err := DecodeResult[Empty](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -110,7 +111,8 @@ func Test_DecodeResultBool(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[Bool](buffer)
+			result, err := DecodeResult[Bool](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -138,7 +140,8 @@ func Test_DecodeResultU8(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[U8](buffer)
+			result, err := DecodeResult[U8](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -166,7 +169,8 @@ func Test_DecodeResultI8(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[I8](buffer)
+			result, err := DecodeResult[I8](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -194,7 +198,8 @@ func Test_DecodeResultU16(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[U16](buffer)
+			result, err := DecodeResult[U16](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -222,7 +227,8 @@ func Test_DecodeResultI16(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[I16](buffer)
+			result, err := DecodeResult[I16](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -250,7 +256,8 @@ func Test_DecodeResultU32(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[U32](buffer)
+			result, err := DecodeResult[U32](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -279,7 +286,8 @@ func Test_DecodeResultI32(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[I32](buffer)
+			result, err := DecodeResult[I32](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -307,7 +315,8 @@ func Test_DecodeResultU64(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[U64](buffer)
+			result, err := DecodeResult[U64](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -335,7 +344,8 @@ func Test_DecodeResultI64(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[I64](buffer)
+			result, err := DecodeResult[I64](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -372,7 +382,8 @@ func Test_DecodeResultI128(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[I128](buffer)
+			result, err := DecodeResult[I128](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -400,7 +411,8 @@ func Test_DecodeResultCompact(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[Compact](buffer)
+			result, err := DecodeResult[Compact](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -428,7 +440,8 @@ func Test_DecodeResultSeqU8(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result := DecodeResult[Sequence[U8]](buffer)
+			result, err := DecodeResult[Sequence[U8]](buffer)
+			assert.NoError(t, err)
 
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, buffer.Len(), e.bufferLenLeft)
@@ -436,7 +449,7 @@ func Test_DecodeResultSeqU8(t *testing.T) {
 	}
 }
 
-func Test_DecodeResultPanicInvalidFirstByte(t *testing.T) {
+func Test_DecodeResultErrorInvalidFirstByte(t *testing.T) {
 	var testExamples = []struct {
 		label string
 		input []byte
@@ -450,7 +463,8 @@ func Test_DecodeResultPanicInvalidFirstByte(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(testExample.input)
 
-			assert.Panics(t, func() { DecodeResult[Bool](buffer) })
+			_, err := DecodeResult[Bool](buffer)
+			assert.ErrorIs(t, err, errInvalidBoolRepresentation)
 		})
 	}
 }

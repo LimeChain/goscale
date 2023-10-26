@@ -8,6 +8,7 @@ Substrate Ref - https://docs.substrate.io/reference/scale-codec/
 package goscale
 
 import (
+	"errors"
 	"io"
 	"strconv"
 )
@@ -30,14 +31,15 @@ func (enc Encoder) Write(bytes []byte) {
 	}
 }
 
-func (dec Decoder) Read(bytes []byte) {
+func (dec Decoder) Read(bytes []byte) error {
 	n, err := dec.Reader.Read(bytes)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 	if n < len(bytes) {
-		panic("can not read the required number of bytes " + strconv.Itoa(len(bytes)) + ", only " + strconv.Itoa(n) + " available")
+		return errors.New("can not read the required number of bytes " + strconv.Itoa(len(bytes)) + ", only " + strconv.Itoa(n) + " available")
 	}
+	return nil
 }
 
 func (enc Encoder) EncodeByte(b byte) {
@@ -46,8 +48,11 @@ func (enc Encoder) EncodeByte(b byte) {
 	enc.Write(buf[:1])
 }
 
-func (dec Decoder) DecodeByte() byte {
+func (dec Decoder) DecodeByte() (byte, error) {
 	buf := make([]byte, 1)
-	dec.Read(buf[:1])
-	return buf[0]
+	err := dec.Read(buf[:1])
+	if err != nil {
+		return 0, err
+	}
+	return buf[0], nil
 }
