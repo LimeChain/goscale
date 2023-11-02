@@ -21,14 +21,15 @@ type Decoder struct {
 	Reader io.Reader
 }
 
-func (enc Encoder) Write(bytes []byte) {
+func (enc Encoder) Write(bytes []byte) error {
 	n, err := enc.Writer.Write(bytes)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 	if n < len(bytes) {
-		panic("can not write the provided " + strconv.Itoa(len(bytes)) + " bytes to writer")
+		return errors.New("can not write the provided " + strconv.Itoa(len(bytes)) + " bytes to writer")
 	}
+	return nil
 }
 
 func (dec Decoder) Read(bytes []byte) error {
@@ -42,10 +43,10 @@ func (dec Decoder) Read(bytes []byte) error {
 	return nil
 }
 
-func (enc Encoder) EncodeByte(b byte) {
+func (enc Encoder) EncodeByte(b byte) error {
 	buf := make([]byte, 1)
 	buf[0] = b
-	enc.Write(buf[:1])
+	return enc.Write(buf[:1])
 }
 
 func (dec Decoder) DecodeByte() (byte, error) {

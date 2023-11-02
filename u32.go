@@ -7,9 +7,9 @@ import (
 
 type U32 uint32
 
-func (value U32) Encode(buffer *bytes.Buffer) {
+func (value U32) Encode(buffer *bytes.Buffer) error {
 	encoder := Encoder{Writer: buffer}
-	encoder.Write(value.Bytes())
+	return encoder.Write(value.Bytes())
 }
 
 func (value U32) Bytes() []byte {

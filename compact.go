@@ -20,9 +20,9 @@ var (
 
 type Compact U128
 
-func (c Compact) Encode(buffer *bytes.Buffer) {
+func (c Compact) Encode(buffer *bytes.Buffer) error {
 	encoder := Encoder{Writer: buffer}
-	encoder.Write(c.Bytes())
+	return encoder.Write(c.Bytes())
 }
 
 func (c Compact) ToBigInt() *big.Int {

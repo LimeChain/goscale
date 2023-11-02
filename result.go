@@ -15,9 +15,16 @@ type Result[T Encodable] struct {
 	Value    T
 }
 
-func (r Result[T]) Encode(buffer *bytes.Buffer) {
-	(r.HasError).Encode(buffer)
-	r.Value.Encode(buffer)
+func (r Result[T]) Encode(buffer *bytes.Buffer) error {
+	err := (r.HasError).Encode(buffer)
+	if err != nil {
+		return err
+	}
+	err = r.Value.Encode(buffer)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r Result[T]) Bytes() []byte {

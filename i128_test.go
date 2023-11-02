@@ -36,8 +36,9 @@ func Test_EncodeI128(t *testing.T) {
 			}
 			input := bigIntToI128(value)
 
-			input.Encode(buffer)
+			err := input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, input.Bytes(), e.expect)
 		})

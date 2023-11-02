@@ -4,10 +4,10 @@ import "bytes"
 
 type U8 uint8
 
-func (value U8) Encode(buffer *bytes.Buffer) {
+func (value U8) Encode(buffer *bytes.Buffer) error {
 	// do not use value.Bytes() here: https://github.com/LimeChain/goscale/issues/77
 	encoder := Encoder{Writer: buffer}
-	encoder.EncodeByte(byte(value))
+	return encoder.EncodeByte(byte(value))
 }
 
 func (value U8) Bytes() []byte {

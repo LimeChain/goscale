@@ -10,7 +10,7 @@ var (
 )
 
 type Encodable interface {
-	Encode(buffer *bytes.Buffer)
+	Encode(buffer *bytes.Buffer) error
 	Bytes() []byte
 }
 

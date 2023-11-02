@@ -22,8 +22,9 @@ func Test_EncodeI32(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
@@ -47,8 +48,8 @@ func Test_DecodeI32(t *testing.T) {
 			buffer.Write(testExample.input)
 
 			result, err := DecodeI32(buffer)
-			assert.NoError(t, err)
 
+			assert.NoError(t, err)
 			assert.Equal(t, result, testExample.expectation)
 		})
 	}

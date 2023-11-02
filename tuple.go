@@ -15,7 +15,7 @@ type Tuple struct {
 	Encodable
 }
 
-func (t Tuple) Encode(buffer *bytes.Buffer) {
+func (t Tuple) Encode(buffer *bytes.Buffer) error {
 	panic("allows the Tuple type to conform to the Encodable interface")
 }
 

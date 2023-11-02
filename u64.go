@@ -7,9 +7,9 @@ import (
 
 type U64 uint64
 
-func (value U64) Encode(buffer *bytes.Buffer) {
+func (value U64) Encode(buffer *bytes.Buffer) error {
 	encoder := Encoder{Writer: buffer}
-	encoder.Write(value.Bytes())
+	return encoder.Write(value.Bytes())
 }
 
 func (value U64) Bytes() []byte {

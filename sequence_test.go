@@ -24,8 +24,9 @@ func Test_EncodeString(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
@@ -75,8 +76,9 @@ func Test_EncodeU8Sequence(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
@@ -128,8 +130,9 @@ func Test_EncodeBoolSequence(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
@@ -160,8 +163,9 @@ func Test_EncodeCompactSequence(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
@@ -185,8 +189,9 @@ func Test_EncodeI8Sequence(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
@@ -210,8 +215,9 @@ func Test_EncodeI16Sequence(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
@@ -235,8 +241,9 @@ func Test_EncodeU16Sequence(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
@@ -263,8 +270,9 @@ func Test_EncodeNestedSequence(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
@@ -292,8 +300,9 @@ func Test_EncodeOptionSequence(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
@@ -320,8 +329,9 @@ func Test_EncodeResultSequence(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 		})
 	}
@@ -399,8 +409,9 @@ func Test_EncodeStringSequence(t *testing.T) {
 		t.Run(testExample.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			testExample.input.Encode(buffer)
+			err := testExample.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), testExample.expectation)
 			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
 		})
@@ -424,8 +435,9 @@ func Test_EncodeFixedSequence(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})

@@ -4,8 +4,8 @@ import "bytes"
 
 type I64 int64
 
-func (value I64) Encode(buffer *bytes.Buffer) {
-	U64(value).Encode(buffer)
+func (value I64) Encode(buffer *bytes.Buffer) error {
+	return U64(value).Encode(buffer)
 }
 
 func (value I64) Bytes() []byte {

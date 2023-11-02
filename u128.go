@@ -20,9 +20,16 @@ func NewU128FromString(n string) (U128, error) {
 	return stringTo128Bits[U128](n)
 }
 
-func (n U128) Encode(buffer *bytes.Buffer) {
-	n[0].Encode(buffer)
-	n[1].Encode(buffer)
+func (n U128) Encode(buffer *bytes.Buffer) error {
+	err := n[0].Encode(buffer)
+	if err != nil {
+		return err
+	}
+	err = n[1].Encode(buffer)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (n U128) Bytes() []byte {
