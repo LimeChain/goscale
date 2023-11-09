@@ -24,6 +24,16 @@ func EncodedBytes(e Encodable) []byte {
 	return buffer.Bytes()
 }
 
+func EncodeEach(buffer *bytes.Buffer, encodables ...Encodable) error {
+	for _, encodable := range encodables {
+		err := encodable.Encode(buffer)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func decodeByType(i interface{}, buffer *bytes.Buffer) (Encodable, error) {
 	switch i.(type) {
 	case Bool:
