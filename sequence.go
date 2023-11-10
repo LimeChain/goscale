@@ -13,16 +13,24 @@ import (
 
 type Sequence[T Encodable] []T
 
-func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) {
-	ToCompact(len(seq)).Encode(buffer)
+func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) error {
+	err := ToCompact(len(seq)).Encode(buffer)
+	if err != nil {
+		return err
+	}
 
 	for _, v := range seq {
 		//if reflect.TypeOf(v).Kind() == reflect.Struct {
 		//	EncodeTuple(v, buffer)
 		//} else {
-		v.Encode(buffer)
+		err := v.Encode(buffer)
+		if err != nil {
+			return err
+		}
 		//}
 	}
+
+	return nil
 }
 
 func (seq Sequence[Encodable]) Bytes() []byte {
@@ -88,14 +96,18 @@ func NewFixedSequence[T Encodable](size int, values ...T) FixedSequence[T] {
 	return fseq
 }
 
-func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) {
+func (fseq FixedSequence[T]) Encode(buffer *bytes.Buffer) error {
 	for _, v := range fseq {
 		//if reflect.TypeOf(v).Kind() == reflect.Struct {
 		//	EncodeTuple(v, buffer)
 		//} else {
-		v.Encode(buffer)
+		err := v.Encode(buffer)
+		if err != nil {
+			return err
+		}
 		//}
 	}
+	return nil
 }
 
 func (fseq FixedSequence[T]) Bytes() []byte {
@@ -117,8 +129,9 @@ func DecodeFixedSequence[T Encodable](size int, buffer *bytes.Buffer) (FixedSequ
 // additional helper type
 type Str string
 
-func (value Str) Encode(buffer *bytes.Buffer) {
-	buffer.Write(value.Bytes())
+func (value Str) Encode(buffer *bytes.Buffer) error {
+	_, err := buffer.Write(value.Bytes())
+	return err
 }
 
 func (value Str) Bytes() []byte {

@@ -4,8 +4,8 @@ import "bytes"
 
 type I8 int8
 
-func (value I8) Encode(buffer *bytes.Buffer) {
-	U8(value).Encode(buffer)
+func (value I8) Encode(buffer *bytes.Buffer) error {
+	return U8(value).Encode(buffer)
 }
 
 func (value I8) Bytes() []byte {

@@ -30,10 +30,14 @@ func NewVaryingData(values ...Encodable) VaryingData {
 	return result
 }
 
-func (vd VaryingData) Encode(buffer *bytes.Buffer) {
+func (vd VaryingData) Encode(buffer *bytes.Buffer) error {
 	for _, v := range vd {
-		v.Encode(buffer)
+		err := v.Encode(buffer)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 func DecodeVaryingData(decodeFuncs []func(buffer *bytes.Buffer) []Encodable, buffer *bytes.Buffer) (VaryingData, error) {

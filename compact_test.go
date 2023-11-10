@@ -41,8 +41,9 @@ func Test_EncodeCompact(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -83,8 +84,8 @@ func Test_Decode_Compact(t *testing.T) {
 			buffer.Write(e.input)
 
 			result, err := DecodeCompact(buffer)
-			assert.NoError(t, err)
 
+			assert.NoError(t, err)
 			assert.Equal(t, result, e.expect)
 		})
 	}

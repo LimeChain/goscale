@@ -32,8 +32,9 @@ func Test_U128_Encode(t *testing.T) {
 			}
 			input := NewU128(value)
 
-			input.Encode(buffer)
+			err := input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, input.Bytes(), e.expect)
 		})
@@ -60,9 +61,9 @@ func Test_U128_Decode(t *testing.T) {
 			buffer.Write(e.input)
 
 			result, err := DecodeU128(buffer)
+
 			assert.NoError(t, err)
 			bigInt := result.ToBigInt()
-
 			assert.Equal(t, result, e.expect)
 			assert.Equal(t, bigInt.String(), e.stringValue)
 		})

@@ -32,14 +32,25 @@ func NewOption[T Encodable](value Encodable) Option[T] {
 	}
 }
 
-func (o Option[T]) Encode(buffer *bytes.Buffer) {
+func (o Option[T]) Encode(buffer *bytes.Buffer) error {
 	encoder := Encoder{Writer: buffer}
 	if !o.HasValue {
-		encoder.EncodeByte(0)
+		err := encoder.EncodeByte(0)
+		if err != nil {
+			return err
+		}
 	} else {
-		encoder.EncodeByte(1)
-		o.Value.Encode(buffer)
+		err := encoder.EncodeByte(1)
+		if err != nil {
+			return err
+		}
+
+		err = o.Value.Encode(buffer)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 func (o Option[T]) Bytes() []byte {
@@ -90,23 +101,32 @@ func DecodeOptionWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffer 
 
 type OptionBool Option[Bool]
 
-func (o OptionBool) Encode(buffer *bytes.Buffer) {
+func (o OptionBool) Encode(buffer *bytes.Buffer) error {
 	encoder := Encoder{Writer: buffer}
 	if !o.HasValue {
-		encoder.EncodeByte(0)
+		err := encoder.EncodeByte(0)
+		if err != nil {
+			return err
+		}
 	} else {
 		if o.Value {
-			encoder.EncodeByte(1)
+			err := encoder.EncodeByte(1)
+			if err != nil {
+				return err
+			}
 		} else {
-			encoder.EncodeByte(2)
+			err := encoder.EncodeByte(2)
+			if err != nil {
+				return err
+			}
 		}
 	}
+	return nil
 }
 
 func (o OptionBool) Bytes() []byte {
 	buffer := &bytes.Buffer{}
 	o.Encode(buffer)
-
 	return buffer.Bytes()
 }
 

@@ -4,8 +4,8 @@ import "bytes"
 
 type I32 int32
 
-func (value I32) Encode(buffer *bytes.Buffer) {
-	U32(value).Encode(buffer)
+func (value I32) Encode(buffer *bytes.Buffer) error {
+	return U32(value).Encode(buffer)
 }
 
 func (value I32) Bytes() []byte {

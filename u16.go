@@ -7,9 +7,9 @@ import (
 
 type U16 uint16
 
-func (value U16) Encode(buffer *bytes.Buffer) {
+func (value U16) Encode(buffer *bytes.Buffer) error {
 	encoder := Encoder{Writer: buffer}
-	encoder.Write(value.Bytes())
+	return encoder.Write(value.Bytes())
 }
 
 func (value U16) Bytes() []byte {

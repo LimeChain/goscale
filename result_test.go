@@ -42,8 +42,9 @@ func Test_EncodeResult(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})

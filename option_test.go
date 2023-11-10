@@ -32,8 +32,9 @@ func Test_NewOption(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, e.input.HasValue, e.expect.HasValue)
 			assert.Equal(t, e.input.Value, e.expect.Value)
 		})
@@ -51,7 +52,8 @@ func Test_NewOption_Panics(t *testing.T) {
 type testEncodable struct {
 }
 
-func (testEncodable) Encode(*bytes.Buffer) {
+func (testEncodable) Encode(*bytes.Buffer) error {
+	return nil
 }
 
 func (testEncodable) Bytes() []byte {
@@ -73,8 +75,9 @@ func Test_EncodeOptionBoolGeneric(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -94,8 +97,9 @@ func Test_EncodeOptionU8(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -116,8 +120,9 @@ func Test_EncodeOptionI8(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -137,8 +142,9 @@ func Test_EncodeOptionU16(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -158,8 +164,9 @@ func Test_EncodeOptionI16(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -179,8 +186,9 @@ func Test_EncodeOptionU32(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -200,8 +208,9 @@ func Test_EncodeOptionI32(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -221,8 +230,9 @@ func Test_EncodeOptionU64(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -243,8 +253,9 @@ func Test_EncodeOptionI64(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -264,8 +275,9 @@ func Test_EncodeOptionU128(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -285,8 +297,9 @@ func Test_EncodeOptionI128(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -306,8 +319,9 @@ func Test_EncodeOptionCompact(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -328,8 +342,9 @@ func Test_EncodeOptionSequenceU8(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -354,8 +369,9 @@ func Test_EncodeOptionResult(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})
@@ -378,8 +394,9 @@ func Test_EncodeOptionBool(t *testing.T) {
 		t.Run(e.label, func(t *testing.T) {
 			buffer := &bytes.Buffer{}
 
-			e.input.Encode(buffer)
+			err := e.input.Encode(buffer)
 
+			assert.NoError(t, err)
 			assert.Equal(t, buffer.Bytes(), e.expect)
 			assert.Equal(t, e.input.Bytes(), e.expect)
 		})

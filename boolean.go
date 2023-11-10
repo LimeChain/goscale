@@ -18,9 +18,9 @@ var (
 	errInvalidBoolRepresentation = errors.New("invalid bool representation")
 )
 
-func (value Bool) Encode(buffer *bytes.Buffer) {
+func (value Bool) Encode(buffer *bytes.Buffer) error {
 	encoder := Encoder{Writer: buffer}
-	encoder.Write(value.Bytes())
+	return encoder.Write(value.Bytes())
 }
 
 func (value Bool) Bytes() []byte {
@@ -28,7 +28,6 @@ func (value Bool) Bytes() []byte {
 	if value {
 		buf[0] = 1
 	}
-
 	return buf
 }
 

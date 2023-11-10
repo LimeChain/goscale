@@ -18,8 +18,11 @@ type Comparable interface {
 
 type Dictionary[K Comparable, V Encodable] map[K]V
 
-func (d Dictionary[K, V]) Encode(buffer *bytes.Buffer) {
-	ToCompact(len(d)).Encode(buffer)
+func (d Dictionary[K, V]) Encode(buffer *bytes.Buffer) error {
+	err := ToCompact(len(d)).Encode(buffer)
+	if err != nil {
+		return err
+	}
 
 	keys := make([]K, 0)
 	for k := range d {
@@ -29,9 +32,18 @@ func (d Dictionary[K, V]) Encode(buffer *bytes.Buffer) {
 
 	for _, k := range keys {
 		v := d[k]
-		k.Encode(buffer)
-		v.Encode(buffer)
+		err := k.Encode(buffer)
+		if err != nil {
+			return err
+		}
+
+		err = v.Encode(buffer)
+		if err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
 func (d Dictionary[K, V]) Bytes() []byte {

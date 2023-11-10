@@ -11,10 +11,9 @@ import "bytes"
 
 type Empty struct{}
 
-func (e Empty) Encode(buffer *bytes.Buffer) {
+func (e Empty) Encode(buffer *bytes.Buffer) error {
 	encoder := Encoder{Writer: buffer}
-
-	encoder.Write(e.Bytes())
+	return encoder.Write(e.Bytes())
 }
 
 func (e Empty) Bytes() []byte {

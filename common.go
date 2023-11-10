@@ -10,7 +10,7 @@ var (
 )
 
 type Encodable interface {
-	Encode(buffer *bytes.Buffer)
+	Encode(buffer *bytes.Buffer) error
 	Bytes() []byte
 }
 
@@ -22,6 +22,16 @@ func EncodedBytes(e Encodable) []byte {
 	buffer := &bytes.Buffer{}
 	e.Encode(buffer)
 	return buffer.Bytes()
+}
+
+func EncodeEach(buffer *bytes.Buffer, encodables ...Encodable) error {
+	for _, encodable := range encodables {
+		err := encodable.Encode(buffer)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func decodeByType(i interface{}, buffer *bytes.Buffer) (Encodable, error) {
