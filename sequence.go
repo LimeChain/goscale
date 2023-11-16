@@ -13,7 +13,7 @@ import (
 
 type Sequence[T Encodable] []T
 
-func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) error {
+func (seq Sequence[T]) Encode(buffer *bytes.Buffer) error {
 	err := ToCompact(len(seq)).Encode(buffer)
 	if err != nil {
 		return err
@@ -33,7 +33,7 @@ func (seq Sequence[Encodable]) Encode(buffer *bytes.Buffer) error {
 	return nil
 }
 
-func (seq Sequence[Encodable]) Bytes() []byte {
+func (seq Sequence[T]) Bytes() []byte {
 	return EncodedBytes(seq)
 }
 

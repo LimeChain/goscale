@@ -16,10 +16,6 @@ func (value U8) Bytes() []byte {
 
 func DecodeU8(buffer *bytes.Buffer) (U8, error) {
 	decoder := Decoder{Reader: buffer}
-	result := make([]byte, 1)
-	err := decoder.Read(result)
-	if err != nil {
-		return 0, err
-	}
-	return U8(result[0]), nil
+	b, err := decoder.DecodeByte()
+	return U8(b), err
 }
