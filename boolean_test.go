@@ -25,8 +25,8 @@ func Test_EncodeBool(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -49,7 +49,7 @@ func Test_DecodeBool(t *testing.T) {
 			result, err := DecodeBool(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, result, testExample.expectation)
+			assert.Equal(t, testExample.expectation, result)
 		})
 	}
 }
@@ -87,7 +87,7 @@ func Test_DecodeBoolPanics(t *testing.T) {
 			buffer.Write(testExample.input)
 
 			_, err := DecodeBool(buffer)
-			assert.ErrorIs(t, err, io.EOF)
+			assert.ErrorIs(t, io.EOF, err)
 		})
 	}
 }

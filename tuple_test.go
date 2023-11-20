@@ -37,7 +37,7 @@ func Test_EncodeTupleBool(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -70,7 +70,7 @@ func Test_EncodeTupleU8I8(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -103,7 +103,7 @@ func Test_EncodeTupleU16I16(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -136,7 +136,7 @@ func Test_EncodeTupleU32I32(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -169,7 +169,7 @@ func Test_EncodeTupleU64I64(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -205,7 +205,7 @@ func Test_EncodeTupleU128I128(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -241,7 +241,7 @@ func Test_EncodeTupleCompact(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -277,7 +277,7 @@ func Test_EncodeTupleStr(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -381,7 +381,7 @@ func Test_EncodeTupleSequence(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -412,7 +412,7 @@ func Test_EncodeTupleFixedSequence(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -447,7 +447,7 @@ func Test_EncodeTupleDictionary(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -483,7 +483,7 @@ func Test_EncodeTupleVaryingData(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -522,7 +522,7 @@ func Test_EncodeTupleOption(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -561,7 +561,7 @@ func Test_EncodeTupleResult(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -594,7 +594,7 @@ func Test_EncodeTupleEmpty(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, len(buffer.Bytes()), testExample.expectation)
+			assert.Equal(t, testExample.expectation, len(buffer.Bytes()))
 		})
 	}
 }
@@ -640,7 +640,7 @@ func Test_EncodeTupleAll(t *testing.T) {
 
 			EncodeTuple(testExample.input, buffer)
 
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }

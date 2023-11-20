@@ -40,8 +40,8 @@ func Test_VaryingData_Encode(t *testing.T) {
 			err := e.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), e.expect)
-			assert.Equal(t, e.input.Bytes(), e.expect)
+			assert.Equal(t, e.expect, buffer.Bytes())
+			assert.Equal(t, e.expect, e.input.Bytes())
 		})
 	}
 }
@@ -137,9 +137,9 @@ func Test_VaryingData_Decode(t *testing.T) {
 		buffer.Write(e.input)
 
 		result, err := DecodeVaryingData(e.decodeFuncs, buffer)
-		assert.NoError(t, err)
 
-		assert.Equal(t, result, e.expect)
+		assert.NoError(t, err)
+		assert.Equal(t, e.expect, result)
 	}
 }
 
@@ -147,7 +147,7 @@ func Test_VaryingData_Decode_Error_ExceedsLength(t *testing.T) {
 	values := make([]func(buffer *bytes.Buffer) []Encodable, math.MaxUint8+1)
 
 	_, err := DecodeVaryingData(values, &bytes.Buffer{})
-	assert.ErrorIs(t, err, errExceedsU8Length)
+	assert.ErrorIs(t, errExceedsU8Length, err)
 }
 
 func Test_VaryingData_Decode_Error_Index_NotFound(t *testing.T) {
@@ -158,5 +158,5 @@ func Test_VaryingData_Decode_Error_Index_NotFound(t *testing.T) {
 
 	_, err := DecodeVaryingData(values, buffer)
 
-	assert.ErrorIs(t, err, errDecodingFuncNotFound)
+	assert.ErrorIs(t, errDecodingFuncNotFound, err)
 }

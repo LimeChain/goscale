@@ -24,7 +24,7 @@ func Test_EncodeEach(t *testing.T) {
 	err := EncodeEach(buffer, Bool(true), U8(127), I16(-128))
 
 	assert.NoError(t, err)
-	assert.Equal(t, buffer.Bytes(), []byte{0x01, 0x7f, 0x80, 0xff})
+	assert.Equal(t, []byte{0x01, 0x7f, 0x80, 0xff}, buffer.Bytes())
 }
 
 func Test_EncodeEach_Error(t *testing.T) {
@@ -33,5 +33,5 @@ func Test_EncodeEach_Error(t *testing.T) {
 	err := EncodeEach(buffer, Bool(true), encodableType{}, U8(127))
 
 	assert.Error(t, err)
-	assert.Equal(t, buffer.Bytes(), []byte{0x01})
+	assert.Equal(t, []byte{0x01}, buffer.Bytes())
 }

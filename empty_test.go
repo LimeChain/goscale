@@ -27,8 +27,8 @@ func Test_EncodeEmpty(t *testing.T) {
 			err := e.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), e.expect)
-			assert.Equal(t, e.input.Bytes(), []byte{})
+			assert.Equal(t, e.expect, buffer.Bytes())
+			assert.Equal(t, []byte{}, e.input.Bytes())
 		})
 	}
 }
