@@ -2,6 +2,7 @@ package goscale
 
 import (
 	"bytes"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -521,4 +522,98 @@ func Test_DecodeSequenceU8With(t *testing.T) {
 			assert.Equal(t, e.expect, result)
 		})
 	}
+}
+
+func Test_DecodeSequence_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeSequence[U8](buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, Sequence[U8]{}, result)
+}
+
+func Test_DecodeSequenceWith_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeSequenceWith(buffer, DecodeU8)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, Sequence[U8]{}, result)
+}
+
+func Test_DecodeSliceU8_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeSliceU8(buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, []U8{}, result)
+}
+
+func Test_DecodeFixedSequence_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeFixedSequence[U8](2, buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, FixedSequence[U8]{}, result)
+}
+
+func Test_DecodeStr_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeStr(buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, Str(""), result)
+}
+
+func Test_SequenceU8ToBytes(t *testing.T) {
+	sequence := Sequence[U8]{1, 2, 3}
+
+	result := SequenceU8ToBytes(sequence)
+
+	assert.Equal(t, []byte{1, 2, 3}, result)
+}
+
+func Test_FixedSequenceU8ToBytes(t *testing.T) {
+	sequence := FixedSequence[U8]{1, 2, 3}
+
+	result := FixedSequenceU8ToBytes(sequence)
+
+	assert.Equal(t, []byte{1, 2, 3}, result)
+}
+
+func Test_BytesToSequenceU8(t *testing.T) {
+	slice := []byte{1, 2, 3}
+
+	result := BytesToSequenceU8(slice)
+
+	assert.Equal(t, Sequence[U8]{1, 2, 3}, result)
+}
+
+func Test_BytesToFixedSequenceU8(t *testing.T) {
+	slice := []byte{1, 2, 3}
+
+	result := BytesToFixedSequenceU8(slice)
+
+	assert.Equal(t, FixedSequence[U8]{1, 2, 3}, result)
+}
+
+func Test_NewFixedSequence(t *testing.T) {
+	expect := FixedSequence[U8]{0, 1, 2}
+
+	result := NewFixedSequence[U8](3, 0, 1, 2)
+
+	assert.Equal(t, expect, result)
+}
+
+func Test_NewFixedSequence_Panics(t *testing.T) {
+	assert.PanicsWithValue(t,
+		"values size is out of the specified bound",
+		func() {
+			NewFixedSequence[U8](2)
+		},
+	)
 }

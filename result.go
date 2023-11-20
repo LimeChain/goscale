@@ -28,10 +28,7 @@ func (r Result[T]) Encode(buffer *bytes.Buffer) error {
 }
 
 func (r Result[T]) Bytes() []byte {
-	buffer := &bytes.Buffer{}
-	r.Encode(buffer)
-
-	return buffer.Bytes()
+	return EncodedBytes(r)
 }
 
 func DecodeResult[T Encodable](buffer *bytes.Buffer) (Result[T], error) {
@@ -39,9 +36,9 @@ func DecodeResult[T Encodable](buffer *bytes.Buffer) (Result[T], error) {
 	if err != nil {
 		return Result[T]{}, err
 	}
-	value, errDec := decodeByType(*new(T), buffer)
-	if errDec != nil {
-		return Result[T]{}, errDec
+	value, err := decodeByType(*new(T), buffer)
+	if err != nil {
+		return Result[T]{}, err
 	}
 
 	return Result[T]{

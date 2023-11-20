@@ -46,9 +46,9 @@ func DecodeSequence[T Encodable](buffer *bytes.Buffer) (Sequence[T], error) {
 	values := make([]T, v.Int64())
 
 	for i := 0; i < len(values); i++ {
-		t, errDec := decodeByType(*new(T), buffer)
-		if errDec != nil {
-			return Sequence[T]{}, errDec
+		t, err := decodeByType(*new(T), buffer)
+		if err != nil {
+			return Sequence[T]{}, err
 		}
 		values[i] = t.(T)
 	}
@@ -64,9 +64,9 @@ func DecodeSequenceWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffe
 	values := make([]T, v.Int64())
 
 	for i := 0; i < len(values); i++ {
-		dec, errDec := decodeFunc(buffer)
-		if errDec != nil {
-			return Sequence[T]{}, errDec
+		dec, err := decodeFunc(buffer)
+		if err != nil {
+			return Sequence[T]{}, err
 		}
 		values[i] = dec
 	}
@@ -76,7 +76,7 @@ func DecodeSequenceWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffe
 func DecodeSliceU8(buffer *bytes.Buffer) ([]U8, error) {
 	sequence, err := DecodeSequence[U8](buffer)
 	if err != nil {
-		return make([]U8, 0), nil
+		return make([]U8, 0), err
 	}
 	return sequence, nil
 }
@@ -123,7 +123,7 @@ func DecodeFixedSequence[T Encodable](size int, buffer *bytes.Buffer) (FixedSequ
 		}
 		result[i] = t.(T)
 	}
-	return FixedSequence[T](result), nil
+	return result, nil
 }
 
 // additional helper type
