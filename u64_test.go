@@ -2,6 +2,7 @@ package goscale
 
 import (
 	"bytes"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -49,4 +50,13 @@ func Test_DecodeU64(t *testing.T) {
 			assert.Equal(t, testExample.expectation, result)
 		})
 	}
+}
+
+func Test_DecodeU64_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeU64(buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, U64(0), result)
 }

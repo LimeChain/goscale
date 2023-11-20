@@ -2,6 +2,7 @@ package goscale
 
 import (
 	"bytes"
+	"io"
 	"math"
 	"math/big"
 	"testing"
@@ -76,6 +77,15 @@ func Test_DecodeI128(t *testing.T) {
 			assert.Equal(t, e.stringValue, bigInt.String())
 		})
 	}
+}
+
+func Test_DecodeI128_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeI128(buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, I128{}, result)
 }
 
 func Test_I128_Add(t *testing.T) {

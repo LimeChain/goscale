@@ -13,9 +13,9 @@ func (value I64) Bytes() []byte {
 }
 
 func DecodeI64(buffer *bytes.Buffer) (I64, error) {
-	dec64, err := DecodeU64(buffer)
+	value, err := DecodeU64(buffer)
 	if err != nil {
 		return 0, err
 	}
-	return I64(dec64), nil
+	return I64(value), nil
 }

@@ -13,9 +13,9 @@ func (value I32) Bytes() []byte {
 }
 
 func DecodeI32(buffer *bytes.Buffer) (I32, error) {
-	dec32, err := DecodeU32(buffer)
+	value, err := DecodeU32(buffer)
 	if err != nil {
 		return 0, err
 	}
-	return I32(dec32), nil
+	return I32(value), nil
 }
