@@ -4,12 +4,13 @@ ignore:
   - "go.sum"
 
 coverage:
-  range: "85..100"
-  round: down
   precision: 2
+  round: down
+  range: "85..100"
   status:
     project:
       default:
         target: auto
         threshold: 0%
         base: auto
+        if_ci_failed: error

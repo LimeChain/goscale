@@ -2,6 +2,7 @@ package goscale
 
 import (
 	"bytes"
+	"io"
 	"math"
 	"math/big"
 	"testing"
@@ -35,8 +36,8 @@ func Test_U128_Encode(t *testing.T) {
 			err := input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), e.expect)
-			assert.Equal(t, input.Bytes(), e.expect)
+			assert.Equal(t, e.expect, buffer.Bytes())
+			assert.Equal(t, e.expect, input.Bytes())
 		})
 	}
 }
@@ -64,8 +65,8 @@ func Test_U128_Decode(t *testing.T) {
 
 			assert.NoError(t, err)
 			bigInt := result.ToBigInt()
-			assert.Equal(t, result, e.expect)
-			assert.Equal(t, bigInt.String(), e.stringValue)
+			assert.Equal(t, e.expect, result)
+			assert.Equal(t, e.stringValue, bigInt.String())
 		})
 	}
 }
@@ -302,4 +303,13 @@ func Test_U128_ToBigInt(t *testing.T) {
 			assert.Equal(t, testExample.expect, result)
 		})
 	}
+}
+
+func Test_DecodeU128_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeU128(buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, U128{}, result)
 }

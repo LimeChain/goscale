@@ -1,6 +1,7 @@
 package goscale
 
 import (
+	"errors"
 	"math"
 	"math/big"
 	"testing"
@@ -66,5 +67,5 @@ func Test_anyIntegerToI128_Panics(t *testing.T) {
 
 func Test_stringTo128Bits_InvalidValue(t *testing.T) {
 	_, err := stringTo128Bits[I128]("test")
-	assert.Error(t, err, "can not convert string to big.Int")
+	assert.Equal(t, errors.New("can not convert string to big.Int"), err)
 }

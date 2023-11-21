@@ -2,6 +2,7 @@ package goscale
 
 import (
 	"bytes"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -27,8 +28,8 @@ func Test_EncodeString(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -52,9 +53,9 @@ func Test_DecodeString(t *testing.T) {
 			buffer.Write(testExample.input)
 
 			result, err := DecodeStr(buffer)
-			assert.NoError(t, err)
 
-			assert.Equal(t, result, testExample.expectation)
+			assert.NoError(t, err)
+			assert.Equal(t, testExample.expectation, result)
 		})
 	}
 }
@@ -79,8 +80,8 @@ func Test_EncodeU8Sequence(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -108,7 +109,7 @@ func Test_DecodeU8Sequence(t *testing.T) {
 
 			result := Sequence[U8](dec)
 
-			assert.Equal(t, result, testExample.expectation)
+			assert.Equal(t, testExample.expectation, result)
 		})
 	}
 }
@@ -133,8 +134,8 @@ func Test_EncodeBoolSequence(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -166,8 +167,8 @@ func Test_EncodeCompactSequence(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -192,8 +193,8 @@ func Test_EncodeI8Sequence(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -218,8 +219,8 @@ func Test_EncodeI16Sequence(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -244,8 +245,8 @@ func Test_EncodeU16Sequence(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -273,8 +274,8 @@ func Test_EncodeNestedSequence(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -303,7 +304,7 @@ func Test_EncodeOptionSequence(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -332,7 +333,7 @@ func Test_EncodeResultSequence(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
 		})
 	}
 }
@@ -371,7 +372,7 @@ func Test_EncodeResultSequence(t *testing.T) {
 //
 //			testExample.input.Encode(buffer)
 //
-//			assert.Equal(t, buffer.Bytes(), testExample.expectation)
+//			assert.Equal(t, testExample.expectation, buffer.Bytes())
 //		})
 //	}
 //}
@@ -412,8 +413,8 @@ func Test_EncodeStringSequence(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -438,8 +439,8 @@ func Test_EncodeFixedSequence(t *testing.T) {
 			err := e.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), e.expect)
-			assert.Equal(t, e.input.Bytes(), e.expect)
+			assert.Equal(t, e.expect, buffer.Bytes())
+			assert.Equal(t, e.expect, e.input.Bytes())
 		})
 	}
 }
@@ -463,9 +464,9 @@ func Test_DecodeFixedSequence(t *testing.T) {
 			buffer.Write(e.input)
 
 			result, err := DecodeFixedSequence[U8](len(e.input), buffer)
-			assert.NoError(t, err)
 
-			assert.Equal(t, result, e.expect)
+			assert.NoError(t, err)
+			assert.Equal(t, e.expect, result)
 		})
 	}
 }
@@ -490,9 +491,9 @@ func Test_DecodeSequenceU8(t *testing.T) {
 			buffer.Write(e.input)
 
 			result, err := DecodeSequence[U8](buffer)
-			assert.NoError(t, err)
 
-			assert.Equal(t, result, e.expect)
+			assert.NoError(t, err)
+			assert.Equal(t, e.expect, result)
 		})
 	}
 }
@@ -516,9 +517,103 @@ func Test_DecodeSequenceU8With(t *testing.T) {
 			buffer.Write(e.input)
 
 			result, err := DecodeSequenceWith(buffer, DecodeU8)
-			assert.NoError(t, err)
 
-			assert.Equal(t, result, e.expect)
+			assert.NoError(t, err)
+			assert.Equal(t, e.expect, result)
 		})
 	}
+}
+
+func Test_DecodeSequence_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeSequence[U8](buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, Sequence[U8]{}, result)
+}
+
+func Test_DecodeSequenceWith_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeSequenceWith(buffer, DecodeU8)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, Sequence[U8]{}, result)
+}
+
+func Test_DecodeSliceU8_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeSliceU8(buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, []U8{}, result)
+}
+
+func Test_DecodeFixedSequence_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeFixedSequence[U8](2, buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, FixedSequence[U8]{}, result)
+}
+
+func Test_DecodeStr_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeStr(buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, Str(""), result)
+}
+
+func Test_SequenceU8ToBytes(t *testing.T) {
+	sequence := Sequence[U8]{1, 2, 3}
+
+	result := SequenceU8ToBytes(sequence)
+
+	assert.Equal(t, []byte{1, 2, 3}, result)
+}
+
+func Test_FixedSequenceU8ToBytes(t *testing.T) {
+	sequence := FixedSequence[U8]{1, 2, 3}
+
+	result := FixedSequenceU8ToBytes(sequence)
+
+	assert.Equal(t, []byte{1, 2, 3}, result)
+}
+
+func Test_BytesToSequenceU8(t *testing.T) {
+	slice := []byte{1, 2, 3}
+
+	result := BytesToSequenceU8(slice)
+
+	assert.Equal(t, Sequence[U8]{1, 2, 3}, result)
+}
+
+func Test_BytesToFixedSequenceU8(t *testing.T) {
+	slice := []byte{1, 2, 3}
+
+	result := BytesToFixedSequenceU8(slice)
+
+	assert.Equal(t, FixedSequence[U8]{1, 2, 3}, result)
+}
+
+func Test_NewFixedSequence(t *testing.T) {
+	expect := FixedSequence[U8]{0, 1, 2}
+
+	result := NewFixedSequence[U8](3, 0, 1, 2)
+
+	assert.Equal(t, expect, result)
+}
+
+func Test_NewFixedSequence_Panics(t *testing.T) {
+	assert.PanicsWithValue(t,
+		"values size is out of the specified bound",
+		func() {
+			NewFixedSequence[U8](2)
+		},
+	)
 }

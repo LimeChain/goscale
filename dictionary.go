@@ -53,20 +53,20 @@ func (d Dictionary[K, V]) Bytes() []byte {
 func DecodeDictionary[K Comparable, V Encodable](buffer *bytes.Buffer) (Dictionary[K, V], error) {
 	result := Dictionary[K, V]{}
 
-	v, errCompact := DecodeCompact(buffer)
-	if errCompact != nil {
-		return nil, errCompact
+	v, err := DecodeCompact(buffer)
+	if err != nil {
+		return nil, err
 	}
 	size := int(v.ToBigInt().Int64())
 
 	for i := 0; i < size; i++ {
-		key, keyErr := decodeByType(*new(K), buffer)
-		if keyErr != nil {
-			return Dictionary[K, V]{}, keyErr
+		key, err := decodeByType(*new(K), buffer)
+		if err != nil {
+			return Dictionary[K, V]{}, err
 		}
-		value, valueErr := decodeByType(*new(V), buffer)
-		if valueErr != nil {
-			return Dictionary[K, V]{}, valueErr
+		value, err := decodeByType(*new(V), buffer)
+		if err != nil {
+			return Dictionary[K, V]{}, err
 		}
 		result[key.(K)] = value.(V)
 	}

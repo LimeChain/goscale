@@ -24,8 +24,8 @@ func Test_EncodeU8(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -47,7 +47,7 @@ func Test_DecodeU8(t *testing.T) {
 			result, err := DecodeU8(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, result, testExample.expectation)
+			assert.Equal(t, testExample.expectation, result)
 		})
 	}
 }

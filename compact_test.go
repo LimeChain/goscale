@@ -2,6 +2,7 @@ package goscale
 
 import (
 	"bytes"
+	"io"
 	"math"
 	"math/big"
 	"testing"
@@ -44,13 +45,13 @@ func Test_EncodeCompact(t *testing.T) {
 			err := e.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), e.expect)
-			assert.Equal(t, e.input.Bytes(), e.expect)
+			assert.Equal(t, e.expect, buffer.Bytes())
+			assert.Equal(t, e.expect, e.input.Bytes())
 		})
 	}
 }
 
-func Test_Decode_Compact(t *testing.T) {
+func Test_DecodeCompact(t *testing.T) {
 	var examples = []struct {
 		label  string
 		input  []byte
@@ -86,7 +87,16 @@ func Test_Decode_Compact(t *testing.T) {
 			result, err := DecodeCompact(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, result, e.expect)
+			assert.Equal(t, e.expect, result)
 		})
 	}
+}
+
+func Test_DecodeCompact_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeCompact(buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, Compact{}, result)
 }

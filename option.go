@@ -54,9 +54,7 @@ func (o Option[T]) Encode(buffer *bytes.Buffer) error {
 }
 
 func (o Option[T]) Bytes() []byte {
-	buffer := &bytes.Buffer{}
-	o.Encode(buffer)
-	return buffer.Bytes()
+	return EncodedBytes(o)
 }
 
 func DecodeOption[T Encodable](buffer *bytes.Buffer) (Option[T], error) {
@@ -70,9 +68,9 @@ func DecodeOption[T Encodable](buffer *bytes.Buffer) (Option[T], error) {
 	}
 
 	if b {
-		value, errDec := decodeByType(*new(T), buffer)
-		if errDec != nil {
-			return Option[T]{}, errDec
+		value, err := decodeByType(*new(T), buffer)
+		if err != nil {
+			return Option[T]{}, err
 		}
 		option.Value = value.(T)
 	}

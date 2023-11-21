@@ -2,6 +2,7 @@ package goscale
 
 import (
 	"bytes"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -23,8 +24,8 @@ func Test_EncodeU32(t *testing.T) {
 			err := testExample.input.Encode(buffer)
 
 			assert.NoError(t, err)
-			assert.Equal(t, buffer.Bytes(), testExample.expectation)
-			assert.Equal(t, testExample.input.Bytes(), testExample.expectation)
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+			assert.Equal(t, testExample.expectation, testExample.input.Bytes())
 		})
 	}
 }
@@ -44,9 +45,18 @@ func Test_DecodeU32(t *testing.T) {
 			buffer.Write(testExample.input)
 
 			result, err := DecodeU32(buffer)
-			assert.NoError(t, err)
 
-			assert.Equal(t, result, testExample.expectation)
+			assert.NoError(t, err)
+			assert.Equal(t, testExample.expectation, result)
 		})
 	}
+}
+
+func Test_DecodeU32_Empty(t *testing.T) {
+	buffer := &bytes.Buffer{}
+
+	result, err := DecodeU32(buffer)
+
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, U32(0), result)
 }

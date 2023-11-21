@@ -80,9 +80,9 @@ func (c Compact) Bytes() []byte {
 func DecodeCompact(buffer *bytes.Buffer) (Compact, error) {
 	decoder := Decoder{Reader: buffer}
 	result := make([]byte, 16)
-	b, errDecode := decoder.DecodeByte()
-	if errDecode != nil {
-		return Compact{}, errDecode
+	b, err := decoder.DecodeByte()
+	if err != nil {
+		return Compact{}, err
 	}
 	mode := b & 3
 	switch mode {

@@ -37,17 +37,17 @@ func (n I128) Bytes() []byte {
 }
 
 func DecodeI128(buffer *bytes.Buffer) (I128, error) {
-	decU64One, err := DecodeU64(buffer)
+	low, err := DecodeU64(buffer)
 	if err != nil {
 		return I128{}, err
 	}
-	decU64Two, err := DecodeU64(buffer)
+	high, err := DecodeU64(buffer)
 	if err != nil {
 		return I128{}, err
 	}
 	return I128{
-		decU64One,
-		decU64Two,
+		low,
+		high,
 	}, nil
 }
 
