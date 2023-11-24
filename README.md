@@ -100,9 +100,9 @@ The use of custom-defined types and generics reduces reliance on reflection, whi
 
 ## [Result](https://github.com/LimeChain/goscale/blob/master/result.go)
 
-| SCALE/Rust | Go |
-|------------|----|
-|            |    |
+| SCALE/Rust                     | Go                                |
+|--------------------------------|-----------------------------------|
+| Result<EncodeLike, EncodeLike> | goscale.Result[goscale.Encodable] |
 
 
 ## [Tuple](https://github.com/LimeChain/goscale/blob/master/tuple.go)

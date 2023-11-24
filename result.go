@@ -31,18 +31,31 @@ func (r Result[T]) Bytes() []byte {
 	return EncodedBytes(r)
 }
 
-func DecodeResult[T Encodable](buffer *bytes.Buffer) (Result[T], error) {
+func DecodeResult[T, E Encodable](buffer *bytes.Buffer, decodeValid func(*bytes.Buffer) (T, error), decodeErr func(*bytes.Buffer) (E, error)) (Result[Encodable], error) {
 	hasError, err := DecodeBool(buffer)
 	if err != nil {
-		return Result[T]{}, err
-	}
-	value, err := decodeByType(*new(T), buffer)
-	if err != nil {
-		return Result[T]{}, err
+		return Result[Encodable]{}, err
 	}
 
-	return Result[T]{
+	if hasError {
+		value, err := decodeErr(buffer)
+		if err != nil {
+			return Result[Encodable]{}, err
+		}
+
+		return Result[Encodable]{
+			HasError: hasError,
+			Value:    value,
+		}, nil
+	}
+
+	value, err := decodeValid(buffer)
+	if err != nil {
+		return Result[Encodable]{}, err
+	}
+
+	return Result[Encodable]{
 		HasError: hasError,
-		Value:    value.(T),
+		Value:    value,
 	}, nil
 }
