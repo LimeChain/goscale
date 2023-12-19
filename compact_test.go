@@ -13,29 +13,29 @@ import (
 func Test_EncodeCompact(t *testing.T) {
 	var examples = []struct {
 		label  string
-		input  Compact
+		input  Compact[BigNumbers]
 		expect []byte
 	}{
-		{label: "Encode Compact(0)", input: Compact(NewU128(big.NewInt(0).SetUint64(0))), expect: []byte{0x00}},
-		{label: "Encode Compact(1)", input: Compact(NewU128(big.NewInt(0).SetUint64(1))), expect: []byte{0x04}},
-		{label: "Encode Compact(42)", input: Compact(NewU128(big.NewInt(0).SetUint64(42))), expect: []byte{0xa8}},
-		{label: "Encode Compact(63)", input: Compact(NewU128(big.NewInt(0).SetUint64(63))), expect: []byte{0xfc}},
-		{label: "Encode Compact(64)", input: Compact(NewU128(big.NewInt(0).SetUint64(64))), expect: []byte{0x01, 0x01}},
-		{label: "Encode Compact(127)", input: Compact(NewU128(big.NewInt(0).SetUint64(127))), expect: []byte{0xfd, 0x01}},
-		{label: "Encode Compact(65535)", input: Compact(NewU128(big.NewInt(0).SetUint64(65535))), expect: []byte{0xfe, 0xff, 0x03, 0x00}},
-		{label: "Encode Compact(16383)", input: Compact(NewU128(big.NewInt(0).SetUint64(16383))), expect: []byte{0xfd, 0xff}},
-		{label: "Encode Compact(16384)", input: Compact(NewU128(big.NewInt(0).SetUint64(16384))), expect: []byte{0x02, 0x00, 0x01, 0x00}},
-		{label: "Encode Compact(1073741823)", input: Compact(NewU128(big.NewInt(0).SetUint64(1073741823))), expect: []byte{0xfe, 0xff, 0xff, 0xff}},
-		{label: "Encode Compact(1073741824)", input: Compact(NewU128(big.NewInt(0).SetUint64(1073741824))), expect: []byte{0x03, 0x00, 0x00, 0x00, 0x40}},
-		{label: "Encode Compact(100000000000000)", input: Compact(NewU128(big.NewInt(0).SetUint64(100000000000000))), expect: []byte{0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a}},
-		{label: "Encode Compact(1<<32 - 1)", input: Compact(NewU128(big.NewInt(0).SetUint64(1<<32 - 1))), expect: []byte{0x03, 0xff, 0xff, 0xff, 0xff}},
-		{label: "Encode Compact(1 << 32)", input: Compact(NewU128(big.NewInt(0).SetUint64(1 << 32))), expect: []byte{0x07, 0x00, 0x00, 0x00, 0x00, 0x01}},
-		{label: "Encode Compact(1 << 40)", input: Compact(NewU128(big.NewInt(0).SetUint64(1 << 40))), expect: []byte{0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}},
-		{label: "Encode Compact(1 << 48)", input: Compact(NewU128(big.NewInt(0).SetUint64(1 << 48))), expect: []byte{0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}},
-		{label: "Encode Compact(1<<56 - 1)", input: Compact(NewU128(big.NewInt(0).SetUint64(1<<56 - 1))), expect: []byte{0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
-		{label: "Encode Compact(1 << 56)", input: Compact(NewU128(big.NewInt(0).SetUint64(1 << 56))), expect: []byte{0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}},
-		{label: "Encode Compact(math.MaxUint64)", input: Compact(NewU128(big.NewInt(0).SetUint64(math.MaxUint64))), expect: []byte{0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
-		{label: "Encode Compact(math.MaxUint64, math.MaxUint64)", input: Compact(U128{math.MaxUint64, math.MaxUint64}), expect: []byte{0x33, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
+		{label: "Encode Compact(0)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(0))}, expect: []byte{0x00}},
+		{label: "Encode Compact(1)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1))}, expect: []byte{0x04}},
+		{label: "Encode Compact(42)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(42))}, expect: []byte{0xa8}},
+		{label: "Encode Compact(63)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(63))}, expect: []byte{0xfc}},
+		{label: "Encode Compact(64)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(64))}, expect: []byte{0x01, 0x01}},
+		{label: "Encode Compact(127)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(127))}, expect: []byte{0xfd, 0x01}},
+		{label: "Encode Compact(65535)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(65535))}, expect: []byte{0xfe, 0xff, 0x03, 0x00}},
+		{label: "Encode Compact(16383)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(16383))}, expect: []byte{0xfd, 0xff}},
+		{label: "Encode Compact(16384)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(16384))}, expect: []byte{0x02, 0x00, 0x01, 0x00}},
+		{label: "Encode Compact(1073741823)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1073741823))}, expect: []byte{0xfe, 0xff, 0xff, 0xff}},
+		{label: "Encode Compact(1073741824)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1073741824))}, expect: []byte{0x03, 0x00, 0x00, 0x00, 0x40}},
+		{label: "Encode Compact(100000000000000)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(100000000000000))}, expect: []byte{0x0b, 0x00, 0x40, 0x7a, 0x10, 0xf3, 0x5a}},
+		{label: "Encode Compact(1<<32 - 1)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1<<32 - 1))}, expect: []byte{0x03, 0xff, 0xff, 0xff, 0xff}},
+		{label: "Encode Compact(1 << 32)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1 << 32))}, expect: []byte{0x07, 0x00, 0x00, 0x00, 0x00, 0x01}},
+		{label: "Encode Compact(1 << 40)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1 << 40))}, expect: []byte{0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}},
+		{label: "Encode Compact(1 << 48)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1 << 48))}, expect: []byte{0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}},
+		{label: "Encode Compact(1<<56 - 1)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1<<56 - 1))}, expect: []byte{0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
+		{label: "Encode Compact(1 << 56)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1 << 56))}, expect: []byte{0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}},
+		{label: "Encode Compact(math.MaxUint64)", input: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(math.MaxUint64))}, expect: []byte{0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
+		{label: "Encode Compact(math.MaxUint64, math.MaxUint64)", input: Compact[BigNumbers]{U128{math.MaxUint64, math.MaxUint64}}, expect: []byte{0x33, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 	}
 
 	for _, e := range examples {

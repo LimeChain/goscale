@@ -64,8 +64,8 @@ func EncodeTuple(t interface{}, buffer *bytes.Buffer) {
 					ConvertTo[U128](field).Encode(buffer)
 				case reflect.TypeOf(*new(I128)):
 					ConvertTo[I128](field).Encode(buffer)
-				case reflect.TypeOf(*new(Compact)):
-					ConvertTo[Compact](field).Encode(buffer)
+				case reflect.TypeOf(*new(Compact[BigNumbers])):
+					ConvertTo[Compact[BigNumbers]](field).Encode(buffer)
 				default:
 					panic("unreachable case (Array) in EncodeTuple")
 				}
@@ -129,8 +129,8 @@ func SequenceFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 		ConvertToSequence[U128](field).Encode(buffer)
 	case reflect.TypeOf(*new(I128)):
 		ConvertToSequence[I128](field).Encode(buffer)
-	case reflect.TypeOf(*new(Compact)):
-		ConvertToSequence[Compact](field).Encode(buffer)
+	case reflect.TypeOf(*new(Compact[BigNumbers])):
+		ConvertToSequence[Compact[BigNumbers]](field).Encode(buffer)
 	case reflect.TypeOf(*new(Str)):
 		ConvertToSequence[Str](field).Encode(buffer)
 	case reflect.TypeOf(*new(VaryingData)):
@@ -191,8 +191,8 @@ func DictionaryFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 		ConvertToDictionary[Str, U128](field).Encode(buffer)
 	case reflect.TypeOf(*new(I128)):
 		ConvertToDictionary[Str, I128](field).Encode(buffer)
-	case reflect.TypeOf(*new(Compact)):
-		ConvertToDictionary[Str, Compact](field).Encode(buffer)
+	case reflect.TypeOf(*new(Compact[BigNumbers])):
+		ConvertToDictionary[Str, Compact[BigNumbers]](field).Encode(buffer)
 	case reflect.TypeOf(*new(Str)):
 		ConvertToDictionary[Str, Str](field).Encode(buffer)
 	case reflect.TypeOf(*new(VaryingData)):

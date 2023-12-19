@@ -58,7 +58,7 @@ func decodeByType(i interface{}, buffer *bytes.Buffer) (Encodable, error) {
 		return DecodeU128(buffer)
 	case I128:
 		return DecodeI128(buffer)
-	case Compact:
+	case Compact[BigNumbers]:
 		return DecodeCompact(buffer)
 	case Sequence[U8]:
 		dec, err := DecodeSliceU8(buffer)
@@ -84,48 +84,48 @@ func reverseSlice(a []byte) {
 	}
 }
 
-func ToCompact(v interface{}) Compact {
+func ToCompact(v interface{}) Compact[BigNumbers] {
 	switch v := v.(type) {
 	case int:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case uint:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case int8:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case I8:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case uint8:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case U8:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case int16:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case I16:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case uint16:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case U16:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case int32:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case I32:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case uint32:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case U32:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case int64:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case I64:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case uint64:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case U64:
-		return Compact(NewU128(v))
+		return Compact[BigNumbers]{NewU128(v)}
 	case U128:
-		return Compact(v)
+		return Compact[BigNumbers]{v}
 	case I128:
-		return Compact(v)
+		return Compact[BigNumbers]{v}
 	default:
 		panic("invalid numeric type in ToCompact()")
 	}
