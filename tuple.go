@@ -64,8 +64,8 @@ func EncodeTuple(t interface{}, buffer *bytes.Buffer) {
 					ConvertTo[U128](field).Encode(buffer)
 				case reflect.TypeOf(*new(I128)):
 					ConvertTo[I128](field).Encode(buffer)
-				case reflect.TypeOf(*new(Compact[BigNumbers])):
-					ConvertTo[Compact[BigNumbers]](field).Encode(buffer)
+				case reflect.TypeOf(*new(Compact[U128])):
+					ConvertTo[Compact[U128]](field).Encode(buffer)
 				default:
 					panic("unreachable case (Array) in EncodeTuple")
 				}
@@ -78,6 +78,14 @@ func EncodeTuple(t interface{}, buffer *bytes.Buffer) {
 				switch field.Type() {
 				case reflect.TypeOf(*new(Empty)):
 					EncodeTuple(field.Interface(), buffer)
+				case reflect.TypeOf(*new(Compact[U128])):
+					ConvertTo[Compact[U128]](field).Encode(buffer)
+				case reflect.TypeOf(*new(Compact[U64])):
+					ConvertTo[Compact[U64]](field).Encode(buffer)
+				case reflect.TypeOf(*new(Compact[U32])):
+					ConvertTo[Compact[U32]](field).Encode(buffer)
+				case reflect.TypeOf(*new(Compact[U16])):
+					ConvertTo[Compact[U16]](field).Encode(buffer)
 				default:
 					// Option[T], Result[T], Tuple
 					if field.Kind() == reflect.Struct {

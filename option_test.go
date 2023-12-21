@@ -308,10 +308,10 @@ func Test_EncodeOptionI128(t *testing.T) {
 func Test_EncodeOptionCompact(t *testing.T) {
 	var examples = []struct {
 		label  string
-		input  Option[Compact]
+		input  Option[Compact[BigNumbers]]
 		expect []byte
 	}{
-		{label: "Encode Option(true, Compact(MaxUint64)", input: NewOption[Compact](ToCompact(uint64(math.MaxUint64))), expect: []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
+		{label: "Encode Option(true, Compact(MaxUint64)", input: NewOption[Compact[BigNumbers]](ToCompact(uint64(math.MaxUint64))), expect: []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}},
 	}
 
 	for _, e := range examples {
@@ -854,12 +854,13 @@ func Test_DecodeOptionCompact(t *testing.T) {
 		label         string
 		input         []byte
 		bufferLenLeft int
-		expect        Option[Compact]
+		expect        Option[Compact[BigNumbers]]
 	}{
 		{
-			label:         "Decode Compact(maxUint64)",
-			input:         []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-			expect:        NewOption[Compact](ToCompact(uint64(math.MaxUint64))),
+			label:  "Decode Compact(maxUint64)",
+			input:  []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
+			expect: NewOption[Compact[BigNumbers]](ToCompact(NewU128(uint64(math.MaxUint64)))),
+			//expect:        NewOption[Compact[BigNumbers]](NewU64(uint64(math.MaxUint64))),
 			bufferLenLeft: 0,
 		},
 	}
@@ -869,7 +870,7 @@ func Test_DecodeOptionCompact(t *testing.T) {
 			buffer := &bytes.Buffer{}
 			buffer.Write(e.input)
 
-			result, err := DecodeOption[Compact](buffer)
+			result, err := DecodeOption[Compact[BigNumbers]](buffer)
 
 			assert.NoError(t, err)
 			assert.Equal(t, e.expect, result)

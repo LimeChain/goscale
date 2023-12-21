@@ -11,6 +11,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"math/big"
+	"reflect"
 )
 
 var (
@@ -96,7 +97,7 @@ func (c Compact[T]) Bytes() []byte {
 	return append([]byte{(topSixBits << 2) + 3}, b...)
 }
 
-func DecodeCompact(buffer *bytes.Buffer) (Compact[BigNumbers], error) {
+func DecodeCompact[T BigNumbers](buffer *bytes.Buffer) (Compact[BigNumbers], error) {
 	decoder := Decoder{Reader: buffer}
 	result := make([]byte, 16)
 	b, err := decoder.DecodeByte()
@@ -104,9 +105,31 @@ func DecodeCompact(buffer *bytes.Buffer) (Compact[BigNumbers], error) {
 		return Compact[BigNumbers]{}, err
 	}
 	mode := b & 3
+	//fmt.Println("T in DecodeCompact: ")
+	//fmt.Println(reflect.TypeOf(*new(T)))
+	//switch reflect.TypeOf(*new(T)) {
+	//case reflect.TypeOf(*new(U64)):
+	//	fmt.Println("!!!!")
+	//}
+	//fmt.Println("reflecting..")
+	//switch reflect.Zero(reflect.TypeOf(*new(T))).Interface().(type) {
+	//case U64:
+	//	fmt.Println("lalala")
+	//}
 	switch mode {
 	case 0:
-		return Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(uint64(b >> 2)))}, nil
+		switch reflect.TypeOf(*new(T)) {
+		case reflect.TypeOf(*new(U128)):
+			return Compact[BigNumbers]{Number: NewU128(big.NewInt(0).SetUint64(uint64(b >> 2)))}, nil
+		case reflect.TypeOf(*new(U64)):
+			return Compact[BigNumbers]{Number: NewU64(uint64(b >> 2))}, nil
+		case reflect.TypeOf(*new(U32)):
+			return Compact[BigNumbers]{Number: NewU32(uint32(b >> 2))}, nil
+		case reflect.TypeOf(*new(U8)):
+			return Compact[BigNumbers]{Number: NewU8(b >> 2)}, nil
+		default:
+			return Compact[BigNumbers]{Number: NewU128(big.NewInt(0).SetUint64(uint64(b >> 2)))}, nil
+		}
 	case 1:
 		db, err := decoder.DecodeByte()
 		if err != nil {

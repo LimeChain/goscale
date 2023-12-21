@@ -27,6 +27,9 @@ func NewOption[T Encodable](value Encodable) Option[T] {
 		return Option[T]{HasValue: true, Value: value}
 	case nil:
 		return Option[T]{HasValue: false}
+	//case Compact[BigNumbers]:
+	//	return Option[T]{HasValue: false}
+	//return Option[Compact[BigNumbers]]{HasValue: true, Value: Compact[BigNumbers]{value.Number}}
 	default:
 		panic("invalid value type for Option[T]")
 	}

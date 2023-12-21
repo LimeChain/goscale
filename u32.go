@@ -20,6 +20,10 @@ func (value U32) Bytes() []byte {
 	return result
 }
 
+func NewU32(n uint32) U32 {
+	return U32(n)
+}
+
 func (value U32) ToBigInt() *big.Int {
 	return new(big.Int).SetUint64(uint64(value))
 }

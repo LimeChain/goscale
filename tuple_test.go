@@ -212,8 +212,8 @@ func Test_EncodeTupleU128I128(t *testing.T) {
 
 type TupleCompact struct {
 	Tuple
-	G0 Compact[BigNumbers]
-	G1 Compact[BigNumbers]
+	G0 Compact[U128]
+	G1 Compact[U128]
 }
 
 func Test_EncodeTupleCompact(t *testing.T) {
@@ -225,8 +225,8 @@ func Test_EncodeTupleCompact(t *testing.T) {
 		{
 			label: "TupleCompact",
 			input: TupleCompact{
-				G0: Compact[BigNumbers]{NewU128(big.NewInt(0).SetInt64(1073741824))},
-				G1: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1073741823))},
+				G0: Compact[U128]{NewU128(big.NewInt(0).SetInt64(1073741824))},
+				G1: Compact[U128]{NewU128(big.NewInt(0).SetUint64(1073741823))},
 			},
 			expectation: []byte{
 				0x03, 0x00, 0x00, 0x00, 0x40, // G0
