@@ -36,19 +36,6 @@ func (c Compact[T]) ToBigInt() *big.Int {
 	return c.Number.ToBigInt()
 }
 
-//func (c Compact[BigNumbers]) ToBigInt() *big.Int {
-//	switch reflect.Zero(reflect.TypeOf(c.number)).Interface().(type) {
-//	case U128:
-//		return U128(c.number).ToBigInt()
-//	case U64:
-//		return new(big.Int).SetUint64((U64)(c.number))
-//	}
-//
-//	//cmp := Compact[U128]{(c.number)}
-//	//return (Compact[U128])(c).ToBigInt()
-//	//return U128(c.number).ToBigInt()
-//}
-
 func (c Compact[T]) Bytes() []byte {
 	bn := c.ToBigInt()
 
@@ -105,17 +92,6 @@ func DecodeCompact[T BigNumbers](buffer *bytes.Buffer) (Compact[BigNumbers], err
 		return Compact[BigNumbers]{}, err
 	}
 	mode := b & 3
-	//fmt.Println("T in DecodeCompact: ")
-	//fmt.Println(reflect.TypeOf(*new(T)))
-	//switch reflect.TypeOf(*new(T)) {
-	//case reflect.TypeOf(*new(U64)):
-	//	fmt.Println("!!!!")
-	//}
-	//fmt.Println("reflecting..")
-	//switch reflect.Zero(reflect.TypeOf(*new(T))).Interface().(type) {
-	//case U64:
-	//	fmt.Println("lalala")
-	//}
 	switch mode {
 	case 0:
 		switch reflect.TypeOf(*new(T)) {
