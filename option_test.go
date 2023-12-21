@@ -857,10 +857,9 @@ func Test_DecodeOptionCompact(t *testing.T) {
 		expect        Option[Compact[BigNumbers]]
 	}{
 		{
-			label:  "Decode Compact(maxUint64)",
-			input:  []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-			expect: NewOption[Compact[BigNumbers]](ToCompact(NewU128(uint64(math.MaxUint64)))),
-			//expect:        NewOption[Compact[BigNumbers]](NewU64(uint64(math.MaxUint64))),
+			label:         "Decode Compact(maxUint64)",
+			input:         []byte{0x1, 0x13, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
+			expect:        NewOption[Compact[BigNumbers]](ToCompact(NewU128(uint64(math.MaxUint64)))),
 			bufferLenLeft: 0,
 		},
 	}
