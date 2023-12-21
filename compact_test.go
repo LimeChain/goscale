@@ -51,13 +51,26 @@ func Test_EncodeCompact(t *testing.T) {
 	}
 }
 
+//func Test_DecodeCompact_0(t *testing.T) {
+//	buffer := &bytes.Buffer{}
+//
+//	result := interface{}(NewU8(0)).(BigNumbers)
+//
+//	buffer.Write([]byte{0x00})
+//
+//	expect := Compact[BigNumbers]{result}
+//	actual, ok := DecodeCompact[BigNumbers](buffer)
+//	assert.Nil(t, ok)
+//	assert.Equal(t, expect.Bytes(), actual.Bytes())
+//}
+
 func Test_DecodeCompact(t *testing.T) {
 	var examples = []struct {
 		label  string
 		input  []byte
 		expect Compact[BigNumbers]
 	}{
-		{label: "Decode Compact(0)", input: []byte{0x00}, expect: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(0))}},
+		{label: "Decode Compact(0)", input: []byte{0x00}, expect: Compact[BigNumbers]{interface{}(NewU128(0)).(U128)}},
 		{label: "Decode Compact(1)", input: []byte{0x04}, expect: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(1))}},
 		{label: "Decode Compact(42)", input: []byte{0xa8}, expect: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(42))}},
 		{label: "Decode Compact(63)", input: []byte{0xfc}, expect: Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(63))}},
@@ -91,6 +104,24 @@ func Test_DecodeCompact(t *testing.T) {
 		})
 	}
 }
+
+//func Test_DecodeCompact_U8(t *testing.T) {
+//	buffer := &bytes.Buffer{}
+//	buffer.Write([]byte{0x00})
+//	expect := Compact[BigNumbers]{NewU8(0)}
+//	actual, err := DecodeCompact[U8](buffer)
+//	assert.Nil(t, err)
+//	assert.Equal(t, expect, actual)
+//}
+//
+//func Test_DecodeCompact_U16(t *testing.T) {
+//	buffer := &bytes.Buffer{}
+//	buffer.Write([]byte{0x0a})
+//	expect := Compact[BigNumbers]{NewU16(10)}
+//	actual, err := DecodeCompact[U16](buffer)
+//	assert.Nil(t, err)
+//	assert.Equal(t, expect, actual)
+//}
 
 func Test_DecodeCompact_Empty(t *testing.T) {
 	buffer := &bytes.Buffer{}

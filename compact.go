@@ -11,7 +11,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"math/big"
-	"reflect"
 )
 
 var (
@@ -84,59 +83,58 @@ func (c Compact[T]) Bytes() []byte {
 	return append([]byte{(topSixBits << 2) + 3}, b...)
 }
 
-func DecodeCompact[T BigNumbers](buffer *bytes.Buffer) (Compact[BigNumbers], error) {
+func DecodeCompact[T BigNumbers](buffer *bytes.Buffer) (Compact[T], error) {
 	decoder := Decoder{Reader: buffer}
 	result := make([]byte, 16)
 	b, err := decoder.DecodeByte()
 	if err != nil {
-		return Compact[BigNumbers]{}, err
+		return Compact[T]{}, err
 	}
 	mode := b & 3
 	switch mode {
 	case 0:
-		switch reflect.TypeOf(*new(T)) {
-		case reflect.TypeOf(*new(U128)):
-			return Compact[BigNumbers]{Number: NewU128(big.NewInt(0).SetUint64(uint64(b >> 2)))}, nil
-		case reflect.TypeOf(*new(U64)):
-			return Compact[BigNumbers]{Number: NewU64(uint64(b >> 2))}, nil
-		case reflect.TypeOf(*new(U32)):
-			return Compact[BigNumbers]{Number: NewU32(uint32(b >> 2))}, nil
-		case reflect.TypeOf(*new(U8)):
-			return Compact[BigNumbers]{Number: NewU8(b >> 2)}, nil
-		default:
-			return Compact[BigNumbers]{Number: NewU128(big.NewInt(0).SetUint64(uint64(b >> 2)))}, nil
-		}
+		value := NewU128(uint64(b >> 2))
+		result := interface{}(value).(T)
+		return Compact[T]{result}, nil
 	case 1:
 		db, err := decoder.DecodeByte()
 		if err != nil {
-			return Compact[BigNumbers]{}, err
+			return Compact[T]{}, err
 		}
 		r := uint64(db)
 		r <<= 6
 		r += uint64(b >> 2)
-		return Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(r))}, nil
+		value := NewU128(r)
+		result := interface{}(value).(T)
+		return Compact[T]{result}, nil
 	case 2:
 		buf := result[:4]
 		buf[0] = b
 		err := decoder.Read(result[1:4])
 		if err != nil {
-			return Compact[BigNumbers]{}, err
+			return Compact[T]{}, err
 		}
 		r := binary.LittleEndian.Uint32(buf)
 		r >>= 2
-		return Compact[BigNumbers]{NewU128(big.NewInt(0).SetUint64(uint64(r)))}, nil
+		value := NewU128(uint64(r))
+		result := interface{}(value).(T)
+		return Compact[T]{result}, nil
 	case 3:
 		n := b >> 2
 		if n > 63 {
-			return Compact[BigNumbers]{NewU128(0)}, errNotSupported
+			value := NewU64(0)
+			result := interface{}(value).(T)
+			return Compact[T]{result}, errNotSupported
 		}
 		err := decoder.Read(result[:n+4])
 		if err != nil {
-			return Compact[BigNumbers]{}, err
+			return Compact[T]{}, err
 		}
 		reverseSlice(result)
-		return Compact[BigNumbers]{NewU128(big.NewInt(0).SetBytes(result))}, nil
+		value := NewU128(big.NewInt(0).SetBytes(result))
+		result := interface{}(value).(T)
+		return Compact[T]{result}, nil
 	default:
-		return Compact[BigNumbers]{}, errCouldNotDecodeCompact
+		return Compact[T]{}, errCouldNotDecodeCompact
 	}
 }
