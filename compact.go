@@ -92,24 +92,28 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		return Compact[T]{}, err
 	}
 	mode := b & 3
-	var value Numeric
 	switch mode {
 	case 0:
 		switch reflect.TypeOf(*new(T)) {
 		case reflect.TypeOf(*new(U128)):
-			value = NewU128(big.NewInt(0).SetUint64(uint64(b >> 2)))
+			value := NewU128(big.NewInt(0).SetUint64(uint64(b >> 2))).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U64)):
-			value = NewU64(uint64(b >> 2))
+			value := NewU64(uint64(b >> 2)).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U32)):
-			value = NewU32(uint32(b >> 2))
+			value := NewU32(uint32(b >> 2)).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U16)):
-			value = NewU16(uint16(b >> 2))
+			value := NewU16(uint16(b >> 2)).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U8)):
-			value = NewU8(b >> 2)
+			value := NewU8(b >> 2).Interface().(T)
+			return Compact[T]{value}, nil
 		default:
-			value = NewU128(big.NewInt(0).SetUint64(uint64(b >> 2)))
+			value := NewU128(big.NewInt(0).SetUint64(uint64(b >> 2))).Interface().(T)
+			return Compact[T]{value}, nil
 		}
-		return Compact[T]{Number: interface{}(value).(T)}, nil
 	case 1:
 		db, err := decoder.DecodeByte()
 		if err != nil {
@@ -120,18 +124,22 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		r += uint64(b >> 2)
 		switch reflect.TypeOf(*new(T)) {
 		case reflect.TypeOf(*new(U128)):
-			value = NewU128(r)
+			value := NewU128(r).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U64)):
-			value = NewU64(r)
+			value := NewU64(r).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U32)):
-			value = NewU32(uint32(r))
+			value := NewU32(uint32(r)).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U8)):
-			value = NewU8(uint8(r))
+			value := NewU8(uint8(r)).Interface().(T)
+			return Compact[T]{value}, nil
 		default:
-			value = NewU128(r)
+			value := NewU128(r).Interface().(T)
+			return Compact[T]{value}, nil
 		}
 
-		return Compact[T]{interface{}(value).(T)}, nil
 	case 2:
 		buf := result[:4]
 		buf[0] = b
@@ -143,17 +151,21 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		r >>= 2
 		switch reflect.TypeOf(*new(T)) {
 		case reflect.TypeOf(*new(U128)):
-			value = NewU128(uint64(r))
+			value := NewU128(uint64(r)).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U64)):
-			value = NewU64(uint64(r))
+			value := NewU64(uint64(r)).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U32)):
-			value = NewU32(r)
+			value := NewU32(r).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U8)):
-			value = NewU8(uint8(r))
+			value := NewU8(uint8(r)).Interface().(T)
+			return Compact[T]{value}, nil
 		default:
-			value = NewU128(r)
+			value := NewU128(r).Interface().(T)
+			return Compact[T]{value}, nil
 		}
-		return Compact[T]{interface{}(value).(T)}, nil
 	case 3:
 		n := b >> 2
 		if n > 63 {
@@ -168,16 +180,18 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		reverseSlice(result)
 		switch reflect.TypeOf(*new(T)) {
 		case reflect.TypeOf(*new(U128)):
-			value = NewU128(big.NewInt(0).SetBytes(result))
+			value := NewU128(big.NewInt(0).SetBytes(result)).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U64)):
-			value = NewU64(big.NewInt(0).SetBytes(result).Uint64())
+			value := NewU64(big.NewInt(0).SetBytes(result).Uint64()).Interface().(T)
+			return Compact[T]{value}, nil
 		case reflect.TypeOf(*new(U32)):
-			value = NewU32(uint32(big.NewInt(0).SetBytes(result).Uint64()))
+			value := NewU32(uint32(big.NewInt(0).SetBytes(result).Uint64())).Interface().(T)
+			return Compact[T]{value}, nil
 		default:
-			value = NewU128(big.NewInt(0).SetBytes(result))
+			value := NewU128(big.NewInt(0).SetBytes(result)).Interface().(T)
+			return Compact[T]{value}, nil
 		}
-		result := interface{}(value).(T)
-		return Compact[T]{result}, nil
 	default:
 		return Compact[T]{}, errCouldNotDecodeCompact
 	}

@@ -53,6 +53,11 @@ func Test_DecodeU8(t *testing.T) {
 	}
 }
 
+func Test_U8_Interface(t *testing.T) {
+	n := U8(127)
+	assert.Equal(t, n.Interface(), Numeric(n))
+}
+
 func Test_U8_ToBigInt(t *testing.T) {
 	n := U8(15)
 	nBigInt := n.ToBigInt()

@@ -54,6 +54,11 @@ func Test_DecodeU16(t *testing.T) {
 	}
 }
 
+func Test_U16_Interface(t *testing.T) {
+	n := U16(127)
+	assert.Equal(t, n.Interface(), Numeric(n))
+}
+
 func Test_DecodeU16_Empty(t *testing.T) {
 	buffer := &bytes.Buffer{}
 
