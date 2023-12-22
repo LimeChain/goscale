@@ -25,10 +25,6 @@ func (value U8) ToBigInt() *big.Int {
 	return new(big.Int).SetUint64(uint64(value))
 }
 
-func (value U8) Interface() Numeric {
-	return value
-}
-
 func DecodeU8(buffer *bytes.Buffer) (U8, error) {
 	decoder := Decoder{Reader: buffer}
 	b, err := decoder.DecodeByte()

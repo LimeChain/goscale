@@ -28,10 +28,6 @@ func (value U32) ToBigInt() *big.Int {
 	return new(big.Int).SetUint64(uint64(value))
 }
 
-func (value U32) Interface() Numeric {
-	return value
-}
-
 func DecodeU32(buffer *bytes.Buffer) (U32, error) {
 	decoder := Decoder{Reader: buffer}
 	result := make([]byte, 4)

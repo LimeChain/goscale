@@ -28,10 +28,6 @@ func (value U16) Bytes() []byte {
 	return result
 }
 
-func (value U16) Interface() Numeric {
-	return value
-}
-
 func DecodeU16(buffer *bytes.Buffer) (U16, error) {
 	decoder := Decoder{Reader: buffer}
 	result := make([]byte, 2)

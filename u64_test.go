@@ -69,8 +69,3 @@ func Test_U64_ToBigInt(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, expect, nBigInt)
 }
-
-func Test_U64_Interface(t *testing.T) {
-	n := U64(127)
-	assert.Equal(t, n.Interface(), Numeric(n))
-}

@@ -20,10 +20,6 @@ func (value U64) Bytes() []byte {
 	return result
 }
 
-func (value U64) Interface() Numeric {
-	return value
-}
-
 func NewU64(n uint64) U64 {
 	return U64(n)
 }

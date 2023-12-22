@@ -305,11 +305,6 @@ func Test_U128_ToBigInt(t *testing.T) {
 	}
 }
 
-func Test_U128_Interface(t *testing.T) {
-	n := NewU128(127)
-	assert.Equal(t, n.Interface(), Numeric(n))
-}
-
 func Test_DecodeU128_Empty(t *testing.T) {
 	buffer := &bytes.Buffer{}
 
