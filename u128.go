@@ -36,6 +36,10 @@ func (n U128) Bytes() []byte {
 	return append(n[0].Bytes(), n[1].Bytes()...)
 }
 
+func (n U128) Interface() Numeric {
+	return n
+}
+
 func DecodeU128(buffer *bytes.Buffer) (U128, error) {
 	decoder := Decoder{Reader: buffer}
 	buf := make([]byte, 16)

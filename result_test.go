@@ -74,7 +74,7 @@ func Test_DecodeResult_ValidValue_Fails_EOF(t *testing.T) {
 	input := []byte{0}
 	buffer := bytes.NewBuffer(input)
 
-	result, err := DecodeResult(buffer, DecodeCompact[BigNumbers], DecodeU16)
+	result, err := DecodeResult(buffer, DecodeCompact[Numeric], DecodeU16)
 
 	assert.Equal(t, io.EOF, err)
 	assert.Equal(t, Result[Encodable]{}, result)
@@ -90,7 +90,7 @@ func Test_DecodeResult_Error(t *testing.T) {
 		Value:    U16(10),
 	}
 
-	result, err := DecodeResult(buffer, DecodeCompact[BigNumbers], DecodeU16)
+	result, err := DecodeResult(buffer, DecodeCompact[Numeric], DecodeU16)
 
 	assert.NoError(t, err)
 	assert.Equal(t, expect, result)
@@ -102,7 +102,7 @@ func Test_DecodeResult_ErrorValue_Fails_EOF(t *testing.T) {
 	input := []byte{1}
 	buffer := bytes.NewBuffer(input)
 
-	result, err := DecodeResult(buffer, DecodeCompact[BigNumbers], DecodeU16)
+	result, err := DecodeResult(buffer, DecodeCompact[Numeric], DecodeU16)
 
 	assert.Equal(t, io.EOF, err)
 	assert.Equal(t, Result[Encodable]{}, result)
@@ -119,7 +119,7 @@ func Test_DecodeResult_CorrectLengthRead(t *testing.T) {
 		Value:    U32(128),
 	}
 
-	result, err := DecodeResult(buffer, DecodeCompact[BigNumbers], DecodeU32)
+	result, err := DecodeResult(buffer, DecodeCompact[Numeric], DecodeU32)
 
 	assert.NoError(t, err)
 	assert.Equal(t, expect, result)

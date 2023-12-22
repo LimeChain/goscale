@@ -53,7 +53,7 @@ func (d Dictionary[K, V]) Bytes() []byte {
 func DecodeDictionary[K Comparable, V Encodable](buffer *bytes.Buffer) (Dictionary[K, V], error) {
 	result := Dictionary[K, V]{}
 
-	v, err := DecodeCompact[BigNumbers](buffer)
+	v, err := DecodeCompact[Numeric](buffer)
 	if err != nil {
 		return nil, err
 	}

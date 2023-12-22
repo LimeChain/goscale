@@ -58,8 +58,8 @@ func decodeByType(i interface{}, buffer *bytes.Buffer) (Encodable, error) {
 		return DecodeU128(buffer)
 	case I128:
 		return DecodeI128(buffer)
-	case Compact[BigNumbers]:
-		return DecodeCompact[BigNumbers](buffer)
+	case Compact[Numeric]:
+		return DecodeCompact[Numeric](buffer)
 	case Sequence[U8]:
 		dec, err := DecodeSliceU8(buffer)
 		if err != nil {
@@ -84,48 +84,48 @@ func reverseSlice(a []byte) {
 	}
 }
 
-func ToCompact(v interface{}) Compact[BigNumbers] {
+func ToCompact(v interface{}) Compact[Numeric] {
 	switch v := v.(type) {
 	case int:
-		return Compact[BigNumbers]{NewU128(v)} //TODO: Platform dependent ?
+		return Compact[Numeric]{NewU128(v)} //TODO: Platform dependent ?
 	case uint:
-		return Compact[BigNumbers]{NewU128(v)}
+		return Compact[Numeric]{NewU128(v)}
 	case int8:
-		return Compact[BigNumbers]{NewI8(v)}
+		return Compact[Numeric]{NewI8(v)}
 	case I8:
-		return Compact[BigNumbers]{NewI8(int8(v))}
+		return Compact[Numeric]{NewI8(int8(v))}
 	case uint8:
-		return Compact[BigNumbers]{NewU8(v)}
+		return Compact[Numeric]{NewU8(v)}
 	case U8:
-		return Compact[BigNumbers]{NewU8(uint8(v))}
+		return Compact[Numeric]{NewU8(uint8(v))}
 	case int16:
-		return Compact[BigNumbers]{NewI16(v)}
+		return Compact[Numeric]{NewI16(v)}
 	case I16:
-		return Compact[BigNumbers]{NewI16(int16(v))}
+		return Compact[Numeric]{NewI16(int16(v))}
 	case uint16:
-		return Compact[BigNumbers]{NewU16(v)}
+		return Compact[Numeric]{NewU16(v)}
 	case U16:
-		return Compact[BigNumbers]{NewU16(uint16(v))}
+		return Compact[Numeric]{NewU16(uint16(v))}
 	case int32:
-		return Compact[BigNumbers]{NewI32(v)}
+		return Compact[Numeric]{NewI32(v)}
 	case I32:
-		return Compact[BigNumbers]{NewI32(int32(v))}
+		return Compact[Numeric]{NewI32(int32(v))}
 	case uint32:
-		return Compact[BigNumbers]{NewU32(v)}
+		return Compact[Numeric]{NewU32(v)}
 	case U32:
-		return Compact[BigNumbers]{NewU32(uint32(v))}
+		return Compact[Numeric]{NewU32(uint32(v))}
 	case int64:
-		return Compact[BigNumbers]{NewI64(v)}
+		return Compact[Numeric]{NewI64(v)}
 	case I64:
-		return Compact[BigNumbers]{NewI64(int64(v))}
+		return Compact[Numeric]{NewI64(int64(v))}
 	case uint64:
-		return Compact[BigNumbers]{NewU64(v)}
+		return Compact[Numeric]{NewU64(v)}
 	case U64:
-		return Compact[BigNumbers]{NewU64(uint64(v))}
+		return Compact[Numeric]{NewU64(uint64(v))}
 	case U128:
-		return Compact[BigNumbers]{NewU128(v)}
+		return Compact[Numeric]{NewU128(v)}
 	case I128:
-		return Compact[BigNumbers]{NewI128(v)}
+		return Compact[Numeric]{NewI128(v)}
 	default:
 		panic("invalid numeric type in ToCompact()")
 	}

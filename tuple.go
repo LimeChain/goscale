@@ -131,8 +131,8 @@ func SequenceFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 		ConvertToSequence[U128](field).Encode(buffer)
 	case reflect.TypeOf(*new(I128)):
 		ConvertToSequence[I128](field).Encode(buffer)
-	case reflect.TypeOf(*new(Compact[BigNumbers])):
-		ConvertToSequence[Compact[BigNumbers]](field).Encode(buffer)
+	case reflect.TypeOf(*new(Compact[Numeric])):
+		ConvertToSequence[Compact[Numeric]](field).Encode(buffer)
 	case reflect.TypeOf(*new(Str)):
 		ConvertToSequence[Str](field).Encode(buffer)
 	case reflect.TypeOf(*new(VaryingData)):
@@ -193,8 +193,8 @@ func DictionaryFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 		ConvertToDictionary[Str, U128](field).Encode(buffer)
 	case reflect.TypeOf(*new(I128)):
 		ConvertToDictionary[Str, I128](field).Encode(buffer)
-	case reflect.TypeOf(*new(Compact[BigNumbers])):
-		ConvertToDictionary[Str, Compact[BigNumbers]](field).Encode(buffer)
+	case reflect.TypeOf(*new(Compact[Numeric])):
+		ConvertToDictionary[Str, Compact[Numeric]](field).Encode(buffer)
 	case reflect.TypeOf(*new(Str)):
 		ConvertToDictionary[Str, Str](field).Encode(buffer)
 	case reflect.TypeOf(*new(VaryingData)):
