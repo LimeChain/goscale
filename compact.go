@@ -125,6 +125,8 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 			value = Numeric(NewU64(r))
 		case reflect.TypeOf(*new(U32)):
 			value = Numeric(NewU32(uint32(r)))
+		case reflect.TypeOf(*new(U16)):
+			value = Numeric(NewU16(uint16(r)))
 		case reflect.TypeOf(*new(U8)):
 			value = Numeric(NewU8(uint8(r)))
 		default:
@@ -147,8 +149,8 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 			value = Numeric(NewU64(uint64(r)))
 		case reflect.TypeOf(*new(U32)):
 			value = Numeric(NewU32(r))
-		case reflect.TypeOf(*new(U8)):
-			value = Numeric(NewU8(uint8(r)))
+		case reflect.TypeOf(*new(U16)):
+			value = Numeric(NewU16(uint16(r)))
 		default:
 			value = Numeric(NewU128(r))
 		}
