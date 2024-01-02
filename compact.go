@@ -98,18 +98,32 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		switch reflect.TypeOf(*new(T)) {
 		case reflect.TypeOf(*new(U128)):
 			value = Numeric(NewU128(big.NewInt(0).SetUint64(uint64(b >> 2))))
+		case reflect.TypeOf(*new(I128)):
+			value = Numeric(NewI128(big.NewInt(0).SetUint64(uint64(b >> 2))))
 		case reflect.TypeOf(*new(U64)):
 			value = Numeric(NewU64(uint64(b >> 2)))
+		case reflect.TypeOf(*new(I64)):
+			value = Numeric(NewI64(int64(b >> 2)))
 		case reflect.TypeOf(*new(U32)):
 			value = Numeric(NewU32(uint32(b >> 2)))
+		case reflect.TypeOf(*new(I32)):
+			value = Numeric(NewI32(int32(b >> 2)))
 		case reflect.TypeOf(*new(U16)):
 			value = Numeric(NewU16(uint16(b >> 2)))
+		case reflect.TypeOf(*new(I16)):
+			value = Numeric(NewI16(int16(b >> 2)))
 		case reflect.TypeOf(*new(U8)):
 			value = Numeric(NewU8(b >> 2))
+		case reflect.TypeOf(*new(I8)):
+			value = Numeric(NewI8(int8(b >> 2)))
 		default:
 			value = Numeric(NewU128(big.NewInt(0).SetUint64(uint64(b >> 2))))
 		}
-		return Compact[T]{value.(T)}, nil
+		v, ok := value.(T)
+		if !ok {
+			return Compact[T]{v}, errCouldNotDecodeCompact
+		}
+		return Compact[T]{v}, nil
 	case 1:
 		db, err := decoder.DecodeByte()
 		if err != nil {
@@ -121,18 +135,32 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		switch reflect.TypeOf(*new(T)) {
 		case reflect.TypeOf(*new(U128)):
 			value = Numeric(NewU128(r))
+		case reflect.TypeOf(*new(I128)):
+			value = Numeric(NewI128(r))
 		case reflect.TypeOf(*new(U64)):
 			value = Numeric(NewU64(r))
+		case reflect.TypeOf(*new(I64)):
+			value = Numeric(NewI64(int64(r)))
 		case reflect.TypeOf(*new(U32)):
 			value = Numeric(NewU32(uint32(r)))
+		case reflect.TypeOf(*new(I32)):
+			value = Numeric(NewI32(int32(r)))
 		case reflect.TypeOf(*new(U16)):
 			value = Numeric(NewU16(uint16(r)))
+		case reflect.TypeOf(*new(I16)):
+			value = Numeric(NewI16(int16(r)))
 		case reflect.TypeOf(*new(U8)):
 			value = Numeric(NewU8(uint8(r)))
+		case reflect.TypeOf(*new(I8)):
+			value = Numeric(NewI8(int8(r)))
 		default:
 			value = Numeric(NewU128(r))
 		}
-		return Compact[T]{value.(T)}, nil
+		v, ok := value.(T)
+		if !ok {
+			return Compact[T]{v}, errCouldNotDecodeCompact
+		}
+		return Compact[T]{v}, nil
 	case 2:
 		buf := result[:4]
 		buf[0] = b
@@ -145,16 +173,28 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		switch reflect.TypeOf(*new(T)) {
 		case reflect.TypeOf(*new(U128)):
 			value = Numeric(NewU128(uint64(r)))
+		case reflect.TypeOf(*new(I128)):
+			value = Numeric(NewI128(uint64(r)))
 		case reflect.TypeOf(*new(U64)):
 			value = Numeric(NewU64(uint64(r)))
+		case reflect.TypeOf(*new(I64)):
+			value = Numeric(NewI64(int64(r)))
 		case reflect.TypeOf(*new(U32)):
 			value = Numeric(NewU32(r))
+		case reflect.TypeOf(*new(I32)):
+			value = Numeric(NewI32(int32(r)))
 		case reflect.TypeOf(*new(U16)):
 			value = Numeric(NewU16(uint16(r)))
+		case reflect.TypeOf(*new(I16)):
+			value = Numeric(NewI16(int16(r)))
 		default:
 			value = Numeric(NewU128(r))
 		}
-		return Compact[T]{value.(T)}, nil
+		v, ok := value.(T)
+		if !ok {
+			return Compact[T]{v}, errCouldNotDecodeCompact
+		}
+		return Compact[T]{v}, nil
 	case 3:
 		n := b >> 2
 		if n > 63 {
@@ -170,14 +210,24 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		switch reflect.TypeOf(*new(T)) {
 		case reflect.TypeOf(*new(U128)):
 			value = Numeric(NewU128(big.NewInt(0).SetBytes(result)))
+		case reflect.TypeOf(*new(I128)):
+			value = Numeric(NewI128(big.NewInt(0).SetBytes(result)))
 		case reflect.TypeOf(*new(U64)):
 			value = Numeric(NewU64(big.NewInt(0).SetBytes(result).Uint64()))
+		case reflect.TypeOf(*new(I64)):
+			value = Numeric(NewI64(big.NewInt(0).SetBytes(result).Int64()))
 		case reflect.TypeOf(*new(U32)):
 			value = Numeric(NewU32(uint32(big.NewInt(0).SetBytes(result).Uint64())))
+		case reflect.TypeOf(*new(I32)):
+			value = Numeric(NewU32(uint32(big.NewInt(0).SetBytes(result).Int64())))
 		default:
 			value = Numeric(NewU128(big.NewInt(0).SetBytes(result)))
 		}
-		return Compact[T]{value.(T)}, nil
+		v, ok := value.(T)
+		if !ok {
+			return Compact[T]{v}, errCouldNotDecodeCompact
+		}
+		return Compact[T]{v}, nil
 	default:
 		return Compact[T]{}, errCouldNotDecodeCompact
 	}
