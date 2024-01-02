@@ -91,33 +91,33 @@ func ToCompact(v interface{}) Compact[Numeric] {
 	case uint:
 		return Compact[Numeric]{NewU128(v)}
 	case int8:
-		return Compact[Numeric]{NewI8(v)}
+		return Compact[Numeric]{NewU8(uint8(v))}
 	case I8:
-		return Compact[Numeric]{NewI8(int8(v))}
+		return Compact[Numeric]{NewU8(uint8(v))}
 	case uint8:
 		return Compact[Numeric]{NewU8(v)}
 	case U8:
 		return Compact[Numeric]{NewU8(uint8(v))}
 	case int16:
-		return Compact[Numeric]{NewI16(v)}
+		return Compact[Numeric]{NewU16(uint16(v))}
 	case I16:
-		return Compact[Numeric]{NewI16(int16(v))}
+		return Compact[Numeric]{NewU16(uint16(v))}
 	case uint16:
 		return Compact[Numeric]{NewU16(v)}
 	case U16:
 		return Compact[Numeric]{NewU16(uint16(v))}
 	case int32:
-		return Compact[Numeric]{NewI32(v)}
+		return Compact[Numeric]{NewU32(uint32(v))}
 	case I32:
-		return Compact[Numeric]{NewI32(int32(v))}
+		return Compact[Numeric]{NewU32(uint32(v))}
 	case uint32:
 		return Compact[Numeric]{NewU32(v)}
 	case U32:
 		return Compact[Numeric]{NewU32(uint32(v))}
 	case int64:
-		return Compact[Numeric]{NewI64(v)}
+		return Compact[Numeric]{NewU64(uint64(v))}
 	case I64:
-		return Compact[Numeric]{NewI64(int64(v))}
+		return Compact[Numeric]{NewU64(uint64(v))}
 	case uint64:
 		return Compact[Numeric]{NewU64(v)}
 	case U64:
@@ -125,7 +125,7 @@ func ToCompact(v interface{}) Compact[Numeric] {
 	case U128:
 		return Compact[Numeric]{NewU128(v)}
 	case I128:
-		return Compact[Numeric]{NewI128(v)}
+		return Compact[Numeric]{NewU128(v)}
 	default:
 		panic("invalid numeric type in ToCompact()")
 	}

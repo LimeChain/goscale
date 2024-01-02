@@ -117,30 +117,6 @@ func Test_DecodeCompact_StronglyTyped_U128(t *testing.T) {
 	}
 }
 
-func Test_DecodeCompact_StronglyTyped_I128(t *testing.T) {
-	var examplesI128 = []struct {
-		label  string
-		input  []byte
-		expect Compact[I128]
-	}{
-		{label: "Decode Compact(42)  Mode 0", input: []byte{0xa8}, expect: Compact[I128]{NewI128(42)}},
-		{label: "Decode Compact(127) Mode 1", input: []byte{0xfd, 0x01}, expect: Compact[I128]{NewI128(127)}},
-		{label: "Decode Compact(16384) Mode 2", input: []byte{0x02, 0x00, 0x01, 0x00}, expect: Compact[I128]{NewI128(16384)}},
-	}
-
-	for _, e := range examplesI128 {
-		t.Run(e.label, func(t *testing.T) {
-			buffer := &bytes.Buffer{}
-			buffer.Write(e.input)
-
-			result, err := DecodeCompact[I128](buffer)
-
-			assert.NoError(t, err)
-			assert.Equal(t, e.expect, result)
-		})
-	}
-}
-
 func Test_DecodeCompact_StronglyTyped_U64(t *testing.T) {
 	var examplesU64 = []struct {
 		label  string
@@ -159,30 +135,6 @@ func Test_DecodeCompact_StronglyTyped_U64(t *testing.T) {
 			buffer.Write(e.input)
 
 			result, err := DecodeCompact[U64](buffer)
-
-			assert.NoError(t, err)
-			assert.Equal(t, e.expect, result)
-		})
-	}
-}
-
-func Test_DecodeCompact_StronglyTyped_I64(t *testing.T) {
-	var examplesI64 = []struct {
-		label  string
-		input  []byte
-		expect Compact[I64]
-	}{
-		{label: "Decode Compact(42)  Mode 0", input: []byte{0xa8}, expect: Compact[I64]{NewI64(42)}},
-		{label: "Decode Compact(127) Mode 1", input: []byte{0xfd, 0x01}, expect: Compact[I64]{NewI64(127)}},
-		{label: "Decode Compact(16384) Mode 2", input: []byte{0x02, 0x00, 0x01, 0x00}, expect: Compact[I64]{NewI64(16384)}},
-	}
-
-	for _, e := range examplesI64 {
-		t.Run(e.label, func(t *testing.T) {
-			buffer := &bytes.Buffer{}
-			buffer.Write(e.input)
-
-			result, err := DecodeCompact[I64](buffer)
 
 			assert.NoError(t, err)
 			assert.Equal(t, e.expect, result)
@@ -215,30 +167,6 @@ func Test_DecodeCompact_StronglyTyped_U32(t *testing.T) {
 	}
 }
 
-func Test_DecodeCompact_StronglyTyped_I32(t *testing.T) {
-	var examplesI32 = []struct {
-		label  string
-		input  []byte
-		expect Compact[I32]
-	}{
-		{label: "Decode Compact(42)  Mode 0", input: []byte{0xa8}, expect: Compact[I32]{NewI32(42)}},
-		{label: "Decode Compact(127) Mode 1", input: []byte{0xfd, 0x01}, expect: Compact[I32]{NewI32(127)}},
-		{label: "Decode Compact(16384) Mode 2", input: []byte{0x02, 0x00, 0x01, 0x00}, expect: Compact[I32]{NewI32(16384)}},
-	}
-
-	for _, e := range examplesI32 {
-		t.Run(e.label, func(t *testing.T) {
-			buffer := &bytes.Buffer{}
-			buffer.Write(e.input)
-
-			result, err := DecodeCompact[I32](buffer)
-
-			assert.NoError(t, err)
-			assert.Equal(t, e.expect, result)
-		})
-	}
-}
-
 func Test_DecodeCompact_StronglyTyped_U16(t *testing.T) {
 	var examplesU16 = []struct {
 		label  string
@@ -263,30 +191,6 @@ func Test_DecodeCompact_StronglyTyped_U16(t *testing.T) {
 	}
 }
 
-func Test_DecodeCompact_StronglyTyped_I16(t *testing.T) {
-	var examplesI16 = []struct {
-		label  string
-		input  []byte
-		expect Compact[I16]
-	}{
-		{label: "Decode Compact(42)  Mode 0", input: []byte{0xa8}, expect: Compact[I16]{NewI16(42)}},
-		{label: "Decode Compact(127) Mode 1", input: []byte{0xfd, 0x01}, expect: Compact[I16]{NewI16(127)}},
-		{label: "Decode Compact(16384) Mode 2", input: []byte{0x02, 0x00, 0x01, 0x00}, expect: Compact[I16]{NewI16(16384)}},
-	}
-
-	for _, e := range examplesI16 {
-		t.Run(e.label, func(t *testing.T) {
-			buffer := &bytes.Buffer{}
-			buffer.Write(e.input)
-
-			result, err := DecodeCompact[I16](buffer)
-
-			assert.NoError(t, err)
-			assert.Equal(t, e.expect, result)
-		})
-	}
-}
-
 func Test_DecodeCompact_StronglyTyped_U8(t *testing.T) {
 	var examplesU8 = []struct {
 		label  string
@@ -303,29 +207,6 @@ func Test_DecodeCompact_StronglyTyped_U8(t *testing.T) {
 			buffer.Write(e.input)
 
 			result, err := DecodeCompact[U8](buffer)
-
-			assert.NoError(t, err)
-			assert.Equal(t, e.expect, result)
-		})
-	}
-}
-
-func Test_DecodeCompact_StronglyTyped_I8(t *testing.T) {
-	var examplesI8 = []struct {
-		label  string
-		input  []byte
-		expect Compact[I8]
-	}{
-		{label: "Decode Compact(42)  Mode 0", input: []byte{0xa8}, expect: Compact[I8]{NewI8(42)}},
-		{label: "Decode Compact(127) Mode 1", input: []byte{0xfd, 0x01}, expect: Compact[I8]{NewI8(127)}},
-	}
-
-	for _, e := range examplesI8 {
-		t.Run(e.label, func(t *testing.T) {
-			buffer := &bytes.Buffer{}
-			buffer.Write(e.input)
-
-			result, err := DecodeCompact[I8](buffer)
 
 			assert.NoError(t, err)
 			assert.Equal(t, e.expect, result)

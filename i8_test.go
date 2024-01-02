@@ -3,7 +3,6 @@ package goscale
 import (
 	"bytes"
 	"io"
-	"math/big"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -58,14 +57,6 @@ func Test_DecodeI8(t *testing.T) {
 			assert.Equal(t, testExample.expectation, result)
 		})
 	}
-}
-
-func Test_I8_ToBigInt(t *testing.T) {
-	n := I8(15)
-	nBigInt := n.ToBigInt()
-	expect, ok := new(big.Int).SetString("15", 10)
-	assert.True(t, ok)
-	assert.Equal(t, expect, nBigInt)
 }
 
 func Test_DecodeI8_Empty(t *testing.T) {
