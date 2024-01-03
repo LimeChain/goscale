@@ -3,6 +3,7 @@ package goscale
 import (
 	"bytes"
 	"encoding/binary"
+	"math/big"
 )
 
 type U32 uint32
@@ -17,6 +18,14 @@ func (value U32) Bytes() []byte {
 	binary.LittleEndian.PutUint32(result, uint32(value))
 
 	return result
+}
+
+func NewU32(n uint32) U32 {
+	return U32(n)
+}
+
+func (value U32) ToBigInt() *big.Int {
+	return new(big.Int).SetUint64(uint64(value))
 }
 
 func DecodeU32(buffer *bytes.Buffer) (U32, error) {

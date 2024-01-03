@@ -3,6 +3,7 @@ package goscale
 import (
 	"bytes"
 	"io"
+	"math/big"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -60,4 +61,12 @@ func Test_DecodeU16_Empty(t *testing.T) {
 
 	assert.Equal(t, io.EOF, err)
 	assert.Equal(t, U16(0), result)
+}
+
+func Test_U16_ToBigInt(t *testing.T) {
+	n := U16(127)
+	nBigInt := n.ToBigInt()
+	expect, ok := new(big.Int).SetString("127", 10)
+	assert.True(t, ok)
+	assert.Equal(t, expect, nBigInt)
 }

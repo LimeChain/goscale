@@ -1,6 +1,9 @@
 package goscale
 
-import "bytes"
+import (
+	"bytes"
+	"math/big"
+)
 
 type U8 uint8
 
@@ -12,6 +15,14 @@ func (value U8) Encode(buffer *bytes.Buffer) error {
 
 func (value U8) Bytes() []byte {
 	return []byte{byte(value)}
+}
+
+func NewU8(n uint8) U8 {
+	return U8(n)
+}
+
+func (value U8) ToBigInt() *big.Int {
+	return new(big.Int).SetUint64(uint64(value))
 }
 
 func DecodeU8(buffer *bytes.Buffer) (U8, error) {

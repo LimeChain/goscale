@@ -40,28 +40,28 @@ func Test_ToCompact(t *testing.T) {
 	var examples = []struct {
 		label  string
 		input  interface{}
-		expect Compact
+		expect Compact[Numeric]
 	}{
-		{label: "ToCompact(int)", input: 1, expect: Compact(NewU128(1))},
-		{label: "ToCompact(uint)", input: uint(2), expect: Compact(NewU128(2))},
-		{label: "ToCompact(int8)", input: int8(3), expect: Compact(NewU128(3))},
-		{label: "ToCompact(I8)", input: I8(4), expect: Compact(NewU128(4))},
-		{label: "ToCompact(uint8)", input: uint8(5), expect: Compact(NewU128(5))},
-		{label: "ToCompact(U8)", input: U8(6), expect: Compact(NewU128(6))},
-		{label: "ToCompact(int16)", input: int16(7), expect: Compact(NewU128(7))},
-		{label: "ToCompact(I16)", input: I16(8), expect: Compact(NewU128(8))},
-		{label: "ToCompact(uint16)", input: uint16(9), expect: Compact(NewU128(9))},
-		{label: "ToCompact(U16)", input: U16(10), expect: Compact(NewU128(10))},
-		{label: "ToCompact(int32)", input: int32(11), expect: Compact(NewU128(11))},
-		{label: "ToCompact(I32)", input: I32(12), expect: Compact(NewU128(12))},
-		{label: "ToCompact(uint32)", input: uint32(13), expect: Compact(NewU128(13))},
-		{label: "ToCompact(U32)", input: U32(14), expect: Compact(NewU128(14))},
-		{label: "ToCompact(int64)", input: int64(15), expect: Compact(NewU128(15))},
-		{label: "ToCompact(I64)", input: I64(16), expect: Compact(NewU128(16))},
-		{label: "ToCompact(uint64)", input: uint64(17), expect: Compact(NewU128(17))},
-		{label: "ToCompact(U64)", input: U64(18), expect: Compact(NewU128(18))},
-		{label: "ToCompact(I128)", input: NewI128(19), expect: Compact(NewU128(19))},
-		{label: "ToCompact(U128)", input: NewU128(20), expect: Compact(NewU128(20))},
+		{label: "ToCompact(int)", input: 1, expect: Compact[Numeric]{NewU128(1)}},
+		{label: "ToCompact(uint)", input: uint(2), expect: Compact[Numeric]{NewU128(2)}},
+		{label: "ToCompact(int8)", input: int8(3), expect: Compact[Numeric]{NewU8(3)}},
+		{label: "ToCompact(I8)", input: I8(4), expect: Compact[Numeric]{NewU8(4)}},
+		{label: "ToCompact(uint8)", input: uint8(5), expect: Compact[Numeric]{NewU8(5)}},
+		{label: "ToCompact(U8)", input: U8(6), expect: Compact[Numeric]{NewU8(6)}},
+		{label: "ToCompact(int16)", input: int16(7), expect: Compact[Numeric]{NewU16(7)}},
+		{label: "ToCompact(I16)", input: I16(8), expect: Compact[Numeric]{NewU16(8)}},
+		{label: "ToCompact(uint16)", input: uint16(9), expect: Compact[Numeric]{NewU16(9)}},
+		{label: "ToCompact(U16)", input: U16(10), expect: Compact[Numeric]{NewU16(10)}},
+		{label: "ToCompact(int32)", input: int32(11), expect: Compact[Numeric]{NewU32(11)}},
+		{label: "ToCompact(I32)", input: I32(12), expect: Compact[Numeric]{NewU32(12)}},
+		{label: "ToCompact(uint32)", input: uint32(13), expect: Compact[Numeric]{NewU32(13)}},
+		{label: "ToCompact(U32)", input: U32(14), expect: Compact[Numeric]{NewU32(14)}},
+		{label: "ToCompact(int64)", input: int64(15), expect: Compact[Numeric]{NewU64(15)}},
+		{label: "ToCompact(I64)", input: I64(16), expect: Compact[Numeric]{NewU64(16)}},
+		{label: "ToCompact(uint64)", input: uint64(17), expect: Compact[Numeric]{NewU64(17)}},
+		{label: "ToCompact(U64)", input: U64(18), expect: Compact[Numeric]{NewU64(18)}},
+		{label: "ToCompact(I128)", input: NewI128(19), expect: Compact[Numeric]{NewU128(19)}},
+		{label: "ToCompact(U128)", input: NewU128(20), expect: Compact[Numeric]{NewU128(20)}},
 	}
 
 	for _, e := range examples {

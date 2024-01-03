@@ -1,6 +1,8 @@
 package goscale
 
-import "bytes"
+import (
+	"bytes"
+)
 
 type I32 int32
 

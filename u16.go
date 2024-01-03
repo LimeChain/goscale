@@ -3,6 +3,7 @@ package goscale
 import (
 	"bytes"
 	"encoding/binary"
+	"math/big"
 )
 
 type U16 uint16
@@ -10,6 +11,14 @@ type U16 uint16
 func (value U16) Encode(buffer *bytes.Buffer) error {
 	encoder := Encoder{Writer: buffer}
 	return encoder.Write(value.Bytes())
+}
+
+func NewU16(n uint16) U16 {
+	return U16(n)
+}
+
+func (value U16) ToBigInt() *big.Int {
+	return new(big.Int).SetUint64(uint64(value))
 }
 
 func (value U16) Bytes() []byte {
