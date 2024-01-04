@@ -89,7 +89,7 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact, error) {
 	result := make([]byte, 16)
 	b, err := decoder.DecodeByte()
 	if err != nil {
-		return Compact{nil}, err
+		return Compact{}, err
 	}
 	mode := b & 3
 	var value Numeric
@@ -109,10 +109,7 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact, error) {
 		default:
 			value = Numeric(NewU128(big.NewInt(0).SetUint64(uint64(b >> 2))))
 		}
-		v, ok := value.(T)
-		if !ok {
-			return Compact{v}, errCouldNotDecodeCompact
-		}
+		v := value.(T)
 		return Compact{v}, nil
 	case 1:
 		db, err := decoder.DecodeByte()
@@ -136,17 +133,14 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact, error) {
 		default:
 			value = Numeric(NewU128(r))
 		}
-		v, ok := value.(T)
-		if !ok {
-			return Compact{v}, errCouldNotDecodeCompact
-		}
+		v := value.(T)
 		return Compact{v}, nil
 	case 2:
 		buf := result[:4]
 		buf[0] = b
 		err := decoder.Read(result[1:4])
 		if err != nil {
-			return Compact{}, err
+			return Compact{nil}, err
 		}
 		r := binary.LittleEndian.Uint32(buf)
 		r >>= 2
@@ -162,10 +156,7 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact, error) {
 		default:
 			value = Numeric(NewU128(r))
 		}
-		v, ok := value.(T)
-		if !ok {
-			return Compact{v}, errCouldNotDecodeCompact
-		}
+		v := value.(T)
 		return Compact{v}, nil
 	case 3:
 		n := b >> 2
@@ -194,7 +185,6 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact, error) {
 			return Compact{v}, errCouldNotDecodeCompact
 		}
 		return Compact{v}, nil
-	default:
-		return Compact{}, errCouldNotDecodeCompact
 	}
+	return Compact{}, errCouldNotDecodeCompact
 }

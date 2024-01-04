@@ -129,8 +129,6 @@ func SequenceFieldEncode(field reflect.Value, buffer *bytes.Buffer) {
 		ConvertToSequence[U128](field).Encode(buffer)
 	case reflect.TypeOf(*new(I128)):
 		ConvertToSequence[I128](field).Encode(buffer)
-	case reflect.TypeOf(*new(Compact)):
-		ConvertToSequence[Compact](field).Encode(buffer)
 	case reflect.TypeOf(*new(Str)):
 		ConvertToSequence[Str](field).Encode(buffer)
 	case reflect.TypeOf(*new(VaryingData)):

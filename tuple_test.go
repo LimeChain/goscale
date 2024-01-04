@@ -596,6 +596,41 @@ func Test_EncodeTupleDictionary(t *testing.T) {
 	}
 }
 
+type TupleDictionaryCompact struct {
+	Tuple
+	K Dictionary[Str, Compact]
+}
+
+func Test_EncodeTupleDictionaryCompact(t *testing.T) {
+	var testExamples = []struct {
+		label       string
+		input       TupleDictionaryCompact
+		expectation []byte
+	}{
+		{
+			label: "TupleDictionary",
+			input: TupleDictionaryCompact{
+				K: Dictionary[Str, Compact]{"abc": Compact{Number: NewU128(3)}, "xyz": Compact{Number: NewU128(5)}},
+			},
+			expectation: []byte{
+				0x08,                        //
+				0x0c, 0x61, 0x62, 0x63, 0xc, // abc: Compact(3)
+				0x0c, 0x78, 0x79, 0x7a, 0x14, // xyz: Compact(5)
+			},
+		},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			buffer := &bytes.Buffer{}
+
+			EncodeTuple(testExample.input, buffer)
+
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+		})
+	}
+}
+
 type TupleVaryingData struct {
 	Tuple
 	L0 VaryingData
