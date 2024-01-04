@@ -38,7 +38,7 @@ func (seq Sequence[T]) Bytes() []byte {
 }
 
 func DecodeSequence[T Encodable](buffer *bytes.Buffer) (Sequence[T], error) {
-	size, err := DecodeCompact[Numeric](buffer)
+	size, err := DecodeCompact[U128](buffer)
 	if err != nil {
 		return Sequence[T]{}, err
 	}
@@ -56,7 +56,7 @@ func DecodeSequence[T Encodable](buffer *bytes.Buffer) (Sequence[T], error) {
 }
 
 func DecodeSequenceWith[T Encodable](buffer *bytes.Buffer, decodeFunc func(buffer *bytes.Buffer) (T, error)) (Sequence[T], error) {
-	size, err := DecodeCompact[Numeric](buffer)
+	size, err := DecodeCompact[U128](buffer)
 	if err != nil {
 		return Sequence[T]{}, err
 	}
