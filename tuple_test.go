@@ -212,8 +212,8 @@ func Test_EncodeTupleU128I128(t *testing.T) {
 
 type TupleCompactU128 struct {
 	Tuple
-	G0 Compact[U128]
-	G1 Compact[U128]
+	G0 Compact
+	G1 Compact
 }
 
 func Test_EncodeTupleCompactU128(t *testing.T) {
@@ -225,8 +225,8 @@ func Test_EncodeTupleCompactU128(t *testing.T) {
 		{
 			label: "TupleCompact",
 			input: TupleCompactU128{
-				G0: Compact[U128]{NewU128(big.NewInt(0).SetInt64(1073741824))},
-				G1: Compact[U128]{NewU128(big.NewInt(0).SetUint64(1073741823))},
+				G0: Compact{NewU128(big.NewInt(0).SetInt64(1073741824))},
+				G1: Compact{NewU128(big.NewInt(0).SetUint64(1073741823))},
 			},
 			expectation: []byte{
 				0x03, 0x00, 0x00, 0x00, 0x40, // G0
@@ -248,8 +248,8 @@ func Test_EncodeTupleCompactU128(t *testing.T) {
 
 type TupleCompactU64 struct {
 	Tuple
-	G0 Compact[U64]
-	G1 Compact[U64]
+	G0 Compact
+	G1 Compact
 }
 
 func Test_EncodeTupleCompactU64(t *testing.T) {
@@ -261,8 +261,8 @@ func Test_EncodeTupleCompactU64(t *testing.T) {
 		{
 			label: "TupleCompactU64",
 			input: TupleCompactU64{
-				G0: Compact[U64]{NewU64(1073741824)},
-				G1: Compact[U64]{NewU64(1073741823)},
+				G0: Compact{NewU64(1073741824)},
+				G1: Compact{NewU64(1073741823)},
 			},
 			expectation: []byte{
 				0x03, 0x00, 0x00, 0x00, 0x40, // G0
@@ -284,8 +284,8 @@ func Test_EncodeTupleCompactU64(t *testing.T) {
 
 type TupleCompactU32 struct {
 	Tuple
-	G0 Compact[U32]
-	G1 Compact[U32]
+	G0 Compact
+	G1 Compact
 }
 
 func Test_EncodeTupleCompactU32(t *testing.T) {
@@ -297,8 +297,8 @@ func Test_EncodeTupleCompactU32(t *testing.T) {
 		{
 			label: "TupleCompactU32",
 			input: TupleCompactU32{
-				G0: Compact[U32]{NewU32(1073741824)},
-				G1: Compact[U32]{NewU32(1073741823)},
+				G0: Compact{NewU32(1073741824)},
+				G1: Compact{NewU32(1073741823)},
 			},
 			expectation: []byte{
 				0x03, 0x00, 0x00, 0x00, 0x40, // G0
@@ -320,8 +320,8 @@ func Test_EncodeTupleCompactU32(t *testing.T) {
 
 type TupleCompactU16 struct {
 	Tuple
-	G0 Compact[U16]
-	G1 Compact[U16]
+	G0 Compact
+	G1 Compact
 }
 
 func Test_EncodeTupleCompactU16(t *testing.T) {
@@ -333,8 +333,8 @@ func Test_EncodeTupleCompactU16(t *testing.T) {
 		{
 			label: "TupleCompactU32",
 			input: TupleCompactU16{
-				G0: Compact[U16]{NewU16(65535)},
-				G1: Compact[U16]{NewU16(16383)},
+				G0: Compact{NewU16(65535)},
+				G1: Compact{NewU16(16383)},
 			},
 			expectation: []byte{
 				0xfe, 0xff, 0x03, 0x00, // G0
@@ -356,8 +356,8 @@ func Test_EncodeTupleCompactU16(t *testing.T) {
 
 type TupleCompactU8 struct {
 	Tuple
-	G0 Compact[U8]
-	G1 Compact[U8]
+	G0 Compact
+	G1 Compact
 }
 
 func Test_EncodeTupleCompactU8(t *testing.T) {
@@ -369,8 +369,8 @@ func Test_EncodeTupleCompactU8(t *testing.T) {
 		{
 			label: "TupleCompactU8",
 			input: TupleCompactU8{
-				G0: Compact[U8]{NewU8(1)},
-				G1: Compact[U8]{NewU8(42)},
+				G0: Compact{NewU8(1)},
+				G1: Compact{NewU8(42)},
 			},
 			expectation: []byte{
 				0x04, // G0
@@ -581,6 +581,41 @@ func Test_EncodeTupleDictionary(t *testing.T) {
 				0x08,                         //
 				0x0c, 0x61, 0x62, 0x63, 0x03, // abc: 3
 				0x0c, 0x78, 0x79, 0x7a, 0x05, // xyz: 5
+			},
+		},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			buffer := &bytes.Buffer{}
+
+			EncodeTuple(testExample.input, buffer)
+
+			assert.Equal(t, testExample.expectation, buffer.Bytes())
+		})
+	}
+}
+
+type TupleDictionaryCompact struct {
+	Tuple
+	K Dictionary[Str, Compact]
+}
+
+func Test_EncodeTupleDictionaryCompact(t *testing.T) {
+	var testExamples = []struct {
+		label       string
+		input       TupleDictionaryCompact
+		expectation []byte
+	}{
+		{
+			label: "TupleDictionary",
+			input: TupleDictionaryCompact{
+				K: Dictionary[Str, Compact]{"abc": Compact{Number: NewU128(3)}, "xyz": Compact{Number: NewU128(5)}},
+			},
+			expectation: []byte{
+				0x08,                        //
+				0x0c, 0x61, 0x62, 0x63, 0xc, // abc: Compact(3)
+				0x0c, 0x78, 0x79, 0x7a, 0x14, // xyz: Compact(5)
 			},
 		},
 	}

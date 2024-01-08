@@ -23,20 +23,20 @@ type Numeric interface {
 	ToBigInt() *big.Int
 }
 
-type Compact[T Numeric] struct {
-	Number T
+type Compact struct {
+	Number Numeric
 }
 
-func (c Compact[T]) Encode(buffer *bytes.Buffer) error {
+func (c Compact) Encode(buffer *bytes.Buffer) error {
 	encoder := Encoder{Writer: buffer}
 	return encoder.Write(c.Bytes())
 }
 
-func (c Compact[T]) ToBigInt() *big.Int {
+func (c Compact) ToBigInt() *big.Int {
 	return c.Number.ToBigInt()
 }
 
-func (c Compact[T]) Bytes() []byte {
+func (c Compact) Bytes() []byte {
 	bn := c.ToBigInt()
 
 	if bn.IsUint64() {
@@ -84,12 +84,12 @@ func (c Compact[T]) Bytes() []byte {
 	return append([]byte{(topSixBits << 2) + 3}, b...)
 }
 
-func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
+func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact, error) {
 	decoder := Decoder{Reader: buffer}
 	result := make([]byte, 16)
 	b, err := decoder.DecodeByte()
 	if err != nil {
-		return Compact[T]{}, err
+		return Compact{}, err
 	}
 	mode := b & 3
 	var value Numeric
@@ -109,15 +109,12 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		default:
 			value = Numeric(NewU128(big.NewInt(0).SetUint64(uint64(b >> 2))))
 		}
-		v, ok := value.(T)
-		if !ok {
-			return Compact[T]{v}, errCouldNotDecodeCompact
-		}
-		return Compact[T]{v}, nil
+		v := value.(T)
+		return Compact{v}, nil
 	case 1:
 		db, err := decoder.DecodeByte()
 		if err != nil {
-			return Compact[T]{}, err
+			return Compact{}, err
 		}
 		r := uint64(db)
 		r <<= 6
@@ -136,17 +133,14 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		default:
 			value = Numeric(NewU128(r))
 		}
-		v, ok := value.(T)
-		if !ok {
-			return Compact[T]{v}, errCouldNotDecodeCompact
-		}
-		return Compact[T]{v}, nil
+		v := value.(T)
+		return Compact{v}, nil
 	case 2:
 		buf := result[:4]
 		buf[0] = b
 		err := decoder.Read(result[1:4])
 		if err != nil {
-			return Compact[T]{}, err
+			return Compact{nil}, err
 		}
 		r := binary.LittleEndian.Uint32(buf)
 		r >>= 2
@@ -162,21 +156,18 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		default:
 			value = Numeric(NewU128(r))
 		}
-		v, ok := value.(T)
-		if !ok {
-			return Compact[T]{v}, errCouldNotDecodeCompact
-		}
-		return Compact[T]{v}, nil
+		v := value.(T)
+		return Compact{v}, nil
 	case 3:
 		n := b >> 2
 		if n > 63 {
 			value := NewU64(0)
 			result := interface{}(value).(T)
-			return Compact[T]{result}, errNotSupported
+			return Compact{result}, errNotSupported
 		}
 		err := decoder.Read(result[:n+4])
 		if err != nil {
-			return Compact[T]{}, err
+			return Compact{nil}, err
 		}
 		reverseSlice(result)
 		switch reflect.TypeOf(*new(T)) {
@@ -191,10 +182,9 @@ func DecodeCompact[T Numeric](buffer *bytes.Buffer) (Compact[T], error) {
 		}
 		v, ok := value.(T)
 		if !ok {
-			return Compact[T]{v}, errCouldNotDecodeCompact
+			return Compact{v}, errCouldNotDecodeCompact
 		}
-		return Compact[T]{v}, nil
-	default:
-		return Compact[T]{}, errCouldNotDecodeCompact
+		return Compact{v}, nil
 	}
+	return Compact{}, errCouldNotDecodeCompact
 }
