@@ -382,3 +382,30 @@ func Test_CheckedSubU128(t *testing.T) {
 		})
 	}
 }
+
+func Test_CheckedMulU64(t *testing.T) {
+	testExamples := []struct {
+		label        string
+		a            U64
+		b            U64
+		expect       U64
+		hasExpectErr bool
+	}{
+		{"2*3", U64(2), U64(3), U64(6), false},
+		{"0*1", U64(0), U64(1), U64(0), false},
+		{"2*MaxU64", U64(2), U64(math.MaxUint64), U64(0), true},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result, err := CheckedMulU64(testExample.a, testExample.b)
+			assert.Equal(t, testExample.expect, result)
+
+			if testExample.hasExpectErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
