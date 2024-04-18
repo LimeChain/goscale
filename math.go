@@ -184,3 +184,16 @@ func CheckedSubU128(a, b U128) (U128, error) {
 	}
 	return U128{U64(low), U64(high)}, nil
 }
+
+func CheckedMulU64(a, b U64) (U64, error) {
+	if a == 0 || b == 0 {
+		return 0, nil
+	}
+
+	hi, lo := bits.Mul64(uint64(a), uint64(b))
+	if hi != 0 {
+		return 0, errOverflow
+	}
+
+	return U64(lo), nil
+}
