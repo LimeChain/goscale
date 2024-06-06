@@ -7,6 +7,27 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func Test_Max32(t *testing.T) {
+	testExamples := []struct {
+		label  string
+		a      U32
+		b      U32
+		expect U32
+	}{
+		{"Max(1, 2)", 1, 2, 2},
+		{"Max(3, 1)", 3, 1, 3},
+		{"Max(1, MaxU32)", 1, math.MaxUint32, math.MaxUint32},
+		{"Max(MaxU32, MaxU32)", math.MaxUint32, math.MaxUint32, math.MaxUint32},
+	}
+
+	for _, testExample := range testExamples {
+		t.Run(testExample.label, func(t *testing.T) {
+			result := Max32(testExample.a, testExample.b)
+			assert.Equal(t, testExample.expect, result)
+		})
+	}
+}
+
 func Test_Max64(t *testing.T) {
 	testExamples := []struct {
 		label  string

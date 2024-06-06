@@ -22,6 +22,14 @@ func Clamp(value, min, max int) int {
 	return value
 }
 
+func Max32(a, b U32) U32 {
+	if a > b {
+		return a
+	}
+
+	return b
+}
+
 func Max64(a, b U64) U64 {
 	if a > b {
 		return a
